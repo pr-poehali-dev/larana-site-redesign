@@ -43,7 +43,7 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
     const newStatusLabel = getStatusLabel(newStatus);
     
     if (confirm(`Изменить статус заказа #${order.id} с "${currentStatusLabel}" на "${newStatusLabel}"?`)) {
-      onUpdateStatus(order.id, newStatus);
+      onUpdateStatus(String(order.id), newStatus);
     }
   };
 
