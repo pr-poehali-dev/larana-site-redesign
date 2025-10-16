@@ -7,9 +7,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <img 
-              src="https://cdn.poehali.dev/files/9fbb2764-eaf0-4758-a712-d6d403965e4f.png" 
+              src="https://cdn.poehali.dev/files/b2ad3a07-4f72-4c88-9569-e7e9ef4812f8.png" 
               alt="LARANA" 
-              className="h-10 w-auto mb-4 brightness-0 invert"
+              className="h-8 w-auto mb-4 brightness-0 invert"
             />
             <p className="text-sm opacity-80">Готовые интерьеры под ключ</p>
           </div>
