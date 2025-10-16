@@ -61,12 +61,16 @@ const OrdersTab = () => {
       });
 
       if (response.ok) {
-        setOrders(orders.map(order => 
-          order.id === orderId ? { ...order, status: newStatus } : order
-        ));
+        await fetchAllOrders();
         toast({
           title: "Статус обновлен",
-          description: `Заказ #${orderId} обновлен`
+          description: `Заказ обновлен`
+        });
+      } else {
+        toast({
+          title: "Ошибка",
+          description: "Не удалось обновить статус",
+          variant: "destructive"
         });
       }
     } catch (error) {
