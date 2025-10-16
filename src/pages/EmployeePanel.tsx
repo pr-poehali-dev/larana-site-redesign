@@ -34,6 +34,7 @@ const EmployeePanel = () => {
   const [employee, setEmployee] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>('all');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -363,8 +364,16 @@ const EmployeePanel = () => {
                   .filter(order => order.status === statusForType)
                   .reduce((sum, order) => sum + (order.totalAmount || 0), 0);
 
+                const isActive = activeFilter === type;
+
                 return (
-                  <Card key={type}>
+                  <Card 
+                    key={type}
+                    className={`cursor-pointer transition-all hover:shadow-md ${
+                      isActive ? 'ring-2 ring-primary' : ''
+                    }`}
+                    onClick={() => setActiveFilter(isActive ? 'all' : type)}
+                  >
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium flex items-center gap-2">
                         <div className={`w-3 h-3 rounded-full ${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]}`} />
@@ -391,6 +400,36 @@ const EmployeePanel = () => {
               })}
             </div>
           )}
+
+          {/* Кнопки фильтрации */}
+          {employee?.employeeTypes && employee.employeeTypes.length > 1 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Button
+                variant={activeFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveFilter('all')}
+              >
+                Все ({orders.length})
+              </Button>
+              {employee.employeeTypes.map((type: string) => {
+                const statusForType = STATUS_BY_TYPE[type as keyof typeof STATUS_BY_TYPE];
+                const count = orders.filter(order => order.status === statusForType).length;
+                
+                return (
+                  <Button
+                    key={type}
+                    variant={activeFilter === type ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setActiveFilter(type)}
+                    className="flex items-center gap-2"
+                  >
+                    <div className={`w-2 h-2 rounded-full ${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]}`} />
+                    {EMPLOYEE_TYPES[type as keyof typeof EMPLOYEE_TYPES]} ({count})
+                  </Button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {loading && orders.length === 0 ? (
@@ -407,17 +446,39 @@ const EmployeePanel = () => {
           </Card>
         ) : (
           <div className="space-y-4">
-            {orders.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                isExpanded={expandedOrderId === order.id.toString()}
-                onToggleExpand={() => setExpandedOrderId(
-                  expandedOrderId === order.id.toString() ? null : order.id.toString()
-                )}
-                onUpdateStatus={handleUpdateStatus}
-              />
-            ))}
+            {(() => {
+              const filteredOrders = activeFilter === 'all' 
+                ? orders 
+                : orders.filter(order => {
+                    const statusForFilter = STATUS_BY_TYPE[activeFilter as keyof typeof STATUS_BY_TYPE];
+                    return order.status === statusForFilter;
+                  });
+
+              if (filteredOrders.length === 0) {
+                return (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <Icon name="Filter" size={48} className="mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">
+                        Нет заказов в категории "{EMPLOYEE_TYPES[activeFilter as keyof typeof EMPLOYEE_TYPES]}"
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              }
+
+              return filteredOrders.map((order) => (
+                <OrderCard
+                  key={order.id}
+                  order={order}
+                  isExpanded={expandedOrderId === order.id.toString()}
+                  onToggleExpand={() => setExpandedOrderId(
+                    expandedOrderId === order.id.toString() ? null : order.id.toString()
+                  )}
+                  onUpdateStatus={handleUpdateStatus}
+                />
+              ));
+            })()}
           </div>
         )}
       </main>
