@@ -1,0 +1,111 @@
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+interface ProductBasicFieldsProps {
+  formData: {
+    title: string;
+    category: string;
+    price: string;
+    style: string;
+    items: string;
+    colors: string;
+    description: string;
+  };
+  onChange: (field: string, value: string) => void;
+}
+
+const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => {
+  return (
+    <>
+      <div>
+        <Label>Название</Label>
+        <Input
+          value={formData.title}
+          onChange={(e) => onChange('title', e.target.value)}
+          placeholder="Название товара"
+        />
+      </div>
+
+      <div>
+        <Label>Категория</Label>
+        <Select
+          value={formData.category}
+          onValueChange={(value) => onChange('category', value)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Выберите категорию" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Спальня">Спальня</SelectItem>
+            <SelectItem value="Гостиная">Гостиная</SelectItem>
+            <SelectItem value="Кухня">Кухня</SelectItem>
+            <SelectItem value="Шкафы">Шкафы</SelectItem>
+            <SelectItem value="Детская">Детская</SelectItem>
+            <SelectItem value="Прихожая">Прихожая</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <Label>Цена</Label>
+        <Input
+          value={formData.price}
+          onChange={(e) => onChange('price', e.target.value)}
+          placeholder="38900 ₽"
+        />
+      </div>
+
+      <div>
+        <Label>Стиль</Label>
+        <Select
+          value={formData.style}
+          onValueChange={(value) => onChange('style', value)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Выберите стиль" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Скандинавский">Скандинавский</SelectItem>
+            <SelectItem value="Современный">Современный</SelectItem>
+            <SelectItem value="Минимализм">Минимализм</SelectItem>
+            <SelectItem value="Классика">Классика</SelectItem>
+            <SelectItem value="Лофт">Лофт</SelectItem>
+            <SelectItem value="Модерн">Модерн</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <Label>Состав (через запятую)</Label>
+        <Input
+          value={formData.items}
+          onChange={(e) => onChange('items', e.target.value)}
+          placeholder="Кровать 160, Шкаф 2Д, Тумбы"
+        />
+      </div>
+
+      <div>
+        <Label>Цвета (через запятую)</Label>
+        <Input
+          value={formData.colors}
+          onChange={(e) => onChange('colors', e.target.value)}
+          placeholder="Белый, Серый, Дуб"
+        />
+      </div>
+
+      <div>
+        <Label>Описание</Label>
+        <Textarea
+          value={formData.description}
+          onChange={(e) => onChange('description', e.target.value)}
+          placeholder="Описание товара"
+          rows={3}
+        />
+      </div>
+    </>
+  );
+};
+
+export default ProductBasicFields;
