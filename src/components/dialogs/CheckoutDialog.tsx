@@ -181,22 +181,44 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     touchEndX.current = e.touches[0].clientX;
   };
 
+  const triggerHaptic = (type: 'light' | 'medium' | 'heavy' | 'error' = 'light') => {
+    if ('vibrate' in navigator) {
+      const patterns = {
+        light: [10],
+        medium: [20],
+        heavy: [30],
+        error: [10, 50, 10]
+      };
+      navigator.vibrate(patterns[type]);
+    }
+  };
+
   const handleTouchEnd = () => {
     const swipeDistance = touchStartX.current - touchEndX.current;
     const minSwipeDistance = 50;
 
     if (Math.abs(swipeDistance) > minSwipeDistance) {
+      let swipeSuccessful = false;
+      
       if (swipeDistance > 0) {
         // Свайп влево - следующий шаг
         if (step === 1 && isStep1Valid()) {
           setStep(2);
+          swipeSuccessful = true;
+          triggerHaptic('medium');
         } else if (step === 2 && isStep2Valid()) {
           setStep(3);
+          swipeSuccessful = true;
+          triggerHaptic('medium');
+        } else {
+          triggerHaptic('error');
         }
       } else {
         // Свайп вправо - предыдущий шаг
         if (step > 1) {
           setStep(step - 1);
+          swipeSuccessful = true;
+          triggerHaptic('light');
         }
       }
     }
