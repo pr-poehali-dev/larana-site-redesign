@@ -24,6 +24,25 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      pending: 'Новый',
+      processing: 'В обработке',
+      completed: 'Выполнен',
+      cancelled: 'Отменен'
+    };
+    return labels[status] || status;
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    const currentStatusLabel = getStatusLabel(order.status);
+    const newStatusLabel = getStatusLabel(newStatus);
+    
+    if (confirm(`Изменить статус заказа #${order.id} с "${currentStatusLabel}" на "${newStatusLabel}"?`)) {
+      onUpdateStatus(order.id, newStatus);
+    }
+  };
+
   return (
     <Card className="overflow-hidden">
       <div 
@@ -37,13 +56,13 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
               size={20} 
               className="text-muted-foreground"
             />
-            <span className="font-semibold">#{order.id}</span>
+            <span className="font-semibold">#{order.orderNumber || order.id}</span>
           </div>
           
           <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">{order.fullName}</p>
+            <p className="font-medium truncate">{order.userName || order.fullName || order.userEmail}</p>
             <p className="text-sm text-muted-foreground truncate">
-              {order.items.length} {order.items.length === 1 ? 'товар' : 'товара'}
+              {order.items?.length || 0} {(order.items?.length || 0) === 1 ? 'товар' : 'товара'}
             </p>
           </div>
 
@@ -60,26 +79,52 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Номер заказа</p>
+                  <p className="font-medium">{order.orderNumber || order.id}</p>
+                </div>
+
+                <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Клиент</p>
-                  <p className="font-medium">{order.fullName}</p>
+                  <p className="font-medium">{order.userName || order.fullName || 'Не указано'}</p>
                 </div>
                 
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Email</p>
-                  <p className="text-sm">{order.email}</p>
+                  <p className="text-sm">{order.userEmail || order.email || 'Не указан'}</p>
                 </div>
                 
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Телефон</p>
-                  <p className="text-sm">{order.phone}</p>
+                  <p className="text-sm">{order.userPhone || order.phone || 'Не указан'}</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Адрес доставки</p>
-                  <p className="text-sm">{order.address}</p>
+                  <p className="text-sm">{order.deliveryAddress || order.address || 'Не указан'}</p>
                 </div>
+
+                {order.deliveryCity && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Город</p>
+                    <p className="text-sm">{order.deliveryCity}</p>
+                  </div>
+                )}
+                
+                {order.deliveryType && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Тип доставки</p>
+                    <p className="text-sm">{order.deliveryType}</p>
+                  </div>
+                )}
+
+                {order.paymentType && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Способ оплаты</p>
+                    <p className="text-sm">{order.paymentType}</p>
+                  </div>
+                )}
                 
                 {order.deliveryDate && (
                   <div>
@@ -94,33 +139,26 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
                     <p className="text-sm">{order.deliveryTime}</p>
                   </div>
                 )}
-
-                {order.paymentMethod && (
-                  <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Способ оплаты</p>
-                    <p className="text-sm">{order.paymentMethod}</p>
-                  </div>
-                )}
               </div>
             </div>
 
             <div className="pt-3 border-t">
               <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Состав заказа</p>
               <div className="space-y-2">
-                {order.items.map((item: any, idx: number) => (
+                {order.items?.map((item: any, idx: number) => (
                   <div key={idx} className="flex items-start justify-between gap-4 text-sm bg-muted/30 p-2 rounded">
                     <div className="flex-1">
-                      <p className="font-medium">{item.title}</p>
+                      <p className="font-medium">{item.product_title || item.title}</p>
                       {item.category && (
                         <p className="text-xs text-muted-foreground">{item.category}</p>
                       )}
                     </div>
                     <div className="text-right whitespace-nowrap">
                       <p className="font-medium">{item.quantity} шт</p>
-                      <p className="text-xs text-muted-foreground">{item.price} ₽ / шт</p>
+                      <p className="text-xs text-muted-foreground">{item.product_price || item.price} ₽ / шт</p>
                     </div>
                     <div className="text-right font-semibold whitespace-nowrap">
-                      {item.price * item.quantity} ₽
+                      {(item.product_price || item.price) * item.quantity} ₽
                     </div>
                   </div>
                 ))}
@@ -156,7 +194,7 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
             <div className="flex gap-2 pt-3 border-t">
               <Select
                 value={order.status}
-                onValueChange={(value) => onUpdateStatus(order.id, value)}
+                onValueChange={handleStatusChange}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue />
