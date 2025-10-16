@@ -45,41 +45,100 @@ const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Клиент</p>
-              <p className="font-medium">{order.fullName}</p>
-              <p className="text-muted-foreground">{order.email}</p>
-              <p className="text-muted-foreground">{order.phone}</p>
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Клиент</p>
+                <p className="font-medium">{order.fullName}</p>
+              </div>
+              
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Email</p>
+                <p className="text-sm">{order.email}</p>
+              </div>
+              
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Телефон</p>
+                <p className="text-sm">{order.phone}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-muted-foreground">Адрес доставки</p>
-              <p className="font-medium">{order.address}</p>
+
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Адрес доставки</p>
+                <p className="text-sm">{order.address}</p>
+              </div>
+              
               {order.deliveryDate && (
-                <p className="text-muted-foreground mt-1">
-                  Дата доставки: {order.deliveryDate}
-                </p>
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Дата доставки</p>
+                  <p className="text-sm">{order.deliveryDate}</p>
+                </div>
+              )}
+              
+              {order.deliveryTime && (
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Время доставки</p>
+                  <p className="text-sm">{order.deliveryTime}</p>
+                </div>
+              )}
+
+              {order.paymentMethod && (
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Способ оплаты</p>
+                  <p className="text-sm">{order.paymentMethod}</p>
+                </div>
               )}
             </div>
           </div>
 
-          <div>
-            <p className="text-sm text-muted-foreground mb-2">Товары:</p>
-            <div className="space-y-1">
+          <div className="pt-3 border-t">
+            <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Состав заказа</p>
+            <div className="space-y-2">
               {order.items.map((item: any, idx: number) => (
-                <div key={idx} className="flex justify-between text-sm">
-                  <span>{item.title} x {item.quantity}</span>
-                  <span className="font-medium">{item.price * item.quantity} ₽</span>
+                <div key={idx} className="flex items-start justify-between gap-4 text-sm bg-muted/30 p-2 rounded">
+                  <div className="flex-1">
+                    <p className="font-medium">{item.title}</p>
+                    {item.category && (
+                      <p className="text-xs text-muted-foreground">{item.category}</p>
+                    )}
+                  </div>
+                  <div className="text-right whitespace-nowrap">
+                    <p className="font-medium">{item.quantity} шт</p>
+                    <p className="text-xs text-muted-foreground">{item.price} ₽ / шт</p>
+                  </div>
+                  <div className="text-right font-semibold whitespace-nowrap">
+                    {item.price * item.quantity} ₽
+                  </div>
                 </div>
               ))}
+            </div>
+            <div className="flex justify-between items-center mt-3 pt-3 border-t">
+              <p className="font-semibold">Итого:</p>
+              <p className="text-xl font-bold">{order.totalAmount} ₽</p>
             </div>
           </div>
 
           {order.comment && (
-            <div className="pt-2 border-t">
-              <p className="text-sm text-muted-foreground">Комментарий:</p>
-              <p className="text-sm">{order.comment}</p>
+            <div className="pt-3 border-t">
+              <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Комментарий клиента</p>
+              <p className="text-sm bg-muted/30 p-3 rounded">{order.comment}</p>
+            </div>
+          )}
+
+          {order.createdAt && (
+            <div className="pt-3 border-t">
+              <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Дата создания заказа</p>
+              <p className="text-sm">
+                {new Date(order.createdAt).toLocaleDateString('ru-RU', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
             </div>
           )}
 
