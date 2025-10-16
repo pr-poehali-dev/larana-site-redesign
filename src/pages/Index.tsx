@@ -245,22 +245,28 @@ const Index = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log('Order created successfully:', data);
           toast({ 
             title: "Заказ успешно оформлен!", 
             description: `Номер заказа: ${data.orderNumber}. Мы свяжемся с вами в ближайшее время.`,
             duration: 5000
           });
         } else {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('Order creation failed:', response.status, errorData);
           toast({ 
-            title: "Заказ оформлен!", 
-            description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+            title: "Ошибка оформления заказа", 
+            description: errorData.error || "Попробуйте снова или свяжитесь с нами",
+            variant: "destructive",
             duration: 5000
           });
         }
       } catch (error) {
+        console.error('Order request error:', error);
         toast({ 
-          title: "Заказ оформлен!", 
-          description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+          title: "Ошибка оформления заказа", 
+          description: "Проверьте подключение к интернету",
+          variant: "destructive",
           duration: 5000
         });
       }
