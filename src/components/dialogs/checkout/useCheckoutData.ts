@@ -113,44 +113,23 @@ export const useCheckoutData = (open: boolean, user?: any) => {
     localStorage.setItem('savedAddresses', JSON.stringify(updatedAddresses));
   };
 
-  const isStep1Valid = () => {
+  const isFormValid = () => {
     const phoneDigits = formData.phone.replace(/\D/g, '');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    return (
+    const contactValid = (
       formData.name.trim().length >= 2 &&
       phoneDigits.length === 11 &&
       emailRegex.test(formData.email)
     );
-  };
 
-  const isStep2Valid = () => {
+    if (!contactValid) return false;
+
     if (formData.deliveryType === 'delivery') {
       return formData.city.trim().length > 0 && formData.address.trim().length > 0;
     }
+    
     return true;
-  };
-
-  const calculateProgress = () => {
-    let filledFields = 0;
-    const totalFields = 5;
-
-    if (formData.name.trim().length >= 2) filledFields++;
-    
-    const phoneDigits = formData.phone.replace(/\D/g, '');
-    if (phoneDigits.length === 11) filledFields++;
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(formData.email)) filledFields++;
-
-    if (formData.deliveryType === 'delivery') {
-      if (formData.city.trim().length > 0) filledFields++;
-      if (formData.address.trim().length > 0) filledFields++;
-    } else {
-      filledFields += 2;
-    }
-
-    return Math.round((filledFields / totalFields) * 100);
   };
 
   return {
@@ -165,8 +144,6 @@ export const useCheckoutData = (open: boolean, user?: any) => {
     handleSelectAddress,
     handleDeleteAddress,
     handleSetDefaultAddress,
-    isStep1Valid,
-    isStep2Valid,
-    calculateProgress
+    isFormValid
   };
 };

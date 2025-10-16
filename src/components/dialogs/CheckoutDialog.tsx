@@ -1,13 +1,18 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import ContactStep from './checkout/ContactStep';
-import DeliveryStep from './checkout/DeliveryStep';
-import ConfirmationStep from './checkout/ConfirmationStep';
-import CheckoutProgress from './checkout/CheckoutProgress';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Separator } from '@/components/ui/separator';
+import PhoneInput from '@/components/PhoneInput';
+import EmailInput from '@/components/EmailInput';
+import NameInput from '@/components/NameInput';
+import AddressAutocomplete from '@/components/AddressAutocomplete';
+import CityAutocomplete from '@/components/CityAutocomplete';
+import SavedAddresses from '@/components/SavedAddresses';
 import { useCheckoutAudio } from './checkout/useCheckoutAudio';
-import { useCheckoutSwipe } from './checkout/useCheckoutSwipe';
 import { useCheckoutData } from './checkout/useCheckoutData';
 
 interface CartItem {
@@ -26,41 +31,19 @@ interface CheckoutDialogProps {
 }
 
 const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: CheckoutDialogProps) => {
-  const [step, setStep] = useState(1);
-  
   const { playSound } = useCheckoutAudio();
   
   const {
     formData,
     setFormData,
-    saveAddress,
-    setSaveAddress,
-    hasSavedAddress,
-    setHasSavedAddress,
     savedAddresses,
-    handleAddAddress,
+    hasSavedAddress,
     handleSelectAddress,
+    handleAddAddress,
     handleDeleteAddress,
     handleSetDefaultAddress,
-    isStep1Valid,
-    isStep2Valid,
-    calculateProgress
+    isFormValid
   } = useCheckoutData(open, user);
-
-  const {
-    containerRef,
-    swipeHintVisible,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd
-  } = useCheckoutSwipe({
-    open,
-    step,
-    isStep1Valid,
-    isStep2Valid,
-    setStep,
-    playSound
-  });
 
   const total = cartItems.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
@@ -69,146 +52,288 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 1) {
-      const phoneDigits = formData.phone.replace(/\D/g, '');
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
-      console.log('Validation Step 1:', {
-        name: formData.name,
-        nameValid: formData.name.trim().length >= 2,
-        phone: formData.phone,
-        phoneDigits: phoneDigits,
-        phoneValid: phoneDigits.length === 11,
-        email: formData.email,
-        emailValid: emailRegex.test(formData.email)
-      });
-      
-      if (!isStep1Valid()) {
-        return;
-      }
-      setStep(2);
-      playSound('forward');
-    } else if (step === 2) {
-      if (!isStep2Valid()) {
-        return;
-      }
-      setStep(3);
-      playSound('forward');
-    } else {
-      const savedUserData = {
-        ...user,
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email
-      };
-      localStorage.setItem('userData', JSON.stringify(savedUserData));
-      playSound('success');
-      onConfirmOrder(formData);
+    
+    if (!isFormValid()) {
+      playSound('error');
+      return;
     }
+
+    const savedUserData = {
+      ...user,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email
+    };
+    localStorage.setItem('userData', JSON.stringify(savedUserData));
+    playSound('success');
+    onConfirmOrder(formData);
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl">Оформление заказа</DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
-            Шаг {step} из 3: {step === 1 ? 'Контактные данные' : step === 2 ? 'Доставка и оплата' : 'Подтверждение'}
+            Заполните данные для оформления заказа
           </DialogDescription>
         </DialogHeader>
 
-        <CheckoutProgress 
-          step={step} 
-          progress={calculateProgress()} 
-          swipeHintVisible={swipeHintVisible}
-        />
-
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-          <div 
-            ref={containerRef}
-            className="relative min-h-[350px] sm:min-h-[400px] touch-pan-y"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <div
-              className={`absolute inset-0 transition-all duration-500 ${
-                step === 1
-                  ? 'opacity-100 translate-x-0'
-                  : step > 1
-                  ? 'opacity-0 -translate-x-full pointer-events-none'
-                  : 'opacity-0 translate-x-full pointer-events-none'
-              }`}
-            >
-              <ContactStep
-                formData={formData}
-                setFormData={setFormData}
-                user={user}
-              />
-            </div>
-
-            <div
-              className={`absolute inset-0 transition-all duration-500 ${
-                step === 2
-                  ? 'opacity-100 translate-x-0'
-                  : step > 2
-                  ? 'opacity-0 -translate-x-full pointer-events-none'
-                  : 'opacity-0 translate-x-full pointer-events-none'
-              }`}
-            >
-              <DeliveryStep
-                formData={formData}
-                setFormData={setFormData}
-                savedAddresses={savedAddresses}
-                hasSavedAddress={hasSavedAddress}
-                onSelectAddress={handleSelectAddress}
-                onAddAddress={handleAddAddress}
-                onDeleteAddress={handleDeleteAddress}
-                onSetDefaultAddress={handleSetDefaultAddress}
-                saveAddress={saveAddress}
-                setSaveAddress={setSaveAddress}
-              />
-            </div>
-
-            <div
-              className={`absolute inset-0 transition-all duration-500 ${
-                step === 3
-                  ? 'opacity-100 translate-x-0'
-                  : 'opacity-0 translate-x-full pointer-events-none'
-              }`}
-            >
-              <ConfirmationStep
-                formData={formData}
-                cartItems={cartItems}
-                total={total}
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-2 mt-6">
-            {step > 1 && (
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => {
-                  setStep(step - 1);
-                  playSound('back');
-                }}
-                className="transition-all duration-300 hover:scale-105"
-              >
-                <Icon name="ChevronLeft" size={20} className="mr-1" />
-                Назад
-              </Button>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Icon name="User" size={20} />
+              Контактные данные
+            </h3>
+            
+            {user && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary" />
+                  Данные заполнены из вашего профиля
+                </p>
+              </div>
             )}
-            <Button 
-              type="submit" 
-              className="flex-1 transition-all duration-300 hover:scale-105"
-              disabled={step === 1 && !isStep1Valid() || step === 2 && !isStep2Valid()}
-            >
-              {step === 3 ? 'Подтвердить заказ' : 'Продолжить'}
-              {step < 3 && <Icon name="ChevronRight" size={20} className="ml-1" />}
-            </Button>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <NameInput
+                value={formData.name}
+                onChange={(value) => setFormData(prev => ({...prev, name: value}))}
+                label="Имя и фамилия"
+                placeholder="Анна Иванова"
+                required
+              />
+              <PhoneInput
+                value={formData.phone}
+                onChange={(value) => setFormData(prev => ({...prev, phone: value}))}
+                label="Телефон"
+                required
+              />
+            </div>
+            
+            <EmailInput
+              value={formData.email}
+              onChange={(value) => setFormData(prev => ({...prev, email: value}))}
+              label="Email"
+              placeholder="example@mail.ru"
+              required
+            />
           </div>
+
+          <Separator />
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Icon name="Package" size={20} />
+              Способ получения
+            </h3>
+            
+            <RadioGroup 
+              value={formData.deliveryType} 
+              onValueChange={(value) => setFormData(prev => ({...prev, deliveryType: value}))}
+            >
+              <div className="flex items-center space-x-2 border rounded-lg p-3 sm:p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                <RadioGroupItem value="delivery" id="delivery" />
+                <Label htmlFor="delivery" className="flex-1 cursor-pointer mb-0">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Truck" size={18} className="flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-sm sm:text-base">Доставка курьером</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Бесплатно, 3-7 дней</p>
+                    </div>
+                  </div>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 border rounded-lg p-3 sm:p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                <RadioGroupItem value="pickup" id="pickup" />
+                <Label htmlFor="pickup" className="flex-1 cursor-pointer mb-0">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Store" size={18} className="flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-sm sm:text-base">Самовывоз из магазина</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Бесплатно, готов сегодня</p>
+                    </div>
+                  </div>
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {formData.deliveryType === 'delivery' && (
+            <>
+              <SavedAddresses
+                addresses={savedAddresses}
+                onSelect={handleSelectAddress}
+                onAdd={handleAddAddress}
+                onDelete={handleDeleteAddress}
+                onSetDefault={handleSetDefaultAddress}
+                currentFormData={formData}
+              />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Icon name="MapPin" size={20} />
+                  Адрес доставки
+                </h3>
+
+                {hasSavedAddress && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
+                    <Icon name="CheckCircle2" size={18} className="text-green-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-green-900">Выбран сохранённый адрес</p>
+                      <p className="text-xs text-green-700 mt-1">
+                        {formData.city}, {formData.address}
+                        {formData.apartment && `, кв. ${formData.apartment}`}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <CityAutocomplete
+                    value={formData.city}
+                    onChange={(value) => setFormData(prev => ({...prev, city: value}))}
+                    label="Город"
+                    required
+                  />
+                  <AddressAutocomplete
+                    value={formData.address}
+                    onChange={(value) => setFormData(prev => ({...prev, address: value}))}
+                    city={formData.city}
+                    label="Улица и дом"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div>
+                    <Label htmlFor="apartment" className="text-sm">Квартира</Label>
+                    <Input
+                      id="apartment"
+                      value={formData.apartment}
+                      onChange={(e) => setFormData(prev => ({...prev, apartment: e.target.value}))}
+                      placeholder="12"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="entrance" className="text-sm">Подъезд</Label>
+                    <Input
+                      id="entrance"
+                      value={formData.entrance}
+                      onChange={(e) => setFormData(prev => ({...prev, entrance: e.target.value}))}
+                      placeholder="2"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="floor" className="text-sm">Этаж</Label>
+                    <Input
+                      id="floor"
+                      value={formData.floor}
+                      onChange={(e) => setFormData(prev => ({...prev, floor: e.target.value}))}
+                      placeholder="5"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="intercom" className="text-sm">Домофон</Label>
+                    <Input
+                      id="intercom"
+                      value={formData.intercom}
+                      onChange={(e) => setFormData(prev => ({...prev, intercom: e.target.value}))}
+                      placeholder="123"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          <Separator />
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Icon name="CreditCard" size={20} />
+              Способ оплаты
+            </h3>
+            
+            <RadioGroup 
+              value={formData.paymentType} 
+              onValueChange={(value) => setFormData(prev => ({...prev, paymentType: value}))}
+            >
+              <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                <RadioGroupItem value="card" id="card" />
+                <Label htmlFor="card" className="flex-1 cursor-pointer mb-0">
+                  <div className="flex items-center gap-2">
+                    <Icon name="CreditCard" size={18} />
+                    <span className="text-sm sm:text-base">Картой онлайн</span>
+                  </div>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                <RadioGroupItem value="cash" id="cash" />
+                <Label htmlFor="cash" className="flex-1 cursor-pointer mb-0">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Banknote" size={18} />
+                    <span className="text-sm sm:text-base">Наличными при получении</span>
+                  </div>
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div>
+            <Label htmlFor="comment" className="text-sm">Комментарий к заказу (необязательно)</Label>
+            <Textarea
+              id="comment"
+              value={formData.comment}
+              onChange={(e) => setFormData(prev => ({...prev, comment: e.target.value}))}
+              placeholder="Дополнительная информация для курьера..."
+              className="mt-1 min-h-[80px]"
+            />
+          </div>
+
+          <Separator />
+
+          <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Icon name="ShoppingCart" size={20} />
+              Ваш заказ
+            </h3>
+            
+            <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
+              {cartItems.map((item) => (
+                <div key={item.id} className="flex justify-between items-center text-sm py-2 border-b border-border/50 last:border-0">
+                  <div className="flex-1">
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-muted-foreground text-xs">{item.quantity} шт × {item.price}</p>
+                  </div>
+                  <p className="font-semibold">
+                    {(parseInt(item.price.replace(/\D/g, '')) * item.quantity).toLocaleString('ru-RU')} ₽
+                  </p>
+                </div>
+              ))}
+            </div>
+            
+            <Separator />
+            
+            <div className="flex justify-between items-center text-lg font-bold">
+              <span>Итого:</span>
+              <span className="text-primary">{total.toLocaleString('ru-RU')} ₽</span>
+            </div>
+          </div>
+
+          <Button 
+            type="submit" 
+            size="lg"
+            className="w-full text-base transition-all duration-300 hover:scale-105"
+            disabled={!isFormValid()}
+          >
+            <Icon name="ShoppingBag" size={20} className="mr-2" />
+            Подтвердить заказ на {total.toLocaleString('ru-RU')} ₽
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
