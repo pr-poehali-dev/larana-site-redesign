@@ -4,11 +4,17 @@ import Icon from '@/components/ui/icon';
 
 interface Stats {
   totalOrders: number;
+  totalOrdersSum: number;
   newOrders: number;
+  newOrdersSum: number;
   processingOrders: number;
+  processingOrdersSum: number;
   deliveryOrders: number;
+  deliveryOrdersSum: number;
   completedOrders: number;
+  completedOrdersSum: number;
   cancelledOrders: number;
+  cancelledOrdersSum: number;
   totalRevenue: number;
   averageOrderValue: number;
   totalProducts: number;
@@ -17,11 +23,17 @@ interface Stats {
 const StatisticsTab = () => {
   const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
+    totalOrdersSum: 0,
     newOrders: 0,
+    newOrdersSum: 0,
     processingOrders: 0,
+    processingOrdersSum: 0,
     deliveryOrders: 0,
+    deliveryOrdersSum: 0,
     completedOrders: 0,
+    completedOrdersSum: 0,
     cancelledOrders: 0,
+    cancelledOrdersSum: 0,
     totalRevenue: 0,
     averageOrderValue: 0,
     totalProducts: 0
@@ -41,28 +53,35 @@ const StatisticsTab = () => {
         const data = await response.json();
         const orders = data.orders || [];
         
-        const newOrders = orders.filter((o: any) => o.status === 'new').length;
-        const processingOrders = orders.filter((o: any) => o.status === 'in_processing').length;
-        const deliveryOrders = orders.filter((o: any) => o.status === 'in_delivery').length;
-        const completedOrders = orders.filter((o: any) => o.status === 'completed' || o.status === 'delivered').length;
-        const cancelledOrders = orders.filter((o: any) => o.status === 'cancelled').length;
+        const newOrdersArr = orders.filter((o: any) => o.status === 'new');
+        const processingOrdersArr = orders.filter((o: any) => o.status === 'in_processing');
+        const deliveryOrdersArr = orders.filter((o: any) => o.status === 'in_delivery');
+        const completedOrdersArr = orders.filter((o: any) => o.status === 'completed' || o.status === 'delivered');
+        const cancelledOrdersArr = orders.filter((o: any) => o.status === 'cancelled');
         
-        const totalRevenue = orders
-          .filter((o: any) => o.status === 'completed' || o.status === 'delivered')
-          .reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const totalOrdersSum = orders.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const newOrdersSum = newOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const processingOrdersSum = processingOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const deliveryOrdersSum = deliveryOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const completedOrdersSum = completedOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const cancelledOrdersSum = cancelledOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
         
-        const averageOrderValue = orders.length > 0 
-          ? orders.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0) / orders.length
-          : 0;
+        const averageOrderValue = orders.length > 0 ? totalOrdersSum / orders.length : 0;
 
         setStats({
           totalOrders: orders.length,
-          newOrders,
-          processingOrders,
-          deliveryOrders,
-          completedOrders,
-          cancelledOrders,
-          totalRevenue,
+          totalOrdersSum,
+          newOrders: newOrdersArr.length,
+          newOrdersSum,
+          processingOrders: processingOrdersArr.length,
+          processingOrdersSum,
+          deliveryOrders: deliveryOrdersArr.length,
+          deliveryOrdersSum,
+          completedOrders: completedOrdersArr.length,
+          completedOrdersSum,
+          cancelledOrders: cancelledOrdersArr.length,
+          cancelledOrdersSum,
+          totalRevenue: completedOrdersSum,
           averageOrderValue,
           totalProducts: 10
         });
@@ -100,7 +119,7 @@ const StatisticsTab = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalOrders}</div>
-            <p className="text-xs text-muted-foreground mt-1">За всё время</p>
+            <p className="text-xs text-muted-foreground mt-1">{formatCurrency(stats.totalOrdersSum)}</p>
           </CardContent>
         </Card>
 
@@ -111,7 +130,7 @@ const StatisticsTab = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.newOrders}</div>
-            <p className="text-xs text-muted-foreground mt-1">Требуют внимания</p>
+            <p className="text-xs text-muted-foreground mt-1">{formatCurrency(stats.newOrdersSum)}</p>
           </CardContent>
         </Card>
 
@@ -122,7 +141,7 @@ const StatisticsTab = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.processingOrders + stats.deliveryOrders}</div>
-            <p className="text-xs text-muted-foreground mt-1">Обработка и доставка</p>
+            <p className="text-xs text-muted-foreground mt-1">{formatCurrency(stats.processingOrdersSum + stats.deliveryOrdersSum)}</p>
           </CardContent>
         </Card>
 
@@ -133,7 +152,7 @@ const StatisticsTab = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.completedOrders}</div>
-            <p className="text-xs text-muted-foreground mt-1">Завершённые заказы</p>
+            <p className="text-xs text-muted-foreground mt-1">{formatCurrency(stats.completedOrdersSum)}</p>
           </CardContent>
         </Card>
       </div>
