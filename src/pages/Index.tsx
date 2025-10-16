@@ -14,6 +14,7 @@ import HelpDialog from '@/components/dialogs/HelpDialog';
 import ConfiguratorDialog from '@/components/dialogs/ConfiguratorDialog';
 import CartDialog from '@/components/dialogs/CartDialog';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
+import AuthDialog from '@/components/dialogs/AuthDialog';
 
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
@@ -21,10 +22,12 @@ const Index = () => {
   const [configuratorOpen, setConfiguratorOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([3000]);
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
 
   const allFurnitureSets = [
@@ -152,11 +155,20 @@ const Index = () => {
     document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleAuthSuccess = (userData: any) => {
+    setUser(userData);
+    toast({ 
+      title: "Добро пожаловать!", 
+      description: `Вы успешно вошли как ${userData.name}` 
+    });
+  };
+
   return (
     <div className="min-h-screen">
       <Header 
         cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
         onCartClick={() => setCartOpen(true)}
+        onAuthClick={() => setAuthOpen(true)}
       />
       
       <HeroSection 
@@ -228,6 +240,12 @@ const Index = () => {
         onClose={() => setCheckoutOpen(false)}
         cartItems={cartItems}
         onConfirmOrder={handleConfirmOrder}
+      />
+
+      <AuthDialog
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onSuccess={handleAuthSuccess}
       />
     </div>
   );

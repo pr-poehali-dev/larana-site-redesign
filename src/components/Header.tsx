@@ -5,9 +5,10 @@ import Icon from '@/components/ui/icon';
 interface HeaderProps {
   cartItemsCount: number;
   onCartClick: () => void;
+  onAuthClick: () => void;
 }
 
-const Header = ({ cartItemsCount, onCartClick }: HeaderProps) => {
+const Header = ({ cartItemsCount, onCartClick, onAuthClick }: HeaderProps) => {
   return (
     <header className="bg-white border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -27,7 +28,7 @@ const Header = ({ cartItemsCount, onCartClick }: HeaderProps) => {
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={onAuthClick}>
               <Icon name="User" size={20} />
             </Button>
             <Button variant="ghost" size="icon" className="relative" onClick={onCartClick}>
