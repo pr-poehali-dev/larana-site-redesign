@@ -221,7 +221,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 # Валидация статуса
-                valid_statuses = ['pending', 'in_processing', 'in_delivery', 'delivered', 'cancelled']
+                valid_statuses = ['new', 'pending', 'in_processing', 'in_delivery', 'delivered', 'completed', 'cancelled']
                 if new_status not in valid_statuses:
                     print(f"[ERROR] Invalid status: {new_status}. Valid statuses: {valid_statuses}")
                     return {
