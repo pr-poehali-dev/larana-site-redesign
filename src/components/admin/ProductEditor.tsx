@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 
@@ -20,12 +21,14 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     category: '',
     price: '',
     image: '',
+    images: [] as string[],
     items: '',
     style: '',
     description: '',
     colors: '',
     inStock: true
   });
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -35,6 +38,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         category: product.category,
         price: product.price,
         image: product.image,
+        images: product.images || [product.image],
         items: product.items.join(', '),
         style: product.style,
         description: product.description,
@@ -47,6 +51,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         category: '',
         price: '',
         image: '',
+        images: [],
         items: '',
         style: '',
         description: '',
@@ -55,6 +60,84 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       });
     }
   }, [product]);
+
+  const uploadImage = async (file: File) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('https://api.poehali.dev/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const imageUrl = data.url;
+        
+        const newImages = [...productForm.images, imageUrl];
+        setProductForm({ 
+          ...productForm, 
+          images: newImages,
+          image: productForm.image || imageUrl
+        });
+        
+        toast({
+          title: "Изображение загружено",
+          description: "Файл успешно добавлен"
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Ошибка загрузки",
+        description: "Не удалось загрузить изображение",
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+          uploadImage(file);
+        }
+      });
+    }
+  };
+
+  const setMainImage = (imageUrl: string) => {
+    setProductForm({ ...productForm, image: imageUrl });
+    toast({
+      title: "Главное изображение обновлено",
+      description: "Это изображение будет отображаться в каталоге"
+    });
+  };
+
+  const removeImage = (imageUrl: string) => {
+    const newImages = productForm.images.filter(img => img !== imageUrl);
+    const newMainImage = productForm.image === imageUrl 
+      ? (newImages[0] || '') 
+      : productForm.image;
+    
+    setProductForm({ 
+      ...productForm, 
+      images: newImages,
+      image: newMainImage
+    });
+    
+    toast({
+      title: "Изображение удалено",
+      description: "Файл удален из галереи"
+    });
+  };
 
   const saveProduct = () => {
     if (!product) return;
@@ -65,6 +148,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       category: productForm.category,
       price: productForm.price,
       image: productForm.image,
+      images: productForm.images,
       items: productForm.items.split(',').map(item => item.trim()),
       style: productForm.style,
       description: productForm.description,
@@ -91,6 +175,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       category: productForm.category,
       price: productForm.price,
       image: productForm.image,
+      images: productForm.images,
       items: productForm.items.split(',').map(item => item.trim()),
       style: productForm.style,
       description: productForm.description,
@@ -104,6 +189,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       category: '',
       price: '',
       image: '',
+      images: [],
       items: '',
       style: '',
       description: '',
@@ -191,12 +277,84 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         </div>
 
         <div>
-          <Label>URL изображения</Label>
-          <Input
-            value={productForm.image}
-            onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-            placeholder="https://..."
-          />
+          <Label>Изображения товара</Label>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => document.getElementById('image-upload')?.click()}
+                disabled={uploading}
+                className="w-full"
+              >
+                <Icon name={uploading ? "Loader2" : "Upload"} size={16} className={`mr-2 ${uploading ? 'animate-spin' : ''}`} />
+                {uploading ? 'Загрузка...' : 'Загрузить изображения'}
+              </Button>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+            </div>
+
+            {productForm.images.length > 0 && (
+              <div className="grid grid-cols-2 gap-2">
+                {productForm.images.map((imageUrl, idx) => (
+                  <Card 
+                    key={idx}
+                    className={`relative overflow-hidden ${
+                      productForm.image === imageUrl ? 'ring-2 ring-primary' : ''
+                    }`}
+                  >
+                    <CardContent className="p-2">
+                      <div className="relative aspect-square">
+                        <img 
+                          src={imageUrl} 
+                          alt={`Фото ${idx + 1}`}
+                          className="w-full h-full object-cover rounded"
+                        />
+                        {productForm.image === imageUrl && (
+                          <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
+                            Главное
+                          </div>
+                        )}
+                        <div className="absolute top-1 right-1 flex gap-1">
+                          {productForm.image !== imageUrl && (
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              className="h-7 w-7"
+                              onClick={() => setMainImage(imageUrl)}
+                            >
+                              <Icon name="Star" size={14} />
+                            </Button>
+                          )}
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            className="h-7 w-7"
+                            onClick={() => removeImage(imageUrl)}
+                          >
+                            <Icon name="X" size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            <p className="text-xs text-muted-foreground">
+              {productForm.images.length === 0 
+                ? 'Загрузите изображения товара. Первое станет главным.'
+                : `Загружено ${productForm.images.length} фото. Нажмите на звездочку, чтобы сделать главным.`
+              }
+            </p>
+          </div>
         </div>
 
         <div>
