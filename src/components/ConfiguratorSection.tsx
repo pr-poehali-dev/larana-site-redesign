@@ -42,6 +42,7 @@ const ConfiguratorSection = ({
                   <SelectItem value="Гостиная">Гостиная</SelectItem>
                   <SelectItem value="Спальня">Спальня</SelectItem>
                   <SelectItem value="Кухня">Кухня</SelectItem>
+                  <SelectItem value="Шкафы">Шкафы</SelectItem>
                   <SelectItem value="Прихожая">Прихожая</SelectItem>
                 </SelectContent>
               </Select>
@@ -63,13 +64,13 @@ const ConfiguratorSection = ({
             </div>
 
             <div>
-              <Label className="mb-2 block">Бюджет: до {budget[0]} ₽</Label>
+              <Label className="mb-2 block">Бюджет: до {budget[0].toLocaleString()} ₽</Label>
               <Slider
                 value={budget}
                 onValueChange={setBudget}
-                max={5000}
-                min={1000}
-                step={100}
+                max={60000}
+                min={5000}
+                step={1000}
                 className="mt-2"
               />
             </div>
