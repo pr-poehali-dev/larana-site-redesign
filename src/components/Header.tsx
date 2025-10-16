@@ -18,9 +18,10 @@ interface HeaderProps {
   onLogout: () => void;
   onOrdersClick: () => void;
   onProfileClick: () => void;
+  onFavoritesClick: () => void;
 }
 
-const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOrdersClick, onProfileClick }: HeaderProps) => {
+const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOrdersClick, onProfileClick, onFavoritesClick }: HeaderProps) => {
   return (
     <header className="bg-white border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -59,7 +60,7 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
                     <Icon name="Package" size={16} className="mr-2" />
                     Мои заказы
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={onFavoritesClick}>
                     <Icon name="Heart" size={16} className="mr-2" />
                     Избранное
                   </DropdownMenuItem>

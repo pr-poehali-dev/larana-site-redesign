@@ -17,6 +17,7 @@ import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
 import AuthDialog from '@/components/dialogs/AuthDialog';
 import OrderHistoryDialog from '@/components/dialogs/OrderHistoryDialog';
 import ProfileSettingsDialog from '@/components/dialogs/ProfileSettingsDialog';
+import FavoritesDialog from '@/components/dialogs/FavoritesDialog';
 
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
@@ -27,6 +28,7 @@ const Index = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [ordersOpen, setOrdersOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [favoritesOpen, setFavoritesOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([60000]);
@@ -309,6 +311,7 @@ const Index = () => {
         onLogout={handleLogout}
         onOrdersClick={() => setOrdersOpen(true)}
         onProfileClick={() => setProfileOpen(true)}
+        onFavoritesClick={() => setFavoritesOpen(true)}
       />
       
       <HeroSection 
@@ -404,6 +407,14 @@ const Index = () => {
         open={profileOpen}
         onClose={() => setProfileOpen(false)}
         user={user}
+      />
+
+      <FavoritesDialog
+        open={favoritesOpen}
+        onClose={() => setFavoritesOpen(false)}
+        user={user}
+        allProducts={allFurnitureSets}
+        onProductClick={setSelectedSet}
       />
     </div>
   );
