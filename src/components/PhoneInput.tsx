@@ -61,13 +61,18 @@ const PhoneInput = ({
       return;
     }
     
-    // Автоматически добавляем 7 только если пользователь начал вводить цифры
-    if (digits.length > 0 && !digits.startsWith('7') && !digits.startsWith('8')) {
-      digits = '7' + digits;
-    } else if (digits.startsWith('8')) {
+    // Если номер начинается с 8, заменяем на 7
+    if (digits.startsWith('8')) {
       digits = '7' + digits.substring(1);
     }
     
+    // Если номер не начинается с 7 или 8, добавляем 7 в начало
+    // Но только если это не полный номер с 7 в начале
+    if (!digits.startsWith('7')) {
+      digits = '7' + digits;
+    }
+    
+    // Обрезаем до 11 цифр
     if (digits.length > 11) {
       digits = digits.substring(0, 11);
     }

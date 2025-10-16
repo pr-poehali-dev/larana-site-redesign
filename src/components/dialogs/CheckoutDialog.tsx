@@ -44,6 +44,17 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
 
   useEffect(() => {
     if (open) {
+      const storedUserData = localStorage.getItem('userData');
+      if (storedUserData) {
+        const userData = JSON.parse(storedUserData);
+        setFormData(prev => ({
+          ...prev,
+          name: userData.name || prev.name,
+          phone: userData.phone || prev.phone,
+          email: userData.email || prev.email
+        }));
+      }
+
       const storedAddresses = localStorage.getItem('savedAddresses');
       if (storedAddresses) {
         const addresses = JSON.parse(storedAddresses);
@@ -157,6 +168,19 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
+      const phoneDigits = formData.phone.replace(/\D/g, '');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      console.log('Validation Step 1:', {
+        name: formData.name,
+        nameValid: formData.name.trim().length >= 2,
+        phone: formData.phone,
+        phoneDigits: phoneDigits,
+        phoneValid: phoneDigits.length === 11,
+        email: formData.email,
+        emailValid: emailRegex.test(formData.email)
+      });
+      
       if (!isStep1Valid()) {
         return;
       }
