@@ -114,11 +114,35 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     localStorage.setItem('savedAddresses', JSON.stringify(updatedAddresses));
   };
 
+  const isStep1Valid = () => {
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    return (
+      formData.name.trim().length >= 2 &&
+      phoneDigits.length === 11 &&
+      emailRegex.test(formData.email)
+    );
+  };
+
+  const isStep2Valid = () => {
+    if (formData.deliveryType === 'delivery') {
+      return formData.city.trim().length > 0 && formData.address.trim().length > 0;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
+      if (!isStep1Valid()) {
+        return;
+      }
       setStep(2);
     } else if (step === 2) {
+      if (!isStep2Valid()) {
+        return;
+      }
       setStep(3);
     } else {
       const savedUserData = {
@@ -262,6 +286,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
             <Button 
               type="submit" 
               className="flex-1 transition-all duration-300 hover:scale-105"
+              disabled={step === 1 && !isStep1Valid() || step === 2 && !isStep2Valid()}
             >
               {step === 3 ? 'Подтвердить заказ' : 'Продолжить'}
               {step < 3 && <Icon name="ChevronRight" size={20} className="ml-1" />}

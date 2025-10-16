@@ -61,7 +61,8 @@ const PhoneInput = ({
       return;
     }
     
-    if (!digits.startsWith('7') && !digits.startsWith('8')) {
+    // Автоматически добавляем 7 только если пользователь начал вводить цифры
+    if (digits.length > 0 && !digits.startsWith('7') && !digits.startsWith('8')) {
       digits = '7' + digits;
     } else if (digits.startsWith('8')) {
       digits = '7' + digits.substring(1);
@@ -115,14 +116,7 @@ const PhoneInput = ({
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (!value || value.length === 0) {
-      onChange('+7');
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.setSelectionRange(2, 2);
-        }
-      }, 0);
-    }
+    // Не добавляем +7 автоматически, пользователь сам введёт номер
   };
 
   useEffect(() => {
