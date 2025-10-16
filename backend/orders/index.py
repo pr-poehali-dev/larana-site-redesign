@@ -72,7 +72,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     user_id,
                     order_number,
                     body_data.get('totalAmount', 0),
-                    'pending',
+                    'new',
                     body_data.get('deliveryType'),
                     body_data.get('paymentType'),
                     body_data.get('address'),
@@ -120,6 +120,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 for etype in employee_types_list:
                     etype = etype.strip()
                     status_map = {
+                        'new': 'new',
                         'order_processing': 'in_processing',
                         'delivery': 'in_delivery',
                         'assembly': 'delivered'
