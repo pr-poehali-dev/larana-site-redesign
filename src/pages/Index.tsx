@@ -218,62 +218,56 @@ const Index = () => {
   };
 
   const handleConfirmOrder = async (orderData: any) => {
-    if (user) {
-      try {
-        const totalAmount = cartItems.reduce((sum, item) => {
-          const price = parseInt(item.price.replace(/\D/g, ''));
-          return sum + (price * item.quantity);
-        }, 0);
+    try {
+      const totalAmount = cartItems.reduce((sum, item) => {
+        const price = parseInt(item.price.replace(/\D/g, ''));
+        return sum + (price * item.quantity);
+      }, 0);
 
-        const response = await fetch('https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-User-Id': user.email
-          },
-          body: JSON.stringify({
-            ...orderData,
-            totalAmount,
-            items: cartItems.map(item => ({
-              id: item.id,
-              title: item.title,
-              price: parseInt(item.price.replace(/\D/g, '')),
-              quantity: item.quantity
-            }))
-          })
+      const userEmail = user?.email || orderData.email;
+
+      const response = await fetch('https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userEmail
+        },
+        body: JSON.stringify({
+          ...orderData,
+          totalAmount,
+          items: cartItems.map(item => ({
+            id: item.id,
+            title: item.title,
+            price: parseInt(item.price.replace(/\D/g, '')),
+            quantity: item.quantity
+          }))
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Order created successfully:', data);
+        toast({ 
+          title: "Заказ успешно оформлен!", 
+          description: `Номер заказа: ${data.orderNumber}. Мы свяжемся с вами в ближайшее время.`,
+          duration: 5000
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Order created successfully:', data);
-          toast({ 
-            title: "Заказ успешно оформлен!", 
-            description: `Номер заказа: ${data.orderNumber}. Мы свяжемся с вами в ближайшее время.`,
-            duration: 5000
-          });
-        } else {
-          const errorData = await response.json().catch(() => ({}));
-          console.error('Order creation failed:', response.status, errorData);
-          toast({ 
-            title: "Ошибка оформления заказа", 
-            description: errorData.error || "Попробуйте снова или свяжитесь с нами",
-            variant: "destructive",
-            duration: 5000
-          });
-        }
-      } catch (error) {
-        console.error('Order request error:', error);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Order creation failed:', response.status, errorData);
         toast({ 
           title: "Ошибка оформления заказа", 
-          description: "Проверьте подключение к интернету",
+          description: errorData.error || "Попробуйте снова или свяжитесь с нами",
           variant: "destructive",
           duration: 5000
         });
       }
-    } else {
+    } catch (error) {
+      console.error('Order request error:', error);
       toast({ 
-        title: "Заказ успешно оформлен!", 
-        description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+        title: "Ошибка оформления заказа", 
+        description: "Проверьте подключение к интернету",
+        variant: "destructive",
         duration: 5000
       });
     }
