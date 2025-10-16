@@ -8,6 +8,7 @@ import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import OrdersTab from '@/components/admin/OrdersTab';
 import ProductsTab from '@/components/admin/ProductsTab';
+import EmployeesTab from '@/components/admin/EmployeesTab';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -390,7 +391,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="orders" className="space-y-4">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3">
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <Icon name="ShoppingBag" size={16} />
               Заказы
@@ -398,6 +399,10 @@ const Admin = () => {
             <TabsTrigger value="products" className="flex items-center gap-2">
               <Icon name="Package" size={16} />
               Товары
+            </TabsTrigger>
+            <TabsTrigger value="employees" className="flex items-center gap-2">
+              <Icon name="Users" size={16} />
+              Сотрудники
             </TabsTrigger>
           </TabsList>
 
@@ -430,6 +435,10 @@ const Admin = () => {
                 />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="employees" className="space-y-4">
+            <EmployeesTab />
           </TabsContent>
         </Tabs>
       </main>
