@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import AddressAutocomplete from '@/components/AddressAutocomplete';
 import PhoneInput from '@/components/PhoneInput';
 import EmailInput from '@/components/EmailInput';
+import CityAutocomplete from '@/components/CityAutocomplete';
 
 interface CartItem {
   id: number;
@@ -178,16 +179,13 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                     placeholder="Начните вводить адрес..."
                     required
                   />
-                  <div>
-                    <Label htmlFor="city">Город *</Label>
-                    <Input 
-                      id="city" 
-                      placeholder="Москва" 
-                      required
-                      value={formData.city}
-                      onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    />
-                  </div>
+                  <CityAutocomplete
+                    value={formData.city}
+                    onChange={(value) => setFormData({...formData, city: value})}
+                    label="Город"
+                    placeholder="Начните вводить название города..."
+                    required
+                  />
                 </div>
               )}
 

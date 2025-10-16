@@ -3,33 +3,29 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 
-interface AddressSuggestion {
+interface CitySuggestion {
   value: string;
-  fullAddress: string;
+  fullName: string;
+  region?: string;
   postalCode?: string;
-  city?: string;
-  street?: string;
-  house?: string;
-  flat?: string;
-  coordinates?: { lat: string; lon: string } | null;
 }
 
-interface AddressAutocompleteProps {
+interface CityAutocompleteProps {
   value: string;
-  onChange: (value: string, suggestion?: AddressSuggestion) => void;
+  onChange: (value: string, suggestion?: CitySuggestion) => void;
   label?: string;
   placeholder?: string;
   required?: boolean;
 }
 
-const AddressAutocomplete = ({ 
+const CityAutocomplete = ({ 
   value, 
   onChange, 
-  label = 'Адрес', 
-  placeholder = 'Начните вводить адрес...',
+  label = 'Город', 
+  placeholder = 'Начните вводить название города...',
   required = false 
-}: AddressAutocompleteProps) => {
-  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+}: CityAutocompleteProps) => {
+  const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -53,8 +49,8 @@ const AddressAutocomplete = ({
   }, []);
 
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (!value || value.length < 5) {
+    const fetchCitySuggestions = async () => {
+      if (!value || value.length < 2) {
         setSuggestions([]);
         return;
       }
@@ -73,41 +69,37 @@ const AddressAutocomplete = ({
             },
             body: JSON.stringify({
               query: value,
-              count: 10
+              count: 10,
+              from_bound: { value: 'city' },
+              to_bound: { value: 'city' }
             })
           }
         );
 
         const data = await response.json();
         
-        const addressSuggestions: AddressSuggestion[] = data.suggestions?.map((item: any) => ({
-          value: item.value,
-          fullAddress: item.unrestricted_value,
-          postalCode: item.data.postal_code,
-          city: item.data.city,
-          street: item.data.street,
-          house: item.data.house,
-          flat: item.data.flat,
-          coordinates: item.data.geo_lat && item.data.geo_lon 
-            ? { lat: item.data.geo_lat, lon: item.data.geo_lon }
-            : null
+        const citySuggestions: CitySuggestion[] = data.suggestions?.map((item: any) => ({
+          value: item.data.city || item.value,
+          fullName: item.value,
+          region: item.data.region_with_type,
+          postalCode: item.data.postal_code
         })) || [];
 
-        setSuggestions(addressSuggestions);
+        setSuggestions(citySuggestions);
         setShowSuggestions(true);
       } catch (error) {
-        console.error('Address suggestion error:', error);
+        console.error('City suggestion error:', error);
         setSuggestions([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    const timeoutId = setTimeout(fetchSuggestions, 400);
+    const timeoutId = setTimeout(fetchCitySuggestions, 300);
     return () => clearTimeout(timeoutId);
   }, [value]);
 
-  const handleSelectSuggestion = (suggestion: AddressSuggestion) => {
+  const handleSelectSuggestion = (suggestion: CitySuggestion) => {
     onChange(suggestion.value, suggestion);
     setShowSuggestions(false);
     setSuggestions([]);
@@ -136,11 +128,11 @@ const AddressAutocomplete = ({
 
   return (
     <div className="relative">
-      <Label htmlFor="address">{label} {required && '*'}</Label>
+      <Label htmlFor="city">{label} {required && '*'}</Label>
       <div className="relative">
         <Input
           ref={inputRef}
-          id="address"
+          id="city"
           type="text"
           placeholder={placeholder}
           value={value}
@@ -175,10 +167,10 @@ const AddressAutocomplete = ({
               <div className="flex items-start gap-2">
                 <Icon name="MapPin" size={16} className="text-muted-foreground mt-1 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{suggestion.value}</p>
-                  {suggestion.postalCode && (
+                  <p className="text-sm font-medium">{suggestion.value}</p>
+                  {suggestion.region && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Индекс: {suggestion.postalCode}
+                      {suggestion.region}
                     </p>
                   )}
                 </div>
@@ -188,13 +180,13 @@ const AddressAutocomplete = ({
         </div>
       )}
 
-      {value.length > 0 && value.length < 5 && (
+      {value.length > 0 && value.length < 2 && (
         <p className="text-xs text-muted-foreground mt-1">
-          Введите минимум 5 символов для поиска адреса
+          Введите минимум 2 символа для поиска
         </p>
       )}
     </div>
   );
 };
 
-export default AddressAutocomplete;
+export default CityAutocomplete;
