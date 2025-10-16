@@ -18,6 +18,7 @@ def get_db_connection():
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
+    print(f"[REQUEST] Method: {method}, Path: {event.get('path', 'unknown')}")
     
     if method == 'OPTIONS':
         return {
@@ -54,6 +55,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         if method == 'POST':
+            print(f"[POST] Creating new order")
             body_data = json.loads(event.get('body', '{}'))
             
             cur.execute(
@@ -87,6 +89,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
             
             conn.commit()
+            print(f"[SUCCESS] Order created: {order_number} (ID: {order_id})")
             
             return {
                 'statusCode': 201,
@@ -103,6 +106,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'GET':
+            print(f"[GET] Fetching orders - admin: {is_admin_request}, employeeType: {employee_type}")
             if is_admin_request:
                 cur.execute(
                     "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
@@ -196,36 +200,130 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'PUT':
-            body_data = json.loads(event.get('body', '{}'))
-            order_id = body_data.get('orderId')
-            new_status = body_data.get('status')
+            try:
+                body_data = json.loads(event.get('body', '{}'))
+                order_id = body_data.get('orderId')
+                new_status = body_data.get('status')
+                
+                print(f"[PUT REQUEST] Order ID: {order_id}, New Status: {new_status}")
+                
+                if not order_id or not new_status:
+                    print(f"[ERROR] Missing required fields - orderId: {order_id}, status: {new_status}")
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'Missing orderId or status'}),
+                        'isBase64Encoded': False
+                    }
+                
+                # Валидация статуса
+                valid_statuses = ['pending', 'in_processing', 'in_delivery', 'delivered', 'cancelled']
+                if new_status not in valid_statuses:
+                    print(f"[ERROR] Invalid status: {new_status}. Valid statuses: {valid_statuses}")
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': f'Invalid status. Must be one of: {", ".join(valid_statuses)}'}),
+                        'isBase64Encoded': False
+                    }
+                
+                # Проверка существования заказа
+                cur.execute("SELECT id, status FROM orders WHERE id = %s", (order_id,))
+                existing_order = cur.fetchone()
+                
+                if not existing_order:
+                    print(f"[ERROR] Order not found: {order_id}")
+                    return {
+                        'statusCode': 404,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'Order not found'}),
+                        'isBase64Encoded': False
+                    }
+                
+                print(f"[INFO] Updating order {order_id} from status '{existing_order['status']}' to '{new_status}'")
+                
+                cur.execute(
+                    "UPDATE orders SET status = %s WHERE id = %s",
+                    (new_status, order_id)
+                )
+                
+                if cur.rowcount == 0:
+                    print(f"[ERROR] Failed to update order {order_id} - no rows affected")
+                    conn.rollback()
+                    return {
+                        'statusCode': 500,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'Failed to update order'}),
+                        'isBase64Encoded': False
+                    }
+                
+                conn.commit()
+                print(f"[SUCCESS] Order {order_id} status updated to '{new_status}'")
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({
+                        'success': True,
+                        'orderId': order_id,
+                        'newStatus': new_status
+                    }),
+                    'isBase64Encoded': False
+                }
             
-            if not order_id or not new_status:
+            except json.JSONDecodeError as e:
+                print(f"[ERROR] Invalid JSON in request body: {str(e)}")
+                conn.rollback()
                 return {
                     'statusCode': 400,
                     'headers': {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
-                    'body': json.dumps({'error': 'Missing orderId or status'}),
+                    'body': json.dumps({'error': 'Invalid JSON format'}),
                     'isBase64Encoded': False
                 }
             
-            cur.execute(
-                "UPDATE orders SET status = %s WHERE id = %s",
-                (new_status, order_id)
-            )
-            conn.commit()
+            except psycopg2.Error as e:
+                print(f"[ERROR] Database error: {str(e)}")
+                conn.rollback()
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'Database error occurred'}),
+                    'isBase64Encoded': False
+                }
             
-            return {
-                'statusCode': 200,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': json.dumps({'success': True}),
-                'isBase64Encoded': False
-            }
+            except Exception as e:
+                print(f"[ERROR] Unexpected error in PUT request: {str(e)}")
+                conn.rollback()
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'Internal server error'}),
+                    'isBase64Encoded': False
+                }
         
         else:
             return {
@@ -238,6 +336,47 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
     
+    except json.JSONDecodeError as e:
+        print(f"[ERROR] JSON decode error: {str(e)}")
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Invalid JSON format'}),
+            'isBase64Encoded': False
+        }
+    
+    except psycopg2.Error as e:
+        print(f"[ERROR] Database error: {str(e)}")
+        conn.rollback()
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Database error occurred'}),
+            'isBase64Encoded': False
+        }
+    
+    except Exception as e:
+        print(f"[ERROR] Unexpected error: {str(e)}")
+        import traceback
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Internal server error'}),
+            'isBase64Encoded': False
+        }
+    
     finally:
-        cur.close()
-        conn.close()
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
