@@ -1,11 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { SavedAddress } from '@/components/SavedAddresses';
 import ContactStep from './checkout/ContactStep';
 import DeliveryStep from './checkout/DeliveryStep';
 import ConfirmationStep from './checkout/ConfirmationStep';
+import CheckoutProgress from './checkout/CheckoutProgress';
+import { useCheckoutAudio } from './checkout/useCheckoutAudio';
+import { useCheckoutSwipe } from './checkout/useCheckoutSwipe';
+import { useCheckoutData } from './checkout/useCheckoutData';
 
 interface CartItem {
   id: number;
@@ -24,277 +27,45 @@ interface CheckoutDialogProps {
 
 const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: CheckoutDialogProps) => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    city: '',
-    apartment: '',
-    entrance: '',
-    floor: '',
-    intercom: '',
-    comment: '',
-    deliveryType: 'delivery',
-    paymentType: 'card'
+  
+  const { playSound } = useCheckoutAudio();
+  
+  const {
+    formData,
+    setFormData,
+    saveAddress,
+    setSaveAddress,
+    hasSavedAddress,
+    setHasSavedAddress,
+    savedAddresses,
+    handleAddAddress,
+    handleSelectAddress,
+    handleDeleteAddress,
+    handleSetDefaultAddress,
+    isStep1Valid,
+    isStep2Valid,
+    calculateProgress
+  } = useCheckoutData(open, user);
+
+  const {
+    containerRef,
+    swipeHintVisible,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd
+  } = useCheckoutSwipe({
+    open,
+    step,
+    isStep1Valid,
+    isStep2Valid,
+    setStep,
+    playSound
   });
-  const [saveAddress, setSaveAddress] = useState(true);
-  const [hasSavedAddress, setHasSavedAddress] = useState(false);
-  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
-  
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [swipeHintVisible, setSwipeHintVisible] = useState(true);
-  
-  const audioContextRef = useRef<AudioContext | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'AudioContext' in window) {
-      audioContextRef.current = new AudioContext();
-    }
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (open) {
-      const storedUserData = localStorage.getItem('userData');
-      if (storedUserData) {
-        const userData = JSON.parse(storedUserData);
-        setFormData(prev => ({
-          ...prev,
-          name: userData.name || prev.name,
-          phone: userData.phone || prev.phone,
-          email: userData.email || prev.email
-        }));
-      }
-
-      const storedAddresses = localStorage.getItem('savedAddresses');
-      if (storedAddresses) {
-        const addresses = JSON.parse(storedAddresses);
-        setSavedAddresses(addresses);
-        
-        const defaultAddress = addresses.find((a: SavedAddress) => a.isDefault);
-        if (defaultAddress) {
-          setFormData(prev => ({
-            ...prev,
-            city: defaultAddress.city,
-            address: defaultAddress.address,
-            apartment: defaultAddress.apartment || '',
-            entrance: defaultAddress.entrance || '',
-            floor: defaultAddress.floor || '',
-            intercom: defaultAddress.intercom || ''
-          }));
-          setHasSavedAddress(true);
-        }
-      }
-      
-      if (user) {
-        setFormData(prev => ({
-          ...prev,
-          name: user.name || prev.name,
-          phone: user.phone || prev.phone,
-          email: user.email || prev.email
-        }));
-      }
-    }
-  }, [user, open]);
 
   const total = cartItems.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
     return sum + (price * item.quantity);
   }, 0);
-
-  const handleAddAddress = (address: SavedAddress) => {
-    const updatedAddresses = [...savedAddresses, address];
-    setSavedAddresses(updatedAddresses);
-    localStorage.setItem('savedAddresses', JSON.stringify(updatedAddresses));
-  };
-
-  const handleSelectAddress = (address: SavedAddress) => {
-    setFormData({
-      ...formData,
-      city: address.city,
-      address: address.address,
-      apartment: address.apartment || '',
-      entrance: address.entrance || '',
-      floor: address.floor || '',
-      intercom: address.intercom || ''
-    });
-    setHasSavedAddress(true);
-  };
-
-  const handleDeleteAddress = (id: string) => {
-    const updatedAddresses = savedAddresses.filter(a => a.id !== id);
-    setSavedAddresses(updatedAddresses);
-    localStorage.setItem('savedAddresses', JSON.stringify(updatedAddresses));
-  };
-
-  const handleSetDefaultAddress = (id: string) => {
-    const updatedAddresses = savedAddresses.map(a => ({
-      ...a,
-      isDefault: a.id === id
-    }));
-    setSavedAddresses(updatedAddresses);
-    localStorage.setItem('savedAddresses', JSON.stringify(updatedAddresses));
-  };
-
-  const isStep1Valid = () => {
-    const phoneDigits = formData.phone.replace(/\D/g, '');
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    return (
-      formData.name.trim().length >= 2 &&
-      phoneDigits.length === 11 &&
-      emailRegex.test(formData.email)
-    );
-  };
-
-  const isStep2Valid = () => {
-    if (formData.deliveryType === 'delivery') {
-      return formData.city.trim().length > 0 && formData.address.trim().length > 0;
-    }
-    return true;
-  };
-
-  const calculateProgress = () => {
-    let filledFields = 0;
-    const totalFields = 5;
-
-    if (formData.name.trim().length >= 2) filledFields++;
-    
-    const phoneDigits = formData.phone.replace(/\D/g, '');
-    if (phoneDigits.length === 11) filledFields++;
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(formData.email)) filledFields++;
-
-    if (formData.deliveryType === 'delivery') {
-      if (formData.city.trim().length > 0) filledFields++;
-      if (formData.address.trim().length > 0) filledFields++;
-    } else {
-      filledFields += 2;
-    }
-
-    return Math.round((filledFields / totalFields) * 100);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    if (swipeHintVisible) {
-      setSwipeHintVisible(false);
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const playSound = (type: 'forward' | 'back' | 'error' | 'success') => {
-    if (!audioContextRef.current) return;
-    
-    const ctx = audioContextRef.current;
-    const now = ctx.currentTime;
-    
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    switch (type) {
-      case 'forward':
-        oscillator.frequency.setValueAtTime(800, now);
-        oscillator.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
-        gainNode.gain.setValueAtTime(0.1, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        break;
-      case 'back':
-        oscillator.frequency.setValueAtTime(600, now);
-        oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.08);
-        gainNode.gain.setValueAtTime(0.08, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-        break;
-      case 'error':
-        oscillator.frequency.setValueAtTime(300, now);
-        gainNode.gain.setValueAtTime(0.12, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-        break;
-      case 'success':
-        oscillator.frequency.setValueAtTime(800, now);
-        oscillator.frequency.exponentialRampToValueAtTime(1600, now + 0.15);
-        gainNode.gain.setValueAtTime(0.15, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-        break;
-    }
-    
-    oscillator.start(now);
-    oscillator.stop(now + 0.2);
-  };
-
-  const triggerHaptic = (type: 'light' | 'medium' | 'heavy' | 'error' = 'light') => {
-    if ('vibrate' in navigator) {
-      const patterns = {
-        light: [10],
-        medium: [20],
-        heavy: [30],
-        error: [10, 50, 10]
-      };
-      navigator.vibrate(patterns[type]);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    const swipeDistance = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50;
-
-    if (Math.abs(swipeDistance) > minSwipeDistance) {
-      let swipeSuccessful = false;
-      
-      if (swipeDistance > 0) {
-        // Свайп влево - следующий шаг
-        if (step === 1 && isStep1Valid()) {
-          setStep(2);
-          swipeSuccessful = true;
-          triggerHaptic('medium');
-          playSound('forward');
-        } else if (step === 2 && isStep2Valid()) {
-          setStep(3);
-          swipeSuccessful = true;
-          triggerHaptic('medium');
-          playSound('forward');
-        } else {
-          triggerHaptic('error');
-          playSound('error');
-        }
-      } else {
-        // Свайп вправо - предыдущий шаг
-        if (step > 1) {
-          setStep(step - 1);
-          swipeSuccessful = true;
-          triggerHaptic('light');
-          playSound('back');
-        }
-      }
-    }
-
-    touchStartX.current = 0;
-    touchEndX.current = 0;
-  };
-
-  useEffect(() => {
-    if (open) {
-      setSwipeHintVisible(true);
-      const timer = setTimeout(() => {
-        setSwipeHintVisible(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -346,87 +117,11 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mb-4 px-1">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs sm:text-sm font-medium text-muted-foreground">
-              Заполнено полей
-            </span>
-            <span className="text-xs sm:text-sm font-bold text-primary">
-              {calculateProgress()}%
-            </span>
-          </div>
-          <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-            <div 
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-500 ease-out rounded-full"
-              style={{ width: `${calculateProgress()}%` }}
-            >
-              <div className="absolute inset-0 bg-white/20 animate-pulse" />
-            </div>
-          </div>
-          {calculateProgress() === 100 && (
-            <p className="text-xs text-green-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-300">
-              <Icon name="CheckCircle2" size={12} />
-              Все обязательные поля заполнены!
-            </p>
-          )}
-        </div>
-
-        <div className="mb-6">
-          <div className="flex justify-between mb-2">
-            {[
-              { num: 1, label: 'Контакты' },
-              { num: 2, label: 'Доставка' },
-              { num: 3, label: 'Готово' }
-            ].map((item) => (
-              <div key={item.num} className="flex flex-col items-center flex-1">
-                <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-base font-bold transition-all duration-500 ${
-                    item.num === step
-                      ? 'bg-primary text-primary-foreground scale-110 shadow-lg'
-                      : item.num < step
-                      ? 'bg-primary/80 text-primary-foreground'
-                      : 'bg-muted text-muted-foreground'
-                  }`}
-                >
-                  {item.num < step ? (
-                    <Icon name="Check" size={16} className="sm:w-5 sm:h-5 animate-in fade-in zoom-in duration-300" />
-                  ) : (
-                    item.num
-                  )}
-                </div>
-                <span
-                  className={`text-[10px] sm:text-xs mt-1 sm:mt-2 transition-all duration-300 ${
-                    item.num === step
-                      ? 'text-primary font-semibold'
-                      : item.num < step
-                      ? 'text-primary/80'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            {[1, 2, 3].map((s) => (
-              <div 
-                key={s} 
-                className={`flex-1 h-1 rounded-full transition-all duration-500 ${
-                  s <= step ? 'bg-primary' : 'bg-muted'
-                }`}
-              />
-            ))}
-          </div>
-          
-          {swipeHintVisible && (
-            <div className="sm:hidden flex items-center justify-center gap-2 text-xs text-muted-foreground mt-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <Icon name="ChevronsLeft" size={14} className="animate-pulse" />
-              <span>Свайпайте для переключения шагов</span>
-              <Icon name="ChevronsRight" size={14} className="animate-pulse" />
-            </div>
-          )}
-        </div>
+        <CheckoutProgress 
+          step={step} 
+          progress={calculateProgress()} 
+          swipeHintVisible={swipeHintVisible}
+        />
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div 
@@ -470,6 +165,8 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                 onAddAddress={handleAddAddress}
                 onDeleteAddress={handleDeleteAddress}
                 onSetDefaultAddress={handleSetDefaultAddress}
+                saveAddress={saveAddress}
+                setSaveAddress={setSaveAddress}
               />
             </div>
 
@@ -477,8 +174,6 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
               className={`absolute inset-0 transition-all duration-500 ${
                 step === 3
                   ? 'opacity-100 translate-x-0'
-                  : step > 3
-                  ? 'opacity-0 -translate-x-full pointer-events-none'
                   : 'opacity-0 translate-x-full pointer-events-none'
               }`}
             >
