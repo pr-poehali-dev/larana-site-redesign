@@ -132,6 +132,28 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     return true;
   };
 
+  const calculateProgress = () => {
+    let filledFields = 0;
+    const totalFields = 5;
+
+    if (formData.name.trim().length >= 2) filledFields++;
+    
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    if (phoneDigits.length === 11) filledFields++;
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(formData.email)) filledFields++;
+
+    if (formData.deliveryType === 'delivery') {
+      if (formData.city.trim().length > 0) filledFields++;
+      if (formData.address.trim().length > 0) filledFields++;
+    } else {
+      filledFields += 2;
+    }
+
+    return Math.round((filledFields / totalFields) * 100);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
@@ -165,6 +187,31 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
             Шаг {step} из 3: {step === 1 ? 'Контактные данные' : step === 2 ? 'Доставка и оплата' : 'Подтверждение'}
           </DialogDescription>
         </DialogHeader>
+
+        <div className="mb-4 px-1">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-muted-foreground">
+              Заполнено полей
+            </span>
+            <span className="text-sm font-bold text-primary">
+              {calculateProgress()}%
+            </span>
+          </div>
+          <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-500 ease-out rounded-full"
+              style={{ width: `${calculateProgress()}%` }}
+            >
+              <div className="absolute inset-0 bg-white/20 animate-pulse" />
+            </div>
+          </div>
+          {calculateProgress() === 100 && (
+            <p className="text-xs text-green-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-300">
+              <Icon name="CheckCircle2" size={12} />
+              Все обязательные поля заполнены!
+            </p>
+          )}
+        </div>
 
         <div className="mb-6">
           <div className="flex justify-between mb-2">
