@@ -141,6 +141,7 @@ const AddressAutocomplete = ({
         <Input
           ref={inputRef}
           id="address"
+          name="street-address"
           type="text"
           placeholder={placeholder}
           value={value}
@@ -148,6 +149,7 @@ const AddressAutocomplete = ({
           onKeyDown={handleKeyDown}
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
           required={required}
+          autoComplete="street-address"
           className="pr-10"
         />
         {isLoading && (

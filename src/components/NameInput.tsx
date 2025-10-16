@@ -57,12 +57,14 @@ const NameInput = ({
       <div className="relative">
         <Input
           id={id}
+          name="name"
           type="text"
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
           onBlur={handleBlur}
           required={required}
+          autoComplete="name"
           className={isTouched && !hasMultipleWords && value.length > 0 ? 'border-amber-500 focus-visible:ring-amber-500' : ''}
         />
         {isTouched && value.length > 0 && (

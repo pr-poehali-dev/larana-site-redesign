@@ -109,12 +109,14 @@ const EmailInput = ({
       <div className="relative">
         <Input
           id={id}
+          name="email"
           type="email"
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
           onBlur={handleBlur}
           required={required}
+          autoComplete="email"
           className={isTouched && !isValid ? 'border-destructive focus-visible:ring-destructive' : ''}
         />
         {isTouched && value.length > 0 && (

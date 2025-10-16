@@ -144,6 +144,7 @@ const PhoneInput = ({
         <Input
           ref={inputRef}
           id={id}
+          name="tel"
           type="tel"
           placeholder={placeholder}
           value={value}
@@ -153,6 +154,7 @@ const PhoneInput = ({
           onBlur={() => setIsTouched(true)}
           required={required}
           maxLength={18}
+          autoComplete="tel"
           className={isTouched && digitsCount > 0 && !isValid ? 'border-amber-500 focus-visible:ring-amber-500' : ''}
         />
         {isTouched && digitsCount > 0 && (
