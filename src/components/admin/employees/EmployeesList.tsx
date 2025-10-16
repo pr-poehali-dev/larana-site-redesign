@@ -25,6 +25,7 @@ export const EmployeesList = ({
     : employees.filter(emp => emp.employeeType === filterType);
 
   const groupedEmployees = {
+    new: filteredEmployees.filter(e => e.employeeType === 'new'),
     order_processing: filteredEmployees.filter(e => e.employeeType === 'order_processing'),
     delivery: filteredEmployees.filter(e => e.employeeType === 'delivery'),
     assembly: filteredEmployees.filter(e => e.employeeType === 'assembly')
