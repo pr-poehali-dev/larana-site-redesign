@@ -35,7 +35,6 @@ export const useOrderLogic = (cartItems: any[], clearCart: () => void, user: any
         console.log('Order created successfully:', data);
         
         const fullAddress = [
-          orderData.city,
           orderData.address,
           orderData.apartment ? `кв. ${orderData.apartment}` : '',
           orderData.entrance ? `подъезд ${orderData.entrance}` : '',

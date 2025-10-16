@@ -10,7 +10,6 @@ import PhoneInput from '@/components/PhoneInput';
 import EmailInput from '@/components/EmailInput';
 import NameInput from '@/components/NameInput';
 import AddressAutocomplete from '@/components/AddressAutocomplete';
-import CityAutocomplete from '@/components/CityAutocomplete';
 import SavedAddresses from '@/components/SavedAddresses';
 import { useCheckoutAudio } from './checkout/useCheckoutAudio';
 import { useCheckoutData } from './checkout/useCheckoutData';
@@ -182,28 +181,21 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                     <div className="flex-1">
                       <p className="text-sm font-medium text-green-900">Выбран сохранённый адрес</p>
                       <p className="text-xs text-green-700 mt-1">
-                        {formData.city}, {formData.address}
+                        {formData.address}
                         {formData.apartment && `, кв. ${formData.apartment}`}
                       </p>
                     </div>
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <CityAutocomplete
-                    value={formData.city}
-                    onChange={(value) => setFormData(prev => ({...prev, city: value}))}
-                    label="Город"
-                    required
-                  />
-                  <AddressAutocomplete
-                    value={formData.address}
-                    onChange={(value) => setFormData(prev => ({...prev, address: value}))}
-                    city={formData.city}
-                    label="Улица и дом"
-                    required
-                  />
-                </div>
+                <AddressAutocomplete
+                  value={formData.address}
+                  onChange={(value) => setFormData(prev => ({...prev, address: value}))}
+                  city={formData.city}
+                  label="Адрес доставки"
+                  placeholder="Начните вводить улицу, например: Ленина 25"
+                  required
+                />
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div>

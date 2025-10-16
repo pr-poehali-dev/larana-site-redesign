@@ -152,7 +152,7 @@ export const useCheckoutData = (open: boolean, user?: any) => {
     if (!contactValid) return false;
 
     if (formData.deliveryType === 'delivery') {
-      return formData.city.trim().length > 0 && formData.address.trim().length > 0;
+      return formData.address.trim().length > 0;
     }
     
     return true;
