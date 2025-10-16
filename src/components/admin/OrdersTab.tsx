@@ -55,7 +55,7 @@ const OrdersTab = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          orderId,
+          order_id: orderId,
           status: newStatus
         })
       });
