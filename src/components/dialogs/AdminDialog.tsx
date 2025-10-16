@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import OrdersTab from '@/components/admin/OrdersTab';
 import ProductsTab from '@/components/admin/ProductsTab';
+import StatsTab from '@/components/admin/StatsTab';
 
 interface AdminDialogProps {
   open: boolean;
@@ -23,7 +24,7 @@ const AdminDialog = ({ open, onClose, products, onProductUpdate }: AdminDialogPr
         </DialogHeader>
 
         <Tabs defaultValue="orders" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="orders">
               <Icon name="ShoppingBag" size={16} className="mr-2" />
               Заказы
@@ -31,6 +32,10 @@ const AdminDialog = ({ open, onClose, products, onProductUpdate }: AdminDialogPr
             <TabsTrigger value="products">
               <Icon name="Package" size={16} className="mr-2" />
               Товары
+            </TabsTrigger>
+            <TabsTrigger value="stats">
+              <Icon name="BarChart3" size={16} className="mr-2" />
+              Статистика
             </TabsTrigger>
           </TabsList>
 
@@ -43,6 +48,10 @@ const AdminDialog = ({ open, onClose, products, onProductUpdate }: AdminDialogPr
               products={products}
               onProductUpdate={onProductUpdate}
             />
+          </TabsContent>
+
+          <TabsContent value="stats" className="mt-4">
+            <StatsTab />
           </TabsContent>
         </Tabs>
       </DialogContent>
