@@ -15,7 +15,7 @@ const Header = ({ cartItemsCount, onCartClick }: HeaderProps) => {
           <div className="flex items-center gap-8">
             <a href="#" className="flex items-center gap-3">
               <img 
-                src="https://cdn.poehali.dev/files/2cc06ef2-4773-4a99-83f3-5dfc2d550c53.png" 
+                src="https://cdn.poehali.dev/files/9fbb2764-eaf0-4758-a712-d6d403965e4f.png" 
                 alt="LARANA" 
                 className="h-10 w-auto"
               />
