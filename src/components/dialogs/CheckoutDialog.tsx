@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Separator } from '@/components/ui/separator';
 import AddressAutocomplete from '@/components/AddressAutocomplete';
 import PhoneInput from '@/components/PhoneInput';
+import EmailInput from '@/components/EmailInput';
 
 interface CartItem {
   id: number;
@@ -113,17 +114,13 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                 label="Телефон"
                 required
               />
-              <div>
-                <Label htmlFor="email">Email *</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="anna@example.com" 
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                />
-              </div>
+              <EmailInput
+                value={formData.email}
+                onChange={(value) => setFormData({...formData, email: value})}
+                label="Email"
+                placeholder="example@mail.ru"
+                required
+              />
             </div>
           )}
 
