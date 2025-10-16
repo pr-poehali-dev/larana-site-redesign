@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -41,6 +41,11 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
   const [saveAddress, setSaveAddress] = useState(true);
   const [hasSavedAddress, setHasSavedAddress] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+  
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [swipeHintVisible, setSwipeHintVisible] = useState(true);
 
   useEffect(() => {
     if (open) {
@@ -165,6 +170,51 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     return Math.round((filledFields / totalFields) * 100);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    if (swipeHintVisible) {
+      setSwipeHintVisible(false);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const swipeDistance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(swipeDistance) > minSwipeDistance) {
+      if (swipeDistance > 0) {
+        // Свайп влево - следующий шаг
+        if (step === 1 && isStep1Valid()) {
+          setStep(2);
+        } else if (step === 2 && isStep2Valid()) {
+          setStep(3);
+        }
+      } else {
+        // Свайп вправо - предыдущий шаг
+        if (step > 1) {
+          setStep(step - 1);
+        }
+      }
+    }
+
+    touchStartX.current = 0;
+    touchEndX.current = 0;
+  };
+
+  useEffect(() => {
+    if (open) {
+      setSwipeHintVisible(true);
+      const timer = setTimeout(() => {
+        setSwipeHintVisible(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
@@ -284,10 +334,24 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
               />
             ))}
           </div>
+          
+          {swipeHintVisible && (
+            <div className="sm:hidden flex items-center justify-center gap-2 text-xs text-muted-foreground mt-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <Icon name="ChevronsLeft" size={14} className="animate-pulse" />
+              <span>Свайпайте для переключения шагов</span>
+              <Icon name="ChevronsRight" size={14} className="animate-pulse" />
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-          <div className="relative min-h-[350px] sm:min-h-[400px]">
+          <div 
+            ref={containerRef}
+            className="relative min-h-[350px] sm:min-h-[400px] touch-pan-y"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div
               className={`absolute inset-0 transition-all duration-500 ${
                 step === 1
