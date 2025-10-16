@@ -193,7 +193,7 @@ const EmployeePanel = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          orderId,
+          order_id: orderId,
           status: newStatus
         })
       });
@@ -205,7 +205,9 @@ const EmployeePanel = () => {
         });
         fetchOrders();
       } else {
-        throw new Error('Failed to update status');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Update failed:', response.status, errorData);
+        throw new Error(errorData.error || 'Failed to update status');
       }
     } catch (error) {
       console.error('Error updating status:', error);

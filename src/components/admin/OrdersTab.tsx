@@ -67,9 +67,11 @@ const OrdersTab = () => {
           description: `Заказ обновлен`
         });
       } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Update failed:', response.status, errorData);
         toast({
           title: "Ошибка",
-          description: "Не удалось обновить статус",
+          description: errorData.error || "Не удалось обновить статус",
           variant: "destructive"
         });
       }
