@@ -30,6 +30,7 @@ const EmployeePanel = () => {
   const [searchParams] = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [employeeId, setEmployeeId] = useState('');
+  const [loginData, setLoginData] = useState({ login: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [employee, setEmployee] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
@@ -108,25 +109,64 @@ const EmployeePanel = () => {
     setLoading(true);
     
     try {
-      const response = await fetch('https://functions.poehali.dev/a54029b9-3fca-4a20-83eb-49d7fb6412e2');
-      if (response.ok) {
-        const data = await response.json();
-        const foundEmployee = data.employees.find((emp: any) => emp.id.toString() === employeeId && emp.status === 'active');
-        
-        if (foundEmployee) {
-          localStorage.setItem('employeeId', employeeId);
-          setEmployee(foundEmployee);
-          setIsAuthenticated(true);
-          toast({
-            title: "Успешный вход",
-            description: `Добро пожаловать, ${foundEmployee.name}`
-          });
-        } else {
+      // Попытка входа по логину и паролю
+      if (loginData.login && loginData.password) {
+        const response = await fetch('https://functions.poehali.dev/4ea75d0c-6fc5-4fcc-81e4-f0fdf7ee65b2', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            login: loginData.login,
+            password: loginData.password
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.employee) {
+            localStorage.setItem('employeeId', data.employee.id.toString());
+            setEmployee(data.employee);
+            setIsAuthenticated(true);
+            toast({
+              title: "Успешный вход",
+              description: `Добро пожаловать, ${data.employee.name}`
+            });
+            return;
+          }
+        } else if (response.status === 401) {
           toast({
             title: "Ошибка входа",
-            description: "Неверный ID сотрудника или сотрудник неактивен",
+            description: "Неверный логин или пароль",
             variant: "destructive"
           });
+          return;
+        }
+      }
+      
+      // Fallback: вход по ID (для обратной совместимости)
+      if (employeeId) {
+        const response = await fetch('https://functions.poehali.dev/a54029b9-3fca-4a20-83eb-49d7fb6412e2');
+        if (response.ok) {
+          const data = await response.json();
+          const foundEmployee = data.employees.find((emp: any) => emp.id.toString() === employeeId && emp.status === 'active');
+          
+          if (foundEmployee) {
+            localStorage.setItem('employeeId', employeeId);
+            setEmployee(foundEmployee);
+            setIsAuthenticated(true);
+            toast({
+              title: "Успешный вход",
+              description: `Добро пожаловать, ${foundEmployee.name}`
+            });
+            return;
+          } else {
+            toast({
+              title: "Ошибка входа",
+              description: "Неверный ID сотрудника или сотрудник неактивен",
+              variant: "destructive"
+            });
+          }
         }
       }
     } catch (error) {
@@ -139,6 +179,7 @@ const EmployeePanel = () => {
     } finally {
       setLoading(false);
       setEmployeeId('');
+      setLoginData({ login: '', password: '' });
     }
   };
 
@@ -247,28 +288,32 @@ const EmployeePanel = () => {
               <Icon name="UserCog" size={32} className="text-primary-foreground" />
             </div>
             <CardTitle className="text-2xl">Панель сотрудника</CardTitle>
-            <CardDescription>Введите ваш ID для доступа</CardDescription>
+            <CardDescription>Войдите используя логин и пароль</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
-              <div>
+              <div className="space-y-2">
                 <Input
                   type="text"
-                  placeholder="ID сотрудника"
-                  value={employeeId}
-                  onChange={(e) => setEmployeeId(e.target.value)}
-                  className="text-center text-lg"
+                  placeholder="Логин"
+                  value={loginData.login}
+                  onChange={(e) => setLoginData({ ...loginData, login: e.target.value })}
                   autoFocus
                 />
-                <p className="text-xs text-muted-foreground mt-2 text-center">
-                  Получите ID у администратора
-                </p>
+              </div>
+              <div className="space-y-2">
+                <Input
+                  type="password"
+                  placeholder="Пароль"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                />
               </div>
               <Button 
                 type="submit" 
                 className="w-full" 
                 size="lg"
-                disabled={loading || !employeeId}
+                disabled={loading || (!loginData.login && !employeeId)}
               >
                 {loading ? (
                   <>

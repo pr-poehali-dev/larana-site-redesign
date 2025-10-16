@@ -7,7 +7,10 @@ Returns: HTTP response dict с данными сотрудников
 
 import json
 import os
-from typing import Dict, Any, List
+import hashlib
+import secrets
+import string
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -15,6 +18,47 @@ from psycopg2.extras import RealDictCursor
 def get_db_connection():
     database_url = os.environ.get('DATABASE_URL')
     return psycopg2.connect(database_url)
+
+def generate_password(length: int = 12) -> str:
+    """Генерирует случайный пароль"""
+    alphabet = string.ascii_letters + string.digits + '!@#$%'
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def hash_password(password: str) -> str:
+    """Хэширует пароль с использованием SHA-256"""
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def generate_login(name: str, existing_logins: list) -> str:
+    """Генерирует логин на основе имени"""
+    # Транслитерация имени
+    translit_map = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+        'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+        'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+        'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+        'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    }
+    
+    name_lower = name.lower()
+    login_base = ''
+    for char in name_lower:
+        if char in translit_map:
+            login_base += translit_map[char]
+        elif char.isalnum():
+            login_base += char
+    
+    # Берем первую часть имени (до пробела)
+    login_base = login_base.split()[0] if login_base.split() else login_base
+    login_base = login_base[:20]  # Ограничение длины
+    
+    # Проверяем уникальность
+    login = login_base
+    counter = 1
+    while login in existing_logins:
+        login = f"{login_base}{counter}"
+        counter += 1
+    
+    return login
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
@@ -47,7 +91,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
             else:
                 cur.execute(
-                    "SELECT id, name, phone, email, employee_type, employee_types, status, created_at FROM employees ORDER BY created_at DESC"
+                    "SELECT id, name, phone, email, employee_type, employee_types, status, login, password_hash, created_at FROM employees ORDER BY created_at DESC"
                 )
             
             employees = cur.fetchall()
@@ -62,6 +106,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'employeeType': emp['employee_type'],
                     'employeeTypes': emp['employee_types'] if emp['employee_types'] else [],
                     'status': emp['status'],
+                    'login': emp.get('login'),
+                    'hasPassword': bool(emp.get('password_hash')),
                     'createdAt': emp['created_at'].isoformat() if emp['created_at'] else None
                 })
             
@@ -79,19 +125,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body_data = json.loads(event.get('body', '{}'))
             employee_types = body_data.get('employeeTypes', [])
             
+            # Получаем все существующие логины
+            cur.execute("SELECT login FROM employees WHERE login IS NOT NULL")
+            existing_logins = [row['login'] for row in cur.fetchall()]
+            
+            # Генерируем логин и пароль
+            login = body_data.get('login')
+            if not login:
+                login = generate_login(body_data.get('name'), existing_logins)
+            
+            password = body_data.get('password')
+            generated_password = None
+            password_hash = None
+            
+            if password:
+                password_hash = hash_password(password)
+            elif body_data.get('generatePassword'):
+                generated_password = generate_password()
+                password_hash = hash_password(generated_password)
+            
             cur.execute(
-                "INSERT INTO employees (name, phone, email, employee_type, employee_types, status) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+                "INSERT INTO employees (name, phone, email, employee_type, employee_types, status, login, password_hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
                 (
                     body_data.get('name'),
                     body_data.get('phone'),
                     body_data.get('email'),
                     body_data.get('employeeType'),
                     employee_types,
-                    body_data.get('status', 'active')
+                    body_data.get('status', 'active'),
+                    login,
+                    password_hash
                 )
             )
             employee_id = cur.fetchone()['id']
             conn.commit()
+            
+            response_data = {
+                'success': True,
+                'employeeId': employee_id,
+                'login': login
+            }
+            
+            if generated_password:
+                response_data['generatedPassword'] = generated_password
             
             return {
                 'statusCode': 201,
@@ -99,10 +175,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({
-                    'success': True,
-                    'employeeId': employee_id
-                }),
+                'body': json.dumps(response_data),
                 'isBase64Encoded': False
             }
         
@@ -123,19 +196,72 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             employee_types = body_data.get('employeeTypes', [])
             
-            cur.execute(
-                "UPDATE employees SET name = %s, phone = %s, email = %s, employee_type = %s, employee_types = %s, status = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
-                (
-                    body_data.get('name'),
-                    body_data.get('phone'),
-                    body_data.get('email'),
-                    body_data.get('employeeType'),
-                    employee_types,
-                    body_data.get('status'),
-                    employee_id
+            # Проверка на сброс пароля или установку нового
+            query_params = event.get('queryStringParameters') or {}
+            action = query_params.get('action')
+            
+            response_data = {'success': True}
+            
+            if action == 'reset_password':
+                # Генерация нового пароля
+                new_password = generate_password()
+                password_hash = hash_password(new_password)
+                
+                cur.execute(
+                    "UPDATE employees SET password_hash = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                    (password_hash, employee_id)
                 )
-            )
-            conn.commit()
+                conn.commit()
+                
+                response_data['newPassword'] = new_password
+                
+            elif action == 'set_password':
+                # Установка конкретного пароля
+                new_password = body_data.get('password')
+                if new_password:
+                    password_hash = hash_password(new_password)
+                    cur.execute(
+                        "UPDATE employees SET password_hash = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                        (password_hash, employee_id)
+                    )
+                    conn.commit()
+                else:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'Password required'}),
+                        'isBase64Encoded': False
+                    }
+            
+            elif action == 'update_login':
+                # Обновление логина
+                new_login = body_data.get('login')
+                if new_login:
+                    cur.execute(
+                        "UPDATE employees SET login = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                        (new_login, employee_id)
+                    )
+                    conn.commit()
+                    response_data['login'] = new_login
+            
+            else:
+                # Обычное обновление данных
+                cur.execute(
+                    "UPDATE employees SET name = %s, phone = %s, email = %s, employee_type = %s, employee_types = %s, status = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                    (
+                        body_data.get('name'),
+                        body_data.get('phone'),
+                        body_data.get('email'),
+                        body_data.get('employeeType'),
+                        employee_types,
+                        body_data.get('status'),
+                        employee_id
+                    )
+                )
+                conn.commit()
             
             return {
                 'statusCode': 200,
@@ -143,7 +269,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'success': True}),
+                'body': json.dumps(response_data),
                 'isBase64Encoded': False
             }
         

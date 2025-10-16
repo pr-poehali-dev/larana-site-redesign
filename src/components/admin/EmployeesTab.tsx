@@ -30,6 +30,8 @@ interface Employee {
   employeeType: 'order_processing' | 'delivery' | 'assembly';
   employeeTypes?: string[]; // Множественный выбор типов
   status: 'active' | 'inactive';
+  login?: string;
+  hasPassword?: boolean;
   createdAt: string;
 }
 
@@ -37,6 +39,9 @@ const EmployeesTab = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [generatedCredentials, setGeneratedCredentials] = useState<{login: string; password: string} | null>(null);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -44,7 +49,8 @@ const EmployeesTab = () => {
     email: '',
     employeeType: 'order_processing' as 'order_processing' | 'delivery' | 'assembly',
     employeeTypes: [] as string[],
-    status: 'active' as 'active' | 'inactive'
+    status: 'active' as 'active' | 'inactive',
+    generatePassword: false
   });
   const [filterType, setFilterType] = useState<string>('all');
   const { toast } = useToast();
@@ -139,6 +145,17 @@ const EmployeesTab = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        
+        // Если были сгенерированы учетные данные
+        if (data.generatedPassword && data.login) {
+          setGeneratedCredentials({
+            login: data.login,
+            password: data.generatedPassword
+          });
+          setIsPasswordDialogOpen(true);
+        }
+        
         toast({
           title: "Успешно",
           description: editingEmployee 
@@ -155,6 +172,52 @@ const EmployeesTab = () => {
       toast({
         title: "Ошибка",
         description: "Не удалось сохранить сотрудника",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (employee: Employee) => {
+    if (!confirm(`Сбросить пароль для ${employee.name}? Будет сгенерирован новый пароль.`)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const url = 'https://functions.poehali.dev/a54029b9-3fca-4a20-83eb-49d7fb6412e2?action=reset_password';
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: employee.id })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.newPassword) {
+          setSelectedEmployee(employee);
+          setGeneratedCredentials({
+            login: employee.login || '',
+            password: data.newPassword
+          });
+          setIsPasswordDialogOpen(true);
+        }
+        
+        toast({
+          title: "Успешно",
+          description: "Пароль сброшен"
+        });
+      } else {
+        throw new Error('Failed to reset password');
+      }
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось сбросить пароль",
         variant: "destructive"
       });
     } finally {
@@ -256,6 +319,7 @@ const EmployeesTab = () => {
                       employee={employee}
                       onEdit={() => handleOpenDialog(employee)}
                       onDelete={() => handleDelete(employee.id)}
+                      onResetPassword={handleResetPassword}
                     />
                   ))}
                 </div>
@@ -272,6 +336,7 @@ const EmployeesTab = () => {
                   employee={employee}
                   onEdit={() => handleOpenDialog(employee)}
                   onDelete={() => handleDelete(employee.id)}
+                  onResetPassword={handleResetPassword}
                 />
               ))}
             </div>
@@ -385,6 +450,24 @@ const EmployeesTab = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {!editingEmployee && (
+              <div className="flex items-center space-x-2 border rounded-lg p-4">
+                <Checkbox
+                  id="generatePassword"
+                  checked={formData.generatePassword}
+                  onCheckedChange={(checked) => 
+                    setFormData({ ...formData, generatePassword: !!checked })
+                  }
+                />
+                <Label
+                  htmlFor="generatePassword"
+                  className="text-sm font-normal cursor-pointer"
+                >
+                  Сгенерировать логин и пароль автоматически
+                </Label>
+              </div>
+            )}
           </div>
 
           <DialogFooter>
@@ -397,6 +480,85 @@ const EmployeesTab = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Диалог с учетными данными */}
+      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Учетные данные сотрудника</DialogTitle>
+            <DialogDescription>
+              Сохраните эти данные! Они больше не будут показаны.
+            </DialogDescription>
+          </DialogHeader>
+
+          {generatedCredentials && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Логин</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    value={generatedCredentials.login} 
+                    readOnly 
+                    className="font-mono"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedCredentials.login);
+                      toast({ title: "Скопировано", description: "Логин скопирован" });
+                    }}
+                  >
+                    <Icon name="Copy" size={16} />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Пароль</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    value={generatedCredentials.password} 
+                    readOnly 
+                    className="font-mono"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedCredentials.password);
+                      toast({ title: "Скопировано", description: "Пароль скопирован" });
+                    }}
+                  >
+                    <Icon name="Copy" size={16} />
+                  </Button>
+                </div>
+              </div>
+
+              <Button
+                className="w-full"
+                onClick={() => {
+                  const text = `Логин: ${generatedCredentials.login}\nПароль: ${generatedCredentials.password}\nСсылка: ${window.location.origin}/employee`;
+                  navigator.clipboard.writeText(text);
+                  toast({ title: "Скопировано", description: "Все данные скопированы" });
+                }}
+              >
+                <Icon name="Copy" size={16} className="mr-2" />
+                Скопировать все данные
+              </Button>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => {
+              setIsPasswordDialogOpen(false);
+              setGeneratedCredentials(null);
+            }}>
+              Закрыть
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -404,21 +566,24 @@ const EmployeesTab = () => {
 const EmployeeCard = ({ 
   employee, 
   onEdit, 
-  onDelete 
+  onDelete,
+  onResetPassword
 }: { 
   employee: Employee; 
   onEdit: () => void; 
-  onDelete: () => void; 
+  onDelete: () => void;
+  onResetPassword: (employee: Employee) => void;
 }) => {
   const { toast } = useToast();
 
   const copyEmployeeLink = () => {
     const link = `${window.location.origin}/employee`;
-    const text = `Ссылка для входа: ${link}\nВаш ID: ${employee.id}`;
+    const loginInfo = employee.login ? `\nЛогин: ${employee.login}` : `\nВаш ID: ${employee.id}`;
+    const text = `Ссылка для входа: ${link}${loginInfo}`;
     navigator.clipboard.writeText(text);
     toast({
       title: "Скопировано",
-      description: "Ссылка и ID скопированы в буфер обмена"
+      description: "Ссылка для входа скопирована"
     });
   };
 
@@ -465,6 +630,18 @@ const EmployeeCard = ({
             <span className="truncate">{employee.email}</span>
           </div>
         )}
+        {employee.login && (
+          <div className="flex items-center gap-2 text-sm">
+            <Icon name="User" size={16} className="text-muted-foreground" />
+            <span className="font-mono">{employee.login}</span>
+            {employee.hasPassword && (
+              <Badge variant="outline" className="text-xs">
+                <Icon name="Key" size={12} className="mr-1" />
+                Есть пароль
+              </Badge>
+            )}
+          </div>
+        )}
         <div className="flex flex-col gap-2 mt-4">
           <Button 
             variant="secondary" 
@@ -473,8 +650,19 @@ const EmployeeCard = ({
             className="w-full"
           >
             <Icon name="Link" size={16} className="mr-1" />
-            Скопировать ссылку (ID: {employee.id})
+            Скопировать ссылку
           </Button>
+          {employee.login && employee.hasPassword && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => onResetPassword(employee)}
+              className="w-full"
+            >
+              <Icon name="KeyRound" size={16} className="mr-1" />
+              Сбросить пароль
+            </Button>
+          )}
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={onEdit} className="flex-1">
               <Icon name="Pencil" size={16} className="mr-1" />

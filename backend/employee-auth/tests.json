@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "name": "Test unauthorized access",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "login": "wronglogin",
+        "password": "wrongpass"
+      },
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    }
+  ]
+}
