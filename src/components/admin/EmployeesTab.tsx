@@ -140,7 +140,9 @@ const EmployeesTab = () => {
         handleCloseDialog();
         fetchEmployees();
       } else {
-        throw new Error('Failed to save employee');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Save failed:', response.status, errorData);
+        throw new Error(errorData.error || 'Failed to save employee');
       }
     } catch (error) {
       console.error('Error saving employee:', error);
