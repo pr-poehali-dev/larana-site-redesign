@@ -109,17 +109,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
                 orders = cur.fetchall()
             elif employee_type:
-                status_filter = {
-                    'order_processing': 'in_processing',
-                    'delivery': 'in_delivery',
-                    'assembly': 'delivered'
-                }.get(employee_type)
+                # Поддержка нескольких типов через запятую
+                employee_types_list = employee_type.split(',')
                 
-                if status_filter:
-                    cur.execute(
-                        "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status = %s ORDER BY o.created_at DESC",
-                        (status_filter,)
-                    )
+                status_filters = []
+                for etype in employee_types_list:
+                    etype = etype.strip()
+                    status_map = {
+                        'order_processing': 'in_processing',
+                        'delivery': 'in_delivery',
+                        'assembly': 'delivered'
+                    }
+                    if etype in status_map:
+                        status_filters.append(status_map[etype])
+                
+                if status_filters:
+                    placeholders = ','.join(['%s'] * len(status_filters))
+                    query = f"SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status IN ({placeholders}) ORDER BY o.created_at DESC"
+                    cur.execute(query, tuple(status_filters))
                     orders = cur.fetchall()
                 else:
                     orders = []

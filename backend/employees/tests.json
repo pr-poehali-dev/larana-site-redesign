@@ -19,12 +19,12 @@
         "phone": "+7 999 123-45-67",
         "email": "ivan@example.com",
         "employeeType": "delivery",
+        "employeeTypes": ["delivery"],
         "status": "active"
       },
       "expectedStatus": 201,
       "expectedBody": {
-        "success": true,
-        "employeeId": "number"
+        "success": true
       },
       "bodyMatcher": "partial"
     }

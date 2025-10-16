@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 
@@ -27,6 +28,7 @@ interface Employee {
   phone: string;
   email?: string;
   employeeType: 'order_processing' | 'delivery' | 'assembly';
+  employeeTypes?: string[]; // Множественный выбор типов
   status: 'active' | 'inactive';
   createdAt: string;
 }
@@ -41,6 +43,7 @@ const EmployeesTab = () => {
     phone: '',
     email: '',
     employeeType: 'order_processing' as 'order_processing' | 'delivery' | 'assembly',
+    employeeTypes: [] as string[],
     status: 'active' as 'active' | 'inactive'
   });
   const [filterType, setFilterType] = useState<string>('all');
@@ -79,6 +82,7 @@ const EmployeesTab = () => {
         phone: employee.phone,
         email: employee.email || '',
         employeeType: employee.employeeType,
+        employeeTypes: employee.employeeTypes || [],
         status: employee.status
       });
     } else {
@@ -88,6 +92,7 @@ const EmployeesTab = () => {
         phone: '',
         email: '',
         employeeType: 'order_processing',
+        employeeTypes: [],
         status: 'active'
       });
     }
@@ -102,15 +107,16 @@ const EmployeesTab = () => {
       phone: '',
       email: '',
       employeeType: 'order_processing',
+      employeeTypes: [],
       status: 'active'
     });
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.phone || !formData.employeeType) {
+    if (!formData.name || !formData.phone || formData.employeeTypes.length === 0) {
       toast({
         title: "Ошибка",
-        description: "Заполните обязательные поля",
+        description: "Заполните обязательные поля и выберите хотя бы одну категорию",
         variant: "destructive"
       });
       return;
@@ -324,22 +330,44 @@ const EmployeesTab = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="employeeType">Тип сотрудника *</Label>
-              <Select
-                value={formData.employeeType}
-                onValueChange={(value: any) => setFormData({ ...formData, employeeType: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(EMPLOYEE_TYPES).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Категории работы *</Label>
+              <p className="text-sm text-muted-foreground">Выберите одну или несколько категорий</p>
+              <div className="space-y-3 border rounded-lg p-4">
+                {Object.entries(EMPLOYEE_TYPES).map(([type, label]) => {
+                  const isChecked = formData.employeeTypes.includes(type);
+                  return (
+                    <div key={type} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={type}
+                        checked={isChecked}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setFormData({
+                              ...formData,
+                              employeeTypes: [...formData.employeeTypes, type],
+                              employeeType: type as any
+                            });
+                          } else {
+                            const newTypes = formData.employeeTypes.filter(t => t !== type);
+                            setFormData({
+                              ...formData,
+                              employeeTypes: newTypes,
+                              employeeType: (newTypes[0] || 'order_processing') as any
+                            });
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor={type}
+                        className="text-sm font-normal cursor-pointer flex items-center gap-2"
+                      >
+                        <div className={`w-3 h-3 rounded-full ${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]}`} />
+                        {label}
+                      </Label>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -400,13 +428,25 @@ const EmployeeCard = ({
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg">{employee.name}</CardTitle>
-            <CardDescription className="mt-1">
-              <Badge 
-                variant="secondary" 
-                className={`${EMPLOYEE_TYPES_COLORS[employee.employeeType]} text-white`}
-              >
-                {EMPLOYEE_TYPES[employee.employeeType]}
-              </Badge>
+            <CardDescription className="mt-2 flex flex-wrap gap-1">
+              {employee.employeeTypes && employee.employeeTypes.length > 0 ? (
+                employee.employeeTypes.map((type) => (
+                  <Badge 
+                    key={type}
+                    variant="secondary" 
+                    className={`${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]} text-white`}
+                  >
+                    {EMPLOYEE_TYPES[type as keyof typeof EMPLOYEE_TYPES]}
+                  </Badge>
+                ))
+              ) : (
+                <Badge 
+                  variant="secondary" 
+                  className={`${EMPLOYEE_TYPES_COLORS[employee.employeeType]} text-white`}
+                >
+                  {EMPLOYEE_TYPES[employee.employeeType]}
+                </Badge>
+              )}
             </CardDescription>
           </div>
           <Badge variant={employee.status === 'active' ? 'default' : 'secondary'}>

@@ -47,7 +47,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
             else:
                 cur.execute(
-                    "SELECT id, name, phone, email, employee_type, status, created_at FROM employees ORDER BY created_at DESC"
+                    "SELECT id, name, phone, email, employee_type, employee_types, status, created_at FROM employees ORDER BY created_at DESC"
                 )
             
             employees = cur.fetchall()
@@ -60,6 +60,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'phone': emp['phone'],
                     'email': emp['email'],
                     'employeeType': emp['employee_type'],
+                    'employeeTypes': emp['employee_types'] if emp['employee_types'] else [],
                     'status': emp['status'],
                     'createdAt': emp['created_at'].isoformat() if emp['created_at'] else None
                 })
@@ -76,14 +77,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
+            employee_types = body_data.get('employeeTypes', [])
             
             cur.execute(
-                "INSERT INTO employees (name, phone, email, employee_type, status) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+                "INSERT INTO employees (name, phone, email, employee_type, employee_types, status) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
                 (
                     body_data.get('name'),
                     body_data.get('phone'),
                     body_data.get('email'),
                     body_data.get('employeeType'),
+                    employee_types,
                     body_data.get('status', 'active')
                 )
             )
@@ -118,13 +121,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            employee_types = body_data.get('employeeTypes', [])
+            
             cur.execute(
-                "UPDATE employees SET name = %s, phone = %s, email = %s, employee_type = %s, status = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                "UPDATE employees SET name = %s, phone = %s, email = %s, employee_type = %s, employee_types = %s, status = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
                 (
                     body_data.get('name'),
                     body_data.get('phone'),
                     body_data.get('email'),
                     body_data.get('employeeType'),
+                    employee_types,
                     body_data.get('status'),
                     employee_id
                 )

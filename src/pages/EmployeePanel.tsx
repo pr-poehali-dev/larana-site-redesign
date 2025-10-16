@@ -67,7 +67,12 @@ const EmployeePanel = () => {
 
     setLoading(true);
     try {
-      const url = `https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0?employeeType=${employee.employeeType}`;
+      // Используем либо массив типов, либо один тип
+      const types = employee.employeeTypes && employee.employeeTypes.length > 0 
+        ? employee.employeeTypes.join(',') 
+        : employee.employeeType;
+      
+      const url = `https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0?employeeType=${types}`;
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
@@ -170,26 +175,54 @@ const EmployeePanel = () => {
   const getNextStatus = () => {
     if (!employee) return [];
     
-    switch (employee.employeeType) {
-      case 'order_processing':
-        return [
-          { value: 'in_processing', label: 'В обработке' },
-          { value: 'in_delivery', label: 'Передать в доставку' },
-          { value: 'cancelled', label: 'Отменить' }
-        ];
-      case 'delivery':
-        return [
-          { value: 'in_delivery', label: 'В доставке' },
-          { value: 'delivered', label: 'Доставлен' }
-        ];
-      case 'assembly':
-        return [
-          { value: 'delivered', label: 'Доставлен' },
-          { value: 'completed', label: 'Завершить' }
-        ];
-      default:
-        return [];
+    const types = employee.employeeTypes && employee.employeeTypes.length > 0 
+      ? employee.employeeTypes 
+      : [employee.employeeType];
+    
+    const allStatuses: { value: string; label: string }[] = [];
+    const statusSet = new Set<string>();
+    
+    types.forEach((type: string) => {
+      switch (type) {
+        case 'order_processing':
+          if (!statusSet.has('in_processing')) {
+            allStatuses.push({ value: 'in_processing', label: 'В обработке' });
+            statusSet.add('in_processing');
+          }
+          if (!statusSet.has('in_delivery')) {
+            allStatuses.push({ value: 'in_delivery', label: 'Передать в доставку' });
+            statusSet.add('in_delivery');
+          }
+          break;
+        case 'delivery':
+          if (!statusSet.has('in_delivery')) {
+            allStatuses.push({ value: 'in_delivery', label: 'В доставке' });
+            statusSet.add('in_delivery');
+          }
+          if (!statusSet.has('delivered')) {
+            allStatuses.push({ value: 'delivered', label: 'Доставлен' });
+            statusSet.add('delivered');
+          }
+          break;
+        case 'assembly':
+          if (!statusSet.has('delivered')) {
+            allStatuses.push({ value: 'delivered', label: 'Доставлен' });
+            statusSet.add('delivered');
+          }
+          if (!statusSet.has('completed')) {
+            allStatuses.push({ value: 'completed', label: 'Завершить' });
+            statusSet.add('completed');
+          }
+          break;
+      }
+    });
+    
+    // Добавляем возможность отменить для всех
+    if (!statusSet.has('cancelled')) {
+      allStatuses.push({ value: 'cancelled', label: 'Отменить' });
     }
+    
+    return allStatuses;
   };
 
   if (!isAuthenticated) {
@@ -263,9 +296,19 @@ const EmployeePanel = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold">{employee?.name}</h1>
-                <p className="text-xs text-muted-foreground">
-                  {EMPLOYEE_TYPES[employee?.employeeType as keyof typeof EMPLOYEE_TYPES]}
-                </p>
+                <div className="flex flex-wrap gap-1">
+                  {employee?.employeeTypes && employee.employeeTypes.length > 0 ? (
+                    employee.employeeTypes.map((type: string) => (
+                      <Badge key={type} variant="secondary" className="text-xs">
+                        {EMPLOYEE_TYPES[type as keyof typeof EMPLOYEE_TYPES]}
+                      </Badge>
+                    ))
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      {EMPLOYEE_TYPES[employee?.employeeType as keyof typeof EMPLOYEE_TYPES]}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
