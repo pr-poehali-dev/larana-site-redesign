@@ -142,53 +142,127 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex gap-2 mb-4">
-          {[1, 2, 3].map((s) => (
-            <div 
-              key={s} 
-              className={`flex-1 h-2 rounded-full ${s <= step ? 'bg-primary' : 'bg-muted'}`}
-            />
-          ))}
+        <div className="mb-6">
+          <div className="flex justify-between mb-2">
+            {[
+              { num: 1, label: 'Контакты' },
+              { num: 2, label: 'Доставка' },
+              { num: 3, label: 'Подтверждение' }
+            ].map((item) => (
+              <div key={item.num} className="flex flex-col items-center flex-1">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-500 ${
+                    item.num === step
+                      ? 'bg-primary text-primary-foreground scale-110 shadow-lg'
+                      : item.num < step
+                      ? 'bg-primary/80 text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  {item.num < step ? (
+                    <Icon name="Check" size={20} className="animate-in fade-in zoom-in duration-300" />
+                  ) : (
+                    item.num
+                  )}
+                </div>
+                <span
+                  className={`text-xs mt-2 transition-all duration-300 ${
+                    item.num === step
+                      ? 'text-primary font-semibold'
+                      : item.num < step
+                      ? 'text-primary/80'
+                      : 'text-muted-foreground'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            {[1, 2, 3].map((s) => (
+              <div 
+                key={s} 
+                className={`flex-1 h-1 rounded-full transition-all duration-500 ${
+                  s <= step ? 'bg-primary' : 'bg-muted'
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {step === 1 && (
-            <ContactStep
-              formData={formData}
-              setFormData={setFormData}
-              user={user}
-            />
-          )}
+          <div className="relative min-h-[400px]">
+            <div
+              className={`absolute inset-0 transition-all duration-500 ${
+                step === 1
+                  ? 'opacity-100 translate-x-0'
+                  : step > 1
+                  ? 'opacity-0 -translate-x-full pointer-events-none'
+                  : 'opacity-0 translate-x-full pointer-events-none'
+              }`}
+            >
+              <ContactStep
+                formData={formData}
+                setFormData={setFormData}
+                user={user}
+              />
+            </div>
 
-          {step === 2 && (
-            <DeliveryStep
-              formData={formData}
-              setFormData={setFormData}
-              savedAddresses={savedAddresses}
-              hasSavedAddress={hasSavedAddress}
-              onSelectAddress={handleSelectAddress}
-              onAddAddress={handleAddAddress}
-              onDeleteAddress={handleDeleteAddress}
-              onSetDefaultAddress={handleSetDefaultAddress}
-            />
-          )}
+            <div
+              className={`absolute inset-0 transition-all duration-500 ${
+                step === 2
+                  ? 'opacity-100 translate-x-0'
+                  : step > 2
+                  ? 'opacity-0 -translate-x-full pointer-events-none'
+                  : 'opacity-0 translate-x-full pointer-events-none'
+              }`}
+            >
+              <DeliveryStep
+                formData={formData}
+                setFormData={setFormData}
+                savedAddresses={savedAddresses}
+                hasSavedAddress={hasSavedAddress}
+                onSelectAddress={handleSelectAddress}
+                onAddAddress={handleAddAddress}
+                onDeleteAddress={handleDeleteAddress}
+                onSetDefaultAddress={handleSetDefaultAddress}
+              />
+            </div>
 
-          {step === 3 && (
-            <ConfirmationStep
-              formData={formData}
-              cartItems={cartItems}
-              total={total}
-            />
-          )}
+            <div
+              className={`absolute inset-0 transition-all duration-500 ${
+                step === 3
+                  ? 'opacity-100 translate-x-0'
+                  : step > 3
+                  ? 'opacity-0 -translate-x-full pointer-events-none'
+                  : 'opacity-0 translate-x-full pointer-events-none'
+              }`}
+            >
+              <ConfirmationStep
+                formData={formData}
+                cartItems={cartItems}
+                total={total}
+              />
+            </div>
+          </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-6">
             {step > 1 && (
-              <Button type="button" variant="outline" onClick={() => setStep(step - 1)}>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setStep(step - 1)}
+                className="transition-all duration-300 hover:scale-105"
+              >
                 <Icon name="ChevronLeft" size={20} className="mr-1" />
                 Назад
               </Button>
             )}
-            <Button type="submit" className="flex-1">
+            <Button 
+              type="submit" 
+              className="flex-1 transition-all duration-300 hover:scale-105"
+            >
               {step === 3 ? 'Подтвердить заказ' : 'Продолжить'}
               {step < 3 && <Icon name="ChevronRight" size={20} className="ml-1" />}
             </Button>
