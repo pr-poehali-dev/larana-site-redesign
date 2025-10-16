@@ -19,9 +19,10 @@ interface HeaderProps {
   onOrdersClick: () => void;
   onProfileClick: () => void;
   onFavoritesClick: () => void;
+  onAdminClick?: () => void;
 }
 
-const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOrdersClick, onProfileClick, onFavoritesClick }: HeaderProps) => {
+const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOrdersClick, onProfileClick, onFavoritesClick, onAdminClick }: HeaderProps) => {
   return (
     <header className="bg-white border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -64,6 +65,15 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
                     <Icon name="Heart" size={16} className="mr-2" />
                     Избранное
                   </DropdownMenuItem>
+                  {user?.isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={onAdminClick}>
+                        <Icon name="Shield" size={16} className="mr-2" />
+                        Админ-панель
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={onLogout} className="text-destructive">
                     <Icon name="LogOut" size={16} className="mr-2" />

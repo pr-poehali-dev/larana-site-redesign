@@ -18,6 +18,7 @@ import AuthDialog from '@/components/dialogs/AuthDialog';
 import OrderHistoryDialog from '@/components/dialogs/OrderHistoryDialog';
 import ProfileSettingsDialog from '@/components/dialogs/ProfileSettingsDialog';
 import FavoritesDialog from '@/components/dialogs/FavoritesDialog';
+import AdminDialog from '@/components/dialogs/AdminDialog';
 
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
@@ -29,6 +30,7 @@ const Index = () => {
   const [ordersOpen, setOrdersOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [favoritesOpen, setFavoritesOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([60000]);
@@ -38,7 +40,7 @@ const Index = () => {
   const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
 
-  const allFurnitureSets = [
+  const [allFurnitureSets, setAllFurnitureSets] = useState([
     {
       id: 1,
       title: 'Спальня "Сканди Мини"',
@@ -159,7 +161,7 @@ const Index = () => {
       colors: ['Белый', 'дуб сонома'],
       inStock: true
     }
-  ];
+  ]);
 
   const furnitureSets = allFurnitureSets
     .filter(set => {
@@ -335,6 +337,7 @@ const Index = () => {
         onOrdersClick={() => setOrdersOpen(true)}
         onProfileClick={() => setProfileOpen(true)}
         onFavoritesClick={() => setFavoritesOpen(true)}
+        onAdminClick={() => setAdminOpen(true)}
       />
       
       <HeroSection 
@@ -438,6 +441,13 @@ const Index = () => {
         user={user}
         allProducts={allFurnitureSets}
         onProductClick={setSelectedSet}
+      />
+
+      <AdminDialog
+        open={adminOpen}
+        onClose={() => setAdminOpen(false)}
+        products={allFurnitureSets}
+        onProductUpdate={setAllFurnitureSets}
       />
     </div>
   );

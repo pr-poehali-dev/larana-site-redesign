@@ -21,9 +21,11 @@ const AuthDialog = ({ open, onClose, onSuccess }: AuthDialogProps) => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    const isAdmin = loginEmail === 'admin@mebel.ru';
     onSuccess({
-      name: 'Пользователь',
-      email: loginEmail
+      name: isAdmin ? 'Администратор' : 'Пользователь',
+      email: loginEmail,
+      isAdmin: isAdmin
     });
     onClose();
   };
