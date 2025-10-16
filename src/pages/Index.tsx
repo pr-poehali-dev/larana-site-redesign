@@ -1,17 +1,35 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
-  const furnitureSets = [
+  const [selectedSet, setSelectedSet] = useState<any>(null);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [configuratorOpen, setConfiguratorOpen] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [budget, setBudget] = useState([3000]);
+  const { toast } = useToast();
+
+  const allFurnitureSets = [
     {
       id: 1,
       title: 'Набор для гостиной "Северный"',
       category: 'Гостиная',
       price: '3200 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
-      items: ['Диван', 'Журнальный стол', 'Стеллаж']
+      items: ['Диван', 'Журнальный стол', 'Стеллаж'],
+      style: 'Скандинавский',
+      description: 'Современная гостиная в скандинавском стиле с уютной атмосферой'
     },
     {
       id: 2,
@@ -19,7 +37,9 @@ const Index = () => {
       category: 'Спальня',
       price: '2800 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/ed6e2b24-421a-4f81-bc83-3eb261fcc919.jpg',
-      items: ['Кровать', 'Прикроватные тумбы', 'Шкаф']
+      items: ['Кровать', 'Прикроватные тумбы', 'Шкаф'],
+      style: 'Современный',
+      description: 'Комфортная спальня для полноценного отдыха'
     },
     {
       id: 3,
@@ -27,9 +47,48 @@ const Index = () => {
       category: 'Кухня',
       price: '4100 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5546849f-7d51-4b8f-aad6-76df00bc86c8.jpg',
-      items: ['Кухонный гарнитур', 'Стол', 'Стулья']
+      items: ['Кухонный гарнитур', 'Стол', 'Стулья'],
+      style: 'Современный',
+      description: 'Функциональная кухня с современным дизайном и удобной планировкой'
+    },
+    {
+      id: 4,
+      title: 'Прихожая "Вахан"',
+      category: 'Прихожая',
+      price: '1900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Шкаф', 'Вешалка', 'Тумба для обуви'],
+      style: 'Скандинавский',
+      description: 'Компактное решение для удобной организации пространства'
+    },
+    {
+      id: 5,
+      title: 'Гостиная "Контор"',
+      category: 'Гостиная',
+      price: '3800 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Диван угловой', 'ТВ-тумба', 'Кресло'],
+      style: 'Современный',
+      description: 'Просторная гостиная для семейного отдыха'
+    },
+    {
+      id: 6,
+      title: 'Спальня "Нон"',
+      category: 'Спальня',
+      price: '3200 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/ed6e2b24-421a-4f81-bc83-3eb261fcc919.jpg',
+      items: ['Двуспальная кровать', 'Комод', 'Зеркало'],
+      style: 'Скандинавский',
+      description: 'Уютная спальня в минималистичном стиле'
     }
   ];
+
+  const furnitureSets = allFurnitureSets.filter(set => {
+    if (selectedRoom && set.category !== selectedRoom) return false;
+    if (selectedStyle && set.style !== selectedStyle) return false;
+    if (budget[0] && parseInt(set.price) > budget[0]) return false;
+    return true;
+  });
 
   const targetAudience = [
     {
@@ -112,11 +171,11 @@ const Index = () => {
               Дом начинается с мебели. Мебель — с LARANA
             </p>
             <div className="flex flex-wrap gap-4 animate-scale-in">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-foreground">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-foreground" onClick={() => setConfiguratorOpen(true)}>
                 <Icon name="Package" size={20} className="mr-2" />
                 Выбрать комплект
               </Button>
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" onClick={() => setHelpDialogOpen(true)}>
                 <Icon name="Phone" size={20} className="mr-2" />
                 Помощь с выбором
               </Button>
@@ -143,6 +202,66 @@ const Index = () => {
         </div>
       </section>
 
+      <section id="configurator" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Конфигуратор комплектов</h2>
+            <p className="text-lg text-muted-foreground">Подберите идеальную мебель под ваши потребности</p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <div>
+                <Label className="mb-2 block">Тип комнаты</Label>
+                <Select value={selectedRoom} onValueChange={setSelectedRoom}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Все комнаты" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все комнаты</SelectItem>
+                    <SelectItem value="Гостиная">Гостиная</SelectItem>
+                    <SelectItem value="Спальня">Спальня</SelectItem>
+                    <SelectItem value="Кухня">Кухня</SelectItem>
+                    <SelectItem value="Прихожая">Прихожая</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="mb-2 block">Стиль</Label>
+                <Select value={selectedStyle} onValueChange={setSelectedStyle}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Любой стиль" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Любой стиль</SelectItem>
+                    <SelectItem value="Скандинавский">Скандинавский</SelectItem>
+                    <SelectItem value="Современный">Современный</SelectItem>
+                    <SelectItem value="Классический">Классический</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="mb-2 block">Бюджет: до {budget[0]} ₽</Label>
+                <Slider
+                  value={budget}
+                  onValueChange={setBudget}
+                  max={5000}
+                  min={1000}
+                  step={100}
+                  className="mt-2"
+                />
+              </div>
+            </div>
+
+            <div className="text-center mb-4">
+              <p className="text-muted-foreground">Найдено комплектов: <span className="font-semibold text-foreground">{furnitureSets.length}</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="catalog" className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -152,7 +271,7 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {furnitureSets.map((set) => (
-              <Card key={set.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+              <Card key={set.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedSet(set)}>
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img 
                     src={set.image} 
@@ -170,8 +289,8 @@ const Index = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold">{set.price}</span>
-                    <Button className="bg-foreground hover:bg-foreground/90 text-background">
-                      Конфигуратор
+                    <Button className="bg-foreground hover:bg-foreground/90 text-background" onClick={(e) => { e.stopPropagation(); setSelectedSet(set); }}>
+                      Подробнее
                     </Button>
                   </div>
                 </CardContent>
@@ -314,6 +433,162 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <Dialog open={!!selectedSet} onOpenChange={() => setSelectedSet(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{selectedSet?.title}</DialogTitle>
+            <DialogDescription>{selectedSet?.description}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="aspect-video rounded-lg overflow-hidden">
+              <img src={selectedSet?.image} alt={selectedSet?.title} className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">В комплект входит:</h4>
+              <div className="flex flex-wrap gap-2">
+                {selectedSet?.items.map((item: string, idx: number) => (
+                  <Badge key={idx} variant="secondary">{item}</Badge>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Категория</p>
+                <p className="font-semibold">{selectedSet?.category}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Стиль</p>
+                <p className="font-semibold">{selectedSet?.style}</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t">
+              <div>
+                <p className="text-sm text-muted-foreground">Цена комплекта</p>
+                <p className="text-3xl font-bold">{selectedSet?.price}</p>
+              </div>
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-foreground" onClick={() => {
+                toast({ title: "Комплект добавлен в корзину!", description: `${selectedSet?.title} успешно добавлен` });
+                setSelectedSet(null);
+              }}>
+                <Icon name="ShoppingCart" size={20} className="mr-2" />
+                В корзину
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Помощь с выбором</DialogTitle>
+            <DialogDescription>
+              Наш специалист свяжется с вами и поможет подобрать идеальный комплект
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            toast({ title: "Заявка отправлена!", description: "Мы свяжемся с вами в ближайшее время" });
+            setHelpDialogOpen(false);
+          }} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Ваше имя</Label>
+              <Input id="name" placeholder="Анна" required />
+            </div>
+            <div>
+              <Label htmlFor="phone">Телефон</Label>
+              <Input id="phone" type="tel" placeholder="+7 (900) 123-45-67" required />
+            </div>
+            <div>
+              <Label htmlFor="room">Какую комнату обустраиваете?</Label>
+              <Select required>
+                <SelectTrigger id="room">
+                  <SelectValue placeholder="Выберите тип комнаты" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="living">Гостиная</SelectItem>
+                  <SelectItem value="bedroom">Спальня</SelectItem>
+                  <SelectItem value="kitchen">Кухня</SelectItem>
+                  <SelectItem value="hallway">Прихожая</SelectItem>
+                  <SelectItem value="office">Кабинет</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="comment">Комментарий (необязательно)</Label>
+              <Textarea id="comment" placeholder="Расскажите о ваших предпочтениях" />
+            </div>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground">
+              Отправить заявку
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={configuratorOpen} onOpenChange={setConfiguratorOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Конфигуратор комплектов</DialogTitle>
+            <DialogDescription>
+              Ответьте на несколько вопросов, и мы подберем идеальный комплект
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div>
+              <Label>Какую комнату обустраиваете?</Label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+                {['Гостиная', 'Спальня', 'Кухня', 'Прихожая'].map((room) => (
+                  <Button
+                    key={room}
+                    variant={selectedRoom === room ? 'default' : 'outline'}
+                    onClick={() => setSelectedRoom(selectedRoom === room ? '' : room)}
+                    className={selectedRoom === room ? 'bg-primary text-foreground' : ''}
+                  >
+                    {room}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <Label>Какой стиль вам нравится?</Label>
+              <div className="grid grid-cols-3 gap-3 mt-2">
+                {['Скандинавский', 'Современный', 'Классический'].map((style) => (
+                  <Button
+                    key={style}
+                    variant={selectedStyle === style ? 'default' : 'outline'}
+                    onClick={() => setSelectedStyle(selectedStyle === style ? '' : style)}
+                    className={selectedStyle === style ? 'bg-primary text-foreground' : ''}
+                  >
+                    {style}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <Label>Ваш бюджет: до {budget[0]} ₽</Label>
+              <Slider
+                value={budget}
+                onValueChange={setBudget}
+                max={5000}
+                min={1000}
+                step={100}
+                className="mt-4"
+              />
+            </div>
+            <div className="pt-4 border-t">
+              <p className="text-center mb-4">Подходящих комплектов: <span className="font-bold text-xl">{furnitureSets.length}</span></p>
+              <Button className="w-full bg-primary hover:bg-primary/90 text-foreground" onClick={() => {
+                setConfiguratorOpen(false);
+                document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+              }}>
+                <Icon name="Search" size={20} className="mr-2" />
+                Показать результаты
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
