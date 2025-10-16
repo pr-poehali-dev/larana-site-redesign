@@ -46,6 +46,19 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
   const touchEndX = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [swipeHintVisible, setSwipeHintVisible] = useState(true);
+  
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'AudioContext' in window) {
+      audioContextRef.current = new AudioContext();
+    }
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -181,6 +194,48 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     touchEndX.current = e.touches[0].clientX;
   };
 
+  const playSound = (type: 'forward' | 'back' | 'error' | 'success') => {
+    if (!audioContextRef.current) return;
+    
+    const ctx = audioContextRef.current;
+    const now = ctx.currentTime;
+    
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    switch (type) {
+      case 'forward':
+        oscillator.frequency.setValueAtTime(800, now);
+        oscillator.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+        gainNode.gain.setValueAtTime(0.1, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        break;
+      case 'back':
+        oscillator.frequency.setValueAtTime(600, now);
+        oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+        gainNode.gain.setValueAtTime(0.08, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+        break;
+      case 'error':
+        oscillator.frequency.setValueAtTime(300, now);
+        gainNode.gain.setValueAtTime(0.12, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        break;
+      case 'success':
+        oscillator.frequency.setValueAtTime(800, now);
+        oscillator.frequency.exponentialRampToValueAtTime(1600, now + 0.15);
+        gainNode.gain.setValueAtTime(0.15, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        break;
+    }
+    
+    oscillator.start(now);
+    oscillator.stop(now + 0.2);
+  };
+
   const triggerHaptic = (type: 'light' | 'medium' | 'heavy' | 'error' = 'light') => {
     if ('vibrate' in navigator) {
       const patterns = {
@@ -206,12 +261,15 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
           setStep(2);
           swipeSuccessful = true;
           triggerHaptic('medium');
+          playSound('forward');
         } else if (step === 2 && isStep2Valid()) {
           setStep(3);
           swipeSuccessful = true;
           triggerHaptic('medium');
+          playSound('forward');
         } else {
           triggerHaptic('error');
+          playSound('error');
         }
       } else {
         // Свайп вправо - предыдущий шаг
@@ -219,6 +277,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
           setStep(step - 1);
           swipeSuccessful = true;
           triggerHaptic('light');
+          playSound('back');
         }
       }
     }
@@ -257,11 +316,13 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
         return;
       }
       setStep(2);
+      playSound('forward');
     } else if (step === 2) {
       if (!isStep2Valid()) {
         return;
       }
       setStep(3);
+      playSound('forward');
     } else {
       const savedUserData = {
         ...user,
@@ -270,6 +331,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
         email: formData.email
       };
       localStorage.setItem('userData', JSON.stringify(savedUserData));
+      playSound('success');
       onConfirmOrder(formData);
     }
   };
@@ -433,7 +495,10 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={() => setStep(step - 1)}
+                onClick={() => {
+                  setStep(step - 1);
+                  playSound('back');
+                }}
                 className="transition-all duration-300 hover:scale-105"
               >
                 <Icon name="ChevronLeft" size={20} className="mr-1" />
