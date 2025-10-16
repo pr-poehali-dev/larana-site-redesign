@@ -56,7 +56,7 @@ const OrdersTab = () => {
           'X-User-Id': 'admin'
         },
         body: JSON.stringify({
-          order_id: orderId,
+          orderId: orderId,
           status: newStatus
         })
       });
