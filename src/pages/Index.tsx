@@ -330,6 +330,7 @@ const Index = () => {
         onClose={() => setCheckoutOpen(false)}
         cartItems={cartItems}
         onConfirmOrder={handleConfirmOrder}
+        user={user}
       />
 
       <AuthDialog

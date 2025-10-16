@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,9 +20,10 @@ interface CheckoutDialogProps {
   onClose: () => void;
   cartItems: CartItem[];
   onConfirmOrder: (orderData: any) => void;
+  user?: any;
 }
 
-const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder }: CheckoutDialogProps) => {
+const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: CheckoutDialogProps) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -34,6 +35,19 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder }: CheckoutDi
     deliveryType: 'delivery',
     paymentType: 'card'
   });
+
+  useEffect(() => {
+    if (user && open) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || '',
+        phone: user.phone || '',
+        email: user.email || '',
+        address: user.address || '',
+        city: user.city || ''
+      }));
+    }
+  }, [user, open]);
 
   const total = cartItems.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
@@ -73,6 +87,14 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder }: CheckoutDi
         <form onSubmit={handleSubmit} className="space-y-6">
           {step === 1 && (
             <div className="space-y-4">
+              {user && (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Icon name="CheckCircle2" size={16} className="text-primary" />
+                    Данные заполнены автоматически из вашего профиля
+                  </p>
+                </div>
+              )}
               <div>
                 <Label htmlFor="name">Имя и фамилия *</Label>
                 <Input 
