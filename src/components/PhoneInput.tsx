@@ -1,6 +1,7 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Icon from '@/components/ui/icon';
 
 interface PhoneInputProps {
   value: string;
@@ -20,6 +21,7 @@ const PhoneInput = ({
   id = 'phone'
 }: PhoneInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isTouched, setIsTouched] = useState(false);
 
   const formatPhoneNumber = (input: string): string => {
     const digits = input.replace(/\D/g, '');
@@ -132,24 +134,55 @@ const PhoneInput = ({
     }
   }, []);
 
+  const isValid = value.replace(/\D/g, '').length === 11;
+  const digitsCount = value.replace(/\D/g, '').length;
+
   return (
     <div>
       {label && <Label htmlFor={id}>{label} {required && '*'}</Label>}
-      <Input
-        ref={inputRef}
-        id={id}
-        type="tel"
-        placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
-        required={required}
-        maxLength={18}
-      />
-      {value.length > 0 && value.replace(/\D/g, '').length < 11 && (
+      <div className="relative">
+        <Input
+          ref={inputRef}
+          id={id}
+          type="tel"
+          placeholder={placeholder}
+          value={value}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={() => setIsTouched(true)}
+          required={required}
+          maxLength={18}
+          className={isTouched && digitsCount > 0 && !isValid ? 'border-amber-500 focus-visible:ring-amber-500' : ''}
+        />
+        {isTouched && digitsCount > 0 && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            {isValid ? (
+              <Icon name="CheckCircle2" size={16} className="text-green-600" />
+            ) : (
+              <Icon name="AlertCircle" size={16} className="text-amber-500" />
+            )}
+          </div>
+        )}
+      </div>
+      
+      {isTouched && digitsCount > 0 && digitsCount < 11 && (
+        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+          <Icon name="Info" size={12} />
+          Введите ещё {11 - digitsCount} {digitsCount === 10 ? 'цифру' : 'цифры'}
+        </p>
+      )}
+      
+      {isTouched && isValid && (
+        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+          <Icon name="CheckCircle2" size={12} />
+          Номер введён полностью
+        </p>
+      )}
+
+      {!isTouched && digitsCount === 0 && (
         <p className="text-xs text-muted-foreground mt-1">
-          Введите полный номер телефона (11 цифр)
+          Формат: +7 (XXX) XXX-XX-XX
         </p>
       )}
     </div>

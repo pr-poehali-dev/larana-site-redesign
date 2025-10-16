@@ -1,8 +1,8 @@
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import PhoneInput from '@/components/PhoneInput';
 import EmailInput from '@/components/EmailInput';
+import NameInput from '@/components/NameInput';
 
 interface ContactStepProps {
   formData: {
@@ -25,16 +25,13 @@ const ContactStep = ({ formData, setFormData, user }: ContactStepProps) => {
           </p>
         </div>
       )}
-      <div>
-        <Label htmlFor="name">Имя и фамилия *</Label>
-        <Input 
-          id="name" 
-          placeholder="Анна Иванова" 
-          required
-          value={formData.name}
-          onChange={(e) => setFormData({...formData, name: e.target.value})}
-        />
-      </div>
+      <NameInput
+        value={formData.name}
+        onChange={(value) => setFormData({...formData, name: value})}
+        label="Имя и фамилия"
+        placeholder="Анна Иванова"
+        required
+      />
       <PhoneInput
         value={formData.phone}
         onChange={(value) => setFormData({...formData, phone: value})}
