@@ -17,7 +17,7 @@ const Header = ({ cartItemsCount, onCartClick }: HeaderProps) => {
               <img 
                 src="https://cdn.poehali.dev/files/98b7ff1c-c414-4f2c-9940-dfb5e4d5774c.png" 
                 alt="LARANA" 
-                className="h-12 w-auto"
+                className="h-16 md:h-20 w-auto"
               />
             </a>
             <nav className="hidden md:flex gap-6">
