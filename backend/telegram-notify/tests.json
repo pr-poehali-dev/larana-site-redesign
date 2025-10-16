@@ -1,0 +1,41 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Send notification with order data",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "order": {
+          "orderNumber": "ORD-TEST-001",
+          "name": "Тестовый клиент",
+          "email": "test@example.com",
+          "phone": "+7 999 123-45-67",
+          "deliveryType": "delivery",
+          "paymentType": "card",
+          "address": "ул. Тестовая, д. 1",
+          "city": "Москва",
+          "totalAmount": 50000,
+          "items": [
+            {
+              "title": "Диван",
+              "quantity": 1,
+              "price": 50000
+            }
+          ],
+          "comment": "Позвоните за час"
+        }
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

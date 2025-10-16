@@ -247,6 +247,31 @@ const Index = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Order created successfully:', data);
+        
+        fetch('https://functions.poehali.dev/5bb39c34-5468-4f00-906c-c2bed52f18d9', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            order: {
+              orderNumber: data.orderNumber,
+              name: orderData.name,
+              email: userEmail,
+              phone: orderData.phone,
+              deliveryType: orderData.deliveryType,
+              paymentType: orderData.paymentType,
+              address: orderData.address,
+              city: orderData.city,
+              totalAmount,
+              items: cartItems.map(item => ({
+                title: item.title,
+                price: parseInt(item.price.replace(/\D/g, '')),
+                quantity: item.quantity
+              })),
+              comment: orderData.comment
+            }
+          })
+        }).catch(err => console.log('Telegram notification failed:', err));
+        
         toast({ 
           title: "Заказ успешно оформлен!", 
           description: `Номер заказа: ${data.orderNumber}. Мы свяжемся с вами в ближайшее время.`,

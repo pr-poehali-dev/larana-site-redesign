@@ -121,14 +121,23 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
                 {order.deliveryType && (
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Тип доставки</p>
-                    <p className="text-sm">{order.deliveryType}</p>
+                    <p className="text-sm">
+                      {order.deliveryType === 'delivery' ? 'Доставка' : 
+                       order.deliveryType === 'pickup' ? 'Самовывоз' : 
+                       order.deliveryType}
+                    </p>
                   </div>
                 )}
 
                 {order.paymentType && (
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Способ оплаты</p>
-                    <p className="text-sm">{order.paymentType}</p>
+                    <p className="text-sm">
+                      {order.paymentType === 'card' ? 'Картой онлайн' : 
+                       order.paymentType === 'cash' ? 'Наличными' : 
+                       order.paymentType === 'card_courier' ? 'Картой курьеру' :
+                       order.paymentType}
+                    </p>
                   </div>
                 )}
                 
