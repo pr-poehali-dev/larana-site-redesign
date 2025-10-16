@@ -1,16 +1,19 @@
 export const EMPLOYEE_TYPES = {
+  new: 'Новый',
   order_processing: 'Обработка заказов',
   delivery: 'Доставка',
   assembly: 'Сборка'
 };
 
 export const EMPLOYEE_TYPES_COLORS = {
+  new: 'bg-gray-500',
   order_processing: 'bg-blue-500',
   delivery: 'bg-green-500',
   assembly: 'bg-orange-500'
 };
 
 export const STATUS_BY_TYPE = {
+  new: 'new',
   order_processing: 'in_processing',
   delivery: 'in_delivery',
   assembly: 'delivered'
