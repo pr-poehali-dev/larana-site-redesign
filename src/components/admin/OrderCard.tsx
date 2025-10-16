@@ -14,6 +14,7 @@ interface OrderCardProps {
 const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderCardProps) => {
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+      new: { label: 'Новый', variant: 'default' },
       pending: { label: 'Новый', variant: 'default' },
       in_processing: { label: 'В обработке', variant: 'secondary' },
       in_delivery: { label: 'Передан в доставку', variant: 'secondary' },
@@ -22,12 +23,13 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
       cancelled: { label: 'Отменен', variant: 'destructive' }
     };
     
-    const config = statusConfig[status] || statusConfig.pending;
+    const config = statusConfig[status] || statusConfig.new;
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
+      new: 'Новый',
       pending: 'Новый',
       in_processing: 'В обработке',
       in_delivery: 'Передан в доставку',
@@ -204,7 +206,7 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Новый</SelectItem>
+                  <SelectItem value="new">Новый</SelectItem>
                   <SelectItem value="in_processing">В обработке</SelectItem>
                   <SelectItem value="in_delivery">Передан в доставку</SelectItem>
                   <SelectItem value="delivered">Доставлен</SelectItem>
