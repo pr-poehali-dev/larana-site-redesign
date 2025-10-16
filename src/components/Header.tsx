@@ -13,7 +13,13 @@ const Header = ({ cartItemsCount, onCartClick }: HeaderProps) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <h1 className="text-2xl font-bold text-foreground">LARANA</h1>
+            <a href="#" className="flex items-center gap-3">
+              <img 
+                src="https://cdn.poehali.dev/files/2cc06ef2-4773-4a99-83f3-5dfc2d550c53.png" 
+                alt="LARANA" 
+                className="h-10 w-auto"
+              />
+            </a>
             <nav className="hidden md:flex gap-6">
               <a href="#catalog" className="text-sm hover:text-primary transition-colors">Каталог</a>
               <a href="#configurator" className="text-sm hover:text-primary transition-colors">Конфигуратор</a>

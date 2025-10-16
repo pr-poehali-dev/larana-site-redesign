@@ -6,7 +6,11 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">LARANA</h3>
+            <img 
+              src="https://cdn.poehali.dev/files/2cc06ef2-4773-4a99-83f3-5dfc2d550c53.png" 
+              alt="LARANA" 
+              className="h-10 w-auto mb-4 brightness-0 invert"
+            />
             <p className="text-sm opacity-80">Готовые интерьеры под ключ</p>
           </div>
           <div>
