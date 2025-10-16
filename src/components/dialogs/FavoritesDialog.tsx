@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { useToast } from '@/hooks/use-toast';
 
 interface FavoritesDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface FavoritesDialogProps {
 const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: FavoritesDialogProps) => {
   const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (open && user) {
@@ -67,6 +69,24 @@ const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: F
   };
 
   const favoriteProducts = allProducts.filter(product => favoriteIds.includes(product.id));
+
+  const shareLink = () => {
+    const shareableIds = favoriteIds.join(',');
+    const url = `${window.location.origin}?favorites=${shareableIds}`;
+    
+    navigator.clipboard.writeText(url).then(() => {
+      toast({
+        title: "Ссылка скопирована!",
+        description: "Отправьте её друзьям, чтобы поделиться избранным",
+      });
+    }).catch(() => {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось скопировать ссылку",
+        variant: "destructive"
+      });
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -165,9 +185,15 @@ const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: F
             <p className="text-sm text-muted-foreground">
               Всего избранных: <span className="font-semibold text-foreground">{favoriteProducts.length}</span>
             </p>
-            <Button variant="outline" onClick={onClose}>
-              Закрыть
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={shareLink}>
+                <Icon name="Share2" size={16} className="mr-2" />
+                Поделиться
+              </Button>
+              <Button variant="outline" onClick={onClose}>
+                Закрыть
+              </Button>
+            </div>
           </div>
         )}
       </DialogContent>

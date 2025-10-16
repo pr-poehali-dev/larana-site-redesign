@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
@@ -300,6 +300,29 @@ const Index = () => {
       description: "До новых встреч!"
     });
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const favoritesParam = params.get('favorites');
+    
+    if (favoritesParam) {
+      const favoriteIds = favoritesParam.split(',').map(Number);
+      const favoriteProducts = allFurnitureSets.filter(product => 
+        favoriteIds.includes(product.id)
+      );
+      
+      if (favoriteProducts.length > 0) {
+        toast({
+          title: "Избранные товары загружены",
+          description: `Найдено ${favoriteProducts.length} товаров из общей подборки`,
+        });
+        
+        setTimeout(() => {
+          document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+        }, 500);
+      }
+    }
+  }, []);
 
   return (
     <div className="min-h-screen">
