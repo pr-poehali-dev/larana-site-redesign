@@ -14,6 +14,18 @@ const EMPLOYEE_TYPES = {
   assembly: 'Сборка'
 };
 
+const EMPLOYEE_TYPES_COLORS = {
+  order_processing: 'bg-blue-500',
+  delivery: 'bg-green-500',
+  assembly: 'bg-orange-500'
+};
+
+const STATUS_BY_TYPE = {
+  order_processing: 'in_processing',
+  delivery: 'in_delivery',
+  assembly: 'delivered'
+};
+
 const EmployeePanel = () => {
   const [searchParams] = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -335,11 +347,50 @@ const EmployeePanel = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">Мои заказы</h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-4">
             {orders.length === 0 
               ? 'У вас пока нет заказов для обработки' 
-              : `Заказов к обработке: ${orders.length}`}
+              : `Всего заказов: ${orders.length}`}
           </p>
+
+          {/* Статистика по категориям */}
+          {employee?.employeeTypes && employee.employeeTypes.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {employee.employeeTypes.map((type: string) => {
+                const statusForType = STATUS_BY_TYPE[type as keyof typeof STATUS_BY_TYPE];
+                const count = orders.filter(order => order.status === statusForType).length;
+                const totalAmount = orders
+                  .filter(order => order.status === statusForType)
+                  .reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+
+                return (
+                  <Card key={type}>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]}`} />
+                        {EMPLOYEE_TYPES[type as keyof typeof EMPLOYEE_TYPES]}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-1">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-bold">{count}</span>
+                          <span className="text-sm text-muted-foreground">
+                            {count === 1 ? 'заказ' : count < 5 ? 'заказа' : 'заказов'}
+                          </span>
+                        </div>
+                        {totalAmount > 0 && (
+                          <p className="text-sm text-muted-foreground">
+                            На сумму: {totalAmount.toLocaleString('ru-RU')} ₽
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {loading && orders.length === 0 ? (
