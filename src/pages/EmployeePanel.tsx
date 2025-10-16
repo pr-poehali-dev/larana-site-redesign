@@ -187,7 +187,8 @@ const EmployeePanel = () => {
 
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     try {
-      const response = await fetch(`https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0?employeeType=${employeeType}`, {
+      const employeeTypes = employee?.employeeTypes?.join(',') || employee?.employeeType || '';
+      const response = await fetch(`https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0?employeeType=${employeeTypes}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
