@@ -69,7 +69,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         password_hash = hash_password(password)
         
         cur.execute(
-            "SELECT id, name, phone, email, employee_type, employee_types, status, login FROM employees WHERE login = %s AND password_hash = %s",
+            "SELECT id, name, phone, email, employee_type, employee_types, status, login, require_password_change FROM employees WHERE login = %s AND password_hash = %s",
             (login, password_hash)
         )
         
@@ -113,7 +113,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'employeeType': employee['employee_type'],
                     'employeeTypes': employee['employee_types'] if employee['employee_types'] else [],
                     'status': employee['status'],
-                    'login': employee['login']
+                    'login': employee['login'],
+                    'requirePasswordChange': employee.get('require_password_change', False)
                 }
             }),
             'isBase64Encoded': False

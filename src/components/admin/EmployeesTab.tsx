@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Employee, EmployeeFormData, EMPLOYEE_TYPES } from './employees/types';
 import { EmployeeCard } from './employees/EmployeeCard';
 import { EmployeeFormDialog } from './employees/EmployeeFormDialog';
-import { CredentialsDialog } from './employees/CredentialsDialog';
+import { GeneratedPasswordDialog } from '@/pages/employee-panel/GeneratedPasswordDialog';
 import { EmployeesList } from './employees/EmployeesList';
 
 const EmployeesTab = () => {
@@ -283,14 +283,17 @@ const EmployeesTab = () => {
         onFormDataChange={setFormData}
       />
 
-      <CredentialsDialog
-        isOpen={isPasswordDialogOpen}
-        credentials={generatedCredentials}
-        onClose={() => {
-          setIsPasswordDialogOpen(false);
-          setGeneratedCredentials(null);
-        }}
-      />
+      {generatedCredentials && (
+        <GeneratedPasswordDialog
+          open={isPasswordDialogOpen}
+          onOpenChange={(open) => {
+            setIsPasswordDialogOpen(open);
+            if (!open) setGeneratedCredentials(null);
+          }}
+          login={generatedCredentials.login}
+          password={generatedCredentials.password}
+        />
+      )}
     </div>
   );
 };

@@ -25,6 +25,7 @@ export interface EmployeeData {
   employeeTypes?: string[];
   status: string;
   login?: string;
+  requirePasswordChange?: boolean;
 }
 
 export interface OrderData {

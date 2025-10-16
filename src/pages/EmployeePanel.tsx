@@ -110,10 +110,20 @@ const EmployeePanel = () => {
             localStorage.setItem('employeeId', data.employee.id.toString());
             setEmployee(data.employee);
             setIsAuthenticated(true);
-            toast({
-              title: "Успешный вход",
-              description: `Добро пожаловать, ${data.employee.name}`
-            });
+            
+            if (data.employee.requirePasswordChange) {
+              setChangePasswordOpen(true);
+              toast({
+                title: "Смена пароля",
+                description: "Пожалуйста, установите новый пароль",
+                variant: "default"
+              });
+            } else {
+              toast({
+                title: "Успешный вход",
+                description: `Добро пожаловать, ${data.employee.name}`
+              });
+            }
             return;
           }
         } else if (response.status === 401) {
@@ -238,6 +248,7 @@ const EmployeePanel = () => {
         open={changePasswordOpen}
         onOpenChange={setChangePasswordOpen}
         employeeId={employee.id.toString()}
+        requirePasswordChange={employee.requirePasswordChange}
       />
 
       <main className="container mx-auto px-4 py-8">

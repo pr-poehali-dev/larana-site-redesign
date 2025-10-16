@@ -17,12 +17,14 @@ interface ChangePasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   employeeId: string;
+  requirePasswordChange?: boolean;
 }
 
 export const ChangePasswordDialog = ({
   open,
   onOpenChange,
-  employeeId
+  employeeId,
+  requirePasswordChange = false
 }: ChangePasswordDialogProps) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -102,14 +104,29 @@ export const ChangePasswordDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={requirePasswordChange ? () => {} : onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={requirePasswordChange ? (e) => e.preventDefault() : undefined}>
         <DialogHeader>
-          <DialogTitle>Изменить пароль</DialogTitle>
+          <DialogTitle>
+            {requirePasswordChange ? 'Установите новый пароль' : 'Изменить пароль'}
+          </DialogTitle>
           <DialogDescription>
-            Введите текущий пароль и новый пароль для изменения
+            {requirePasswordChange 
+              ? 'Это временный пароль. Пожалуйста, установите новый пароль для продолжения работы.'
+              : 'Введите текущий пароль и новый пароль для изменения'
+            }
           </DialogDescription>
         </DialogHeader>
+        {requirePasswordChange && (
+          <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+            <div className="flex gap-2">
+              <Icon name="AlertTriangle" size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-800 dark:text-amber-200">
+                Вы должны изменить временный пароль перед началом работы
+              </p>
+            </div>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -182,17 +199,19 @@ export const ChangePasswordDialog = ({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={loading}
-            >
-              Отмена
-            </Button>
-            <Button type="submit" disabled={loading}>
+            {!requirePasswordChange && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={loading}
+              >
+                Отмена
+              </Button>
+            )}
+            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading && <Icon name="Loader2" size={16} className="mr-2 animate-spin" />}
-              Изменить пароль
+              {requirePasswordChange ? 'Установить пароль' : 'Изменить пароль'}
             </Button>
           </DialogFooter>
         </form>

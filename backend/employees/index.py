@@ -91,7 +91,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
             else:
                 cur.execute(
-                    "SELECT id, name, phone, email, employee_type, employee_types, status, login, password_hash, created_at FROM employees ORDER BY created_at DESC"
+                    "SELECT id, name, phone, email, employee_type, employee_types, status, login, password_hash, require_password_change, created_at FROM employees ORDER BY created_at DESC"
                 )
             
             employees = cur.fetchall()
@@ -108,6 +108,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'status': emp['status'],
                     'login': emp.get('login'),
                     'hasPassword': bool(emp.get('password_hash')),
+                    'requirePasswordChange': emp.get('require_password_change', False),
                     'createdAt': emp['created_at'].isoformat() if emp['created_at'] else None
                 })
             
@@ -145,7 +146,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 password_hash = hash_password(generated_password)
             
             cur.execute(
-                "INSERT INTO employees (name, phone, email, employee_type, employee_types, status, login, password_hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                "INSERT INTO employees (name, phone, email, employee_type, employee_types, status, login, password_hash, require_password_change) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
                 (
                     body_data.get('name'),
                     body_data.get('phone'),
@@ -154,7 +155,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     employee_types,
                     body_data.get('status', 'active'),
                     login,
-                    password_hash
+                    password_hash,
+                    bool(generated_password)
                 )
             )
             employee_id = cur.fetchone()['id']
@@ -208,7 +210,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 password_hash = hash_password(new_password)
                 
                 cur.execute(
-                    "UPDATE employees SET password_hash = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                    "UPDATE employees SET password_hash = %s, require_password_change = TRUE, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
                     (password_hash, employee_id)
                 )
                 conn.commit()

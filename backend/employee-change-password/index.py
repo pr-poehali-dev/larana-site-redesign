@@ -101,7 +101,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         new_password_hash = hash_password(new_password)
         
         cur.execute(
-            "UPDATE employees SET password_hash = %s WHERE id = %s",
+            "UPDATE employees SET password_hash = %s, require_password_change = FALSE WHERE id = %s",
             (new_password_hash, employee_id)
         )
         
