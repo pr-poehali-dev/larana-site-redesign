@@ -8,6 +8,7 @@ import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import AddressAutocomplete from '@/components/AddressAutocomplete';
+import PhoneInput from '@/components/PhoneInput';
 
 interface CartItem {
   id: number;
@@ -106,17 +107,12 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                 />
               </div>
-              <div>
-                <Label htmlFor="phone">Телефон *</Label>
-                <Input 
-                  id="phone" 
-                  type="tel" 
-                  placeholder="+7 (900) 123-45-67" 
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                />
-              </div>
+              <PhoneInput
+                value={formData.phone}
+                onChange={(value) => setFormData({...formData, phone: value})}
+                label="Телефон"
+                required
+              />
               <div>
                 <Label htmlFor="email">Email *</Label>
                 <Input 
