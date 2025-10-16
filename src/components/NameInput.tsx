@@ -78,15 +78,29 @@ const NameInput = ({
         )}
       </div>
 
-      {isTouched && value.length > 0 && !hasMultipleWords && (
-        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+      {value.length === 0 && isTouched && (
+        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="AlertCircle" size={12} />
+          Обязательное поле для оформления заказа
+        </p>
+      )}
+
+      {value.length > 0 && value.length < 2 && isTouched && (
+        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="Info" size={12} />
+          Слишком короткое имя (минимум 2 символа)
+        </p>
+      )}
+
+      {value.length >= 2 && !hasMultipleWords && isTouched && (
+        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
           <Icon name="Info" size={12} />
           Укажите имя и фамилию через пробел
         </p>
       )}
 
-      {isTouched && hasMultipleWords && (
-        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+      {hasMultipleWords && isTouched && (
+        <p className="text-xs text-green-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
           <Icon name="CheckCircle2" size={12} />
           Отлично! Имя оформлено правильно
         </p>

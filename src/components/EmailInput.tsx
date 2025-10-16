@@ -141,16 +141,37 @@ const EmailInput = ({
         </button>
       )}
 
-      {isTouched && !isValid && value.length > 0 && (
-        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+      {value.length === 0 && isTouched && (
+        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
           <Icon name="AlertCircle" size={12} />
-          Введите корректный email (например: name@mail.ru)
+          Обязательное поле для оформления заказа
         </p>
       )}
 
-      {value.length === 0 && isTouched && required && (
+      {value.length > 0 && !value.includes('@') && isTouched && (
+        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="Info" size={12} />
+          Email должен содержать символ @
+        </p>
+      )}
+
+      {value.includes('@') && !isValid && value.length > 0 && isTouched && (
+        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="AlertCircle" size={12} />
+          Неверный формат email (пример: ivan@mail.ru)
+        </p>
+      )}
+
+      {isValid && value.length > 0 && isTouched && (
+        <p className="text-xs text-green-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="CheckCircle2" size={12} />
+          Email введён правильно
+        </p>
+      )}
+
+      {!isTouched && value.length === 0 && (
         <p className="text-xs text-muted-foreground mt-1">
-          Email обязателен для оформления заказа
+          Например: ivan@mail.ru
         </p>
       )}
     </div>

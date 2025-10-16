@@ -162,15 +162,22 @@ const PhoneInput = ({
         )}
       </div>
       
-      {isTouched && digitsCount > 0 && digitsCount < 11 && (
-        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+      {digitsCount === 0 && isTouched && (
+        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="AlertCircle" size={12} />
+          Обязательное поле для оформления заказа
+        </p>
+      )}
+
+      {digitsCount > 0 && digitsCount < 11 && isTouched && (
+        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
           <Icon name="Info" size={12} />
-          Введите ещё {11 - digitsCount} {digitsCount === 10 ? 'цифру' : 'цифры'}
+          Введите ещё {11 - digitsCount} {digitsCount === 10 ? 'цифру' : digitsCount >= 7 ? 'цифры' : 'цифр'}
         </p>
       )}
       
-      {isTouched && isValid && (
-        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+      {isValid && isTouched && (
+        <p className="text-xs text-green-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
           <Icon name="CheckCircle2" size={12} />
           Номер введён полностью
         </p>

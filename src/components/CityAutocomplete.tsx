@@ -29,6 +29,7 @@ const CityAutocomplete = ({
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [isTouched, setIsTouched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -140,6 +141,7 @@ const CityAutocomplete = ({
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+          onBlur={() => setIsTouched(true)}
           required={required}
           autoComplete="address-level2"
           className="pr-10"
@@ -182,9 +184,31 @@ const CityAutocomplete = ({
         </div>
       )}
 
+      {value.length === 0 && isTouched && (
+        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="AlertCircle" size={12} />
+          Укажите город доставки
+        </p>
+      )}
+
       {value.length > 0 && value.length < 2 && (
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+          <Icon name="Info" size={12} />
           Введите минимум 2 символа для поиска
+        </p>
+      )}
+
+      {value.length >= 2 && !isTouched && (
+        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+          <Icon name="Search" size={12} />
+          Выберите город из выпадающего списка
+        </p>
+      )}
+
+      {value.length >= 2 && isTouched && (
+        <p className="text-xs text-green-600 mt-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+          <Icon name="CheckCircle2" size={12} />
+          Город указан
         </p>
       )}
     </div>
