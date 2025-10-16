@@ -12,14 +12,19 @@ import Footer from '@/components/Footer';
 import ProductDialog from '@/components/dialogs/ProductDialog';
 import HelpDialog from '@/components/dialogs/HelpDialog';
 import ConfiguratorDialog from '@/components/dialogs/ConfiguratorDialog';
+import CartDialog from '@/components/dialogs/CartDialog';
+import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
 
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [configuratorOpen, setConfiguratorOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([3000]);
+  const [cartItems, setCartItems] = useState<any[]>([]);
   const { toast } = useToast();
 
   const allFurnitureSets = [
@@ -93,11 +98,45 @@ const Index = () => {
   });
 
   const handleAddToCart = (set: any) => {
+    const existingItem = cartItems.find(item => item.id === set.id);
+    if (existingItem) {
+      setCartItems(cartItems.map(item => 
+        item.id === set.id ? { ...item, quantity: item.quantity + 1 } : item
+      ));
+    } else {
+      setCartItems([...cartItems, { ...set, quantity: 1 }]);
+    }
     toast({ 
       title: "Комплект добавлен в корзину!", 
       description: `${set.title} успешно добавлен` 
     });
     setSelectedSet(null);
+  };
+
+  const handleRemoveFromCart = (id: number) => {
+    setCartItems(cartItems.filter(item => item.id !== id));
+    toast({ title: "Товар удален из корзины" });
+  };
+
+  const handleUpdateQuantity = (id: number, quantity: number) => {
+    setCartItems(cartItems.map(item => 
+      item.id === id ? { ...item, quantity } : item
+    ));
+  };
+
+  const handleCheckout = () => {
+    setCartOpen(false);
+    setCheckoutOpen(true);
+  };
+
+  const handleConfirmOrder = (orderData: any) => {
+    toast({ 
+      title: "Заказ успешно оформлен!", 
+      description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+      duration: 5000
+    });
+    setCartItems([]);
+    setCheckoutOpen(false);
   };
 
   const handleHelpSubmit = () => {
@@ -115,7 +154,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <Header />
+      <Header 
+        cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+        onCartClick={() => setCartOpen(true)}
+      />
       
       <HeroSection 
         onConfiguratorOpen={() => setConfiguratorOpen(true)}
@@ -170,6 +212,22 @@ const Index = () => {
         setBudget={setBudget}
         resultsCount={furnitureSets.length}
         onShowResults={handleShowResults}
+      />
+
+      <CartDialog
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        cartItems={cartItems}
+        onRemoveItem={handleRemoveFromCart}
+        onUpdateQuantity={handleUpdateQuantity}
+        onCheckout={handleCheckout}
+      />
+
+      <CheckoutDialog
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        cartItems={cartItems}
+        onConfirmOrder={handleConfirmOrder}
       />
     </div>
   );
