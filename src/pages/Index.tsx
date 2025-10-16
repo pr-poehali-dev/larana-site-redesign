@@ -346,7 +346,7 @@ const Index = () => {
         onHelpOpen={() => setHelpDialogOpen(true)}
       />
       
-      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-secondary/20">
+      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-secondary/20 hidden md:block">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Популярные комплекты</h2>
