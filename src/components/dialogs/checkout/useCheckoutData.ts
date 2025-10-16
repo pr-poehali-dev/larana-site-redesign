@@ -86,15 +86,15 @@ export const useCheckoutData = (open: boolean, user?: any) => {
   };
 
   const handleSelectAddress = (address: SavedAddress) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       city: address.city,
       address: address.address,
       apartment: address.apartment || '',
       entrance: address.entrance || '',
       floor: address.floor || '',
       intercom: address.intercom || ''
-    });
+    }));
     setHasSavedAddress(true);
   };
 
