@@ -52,10 +52,27 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                     <p className="font-medium text-sm truncate">{product.title}</p>
                     <p className="text-xs text-muted-foreground">{product.category}</p>
                     <p className="text-sm font-semibold mt-1">{product.price}</p>
+                    {product.supplierArticle && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Арт: {product.supplierArticle}
+                      </p>
+                    )}
+                    {product.stockQuantity !== null && (
+                      <p className="text-xs text-muted-foreground">
+                        Склад: {product.stockQuantity} шт
+                      </p>
+                    )}
                   </div>
-                  <Badge variant={product.inStock ? 'default' : 'secondary'}>
-                    {product.inStock ? 'В наличии' : 'Нет'}
-                  </Badge>
+                  <div className="flex flex-col items-end gap-1">
+                    <Badge variant={product.inStock ? 'default' : 'secondary'}>
+                      {product.inStock ? 'В наличии' : 'Нет'}
+                    </Badge>
+                    {product.stockQuantity !== null && (
+                      <Badge variant={product.stockQuantity > 0 ? 'outline' : 'destructive'}>
+                        {product.stockQuantity} шт
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>

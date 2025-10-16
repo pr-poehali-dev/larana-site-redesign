@@ -27,7 +27,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     style: '',
     description: '',
     colors: '',
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null as number | null
   });
   const [uploading, setUploading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -47,7 +49,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         style: product.style,
         description: product.description,
         colors: product.colors.join(', '),
-        inStock: product.inStock
+        inStock: product.inStock,
+        supplierArticle: product.supplierArticle || '',
+        stockQuantity: product.stockQuantity || null
       });
     } else {
       setProductForm({
@@ -60,7 +64,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         style: '',
         description: '',
         colors: '',
-        inStock: true
+        inStock: true,
+        supplierArticle: '',
+        stockQuantity: null
       });
     }
   }, [product]);
@@ -185,7 +191,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       style: productForm.style,
       description: productForm.description,
       colors: productForm.colors.split(',').map(color => color.trim()),
-      inStock: productForm.inStock
+      inStock: productForm.inStock,
+      supplierArticle: productForm.supplierArticle,
+      stockQuantity: productForm.stockQuantity
     };
 
     const updatedProducts = products.map(p => 
@@ -212,7 +220,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       style: productForm.style,
       description: productForm.description,
       colors: productForm.colors.split(',').map(color => color.trim()),
-      inStock: productForm.inStock
+      inStock: productForm.inStock,
+      supplierArticle: productForm.supplierArticle,
+      stockQuantity: productForm.stockQuantity
     };
 
     onProductUpdate([...products, newProduct]);
@@ -226,7 +236,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       style: '',
       description: '',
       colors: '',
-      inStock: true
+      inStock: true,
+      supplierArticle: '',
+      stockQuantity: null
     });
     toast({
       title: "Товар добавлен",
@@ -274,6 +286,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
               <SelectItem value="Спальня">Спальня</SelectItem>
               <SelectItem value="Гостиная">Гостиная</SelectItem>
               <SelectItem value="Кухня">Кухня</SelectItem>
+              <SelectItem value="Шкафы">Шкафы</SelectItem>
               <SelectItem value="Детская">Детская</SelectItem>
               <SelectItem value="Прихожая">Прихожая</SelectItem>
             </SelectContent>
@@ -300,6 +313,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Скандинавский">Скандинавский</SelectItem>
+              <SelectItem value="Современный">Современный</SelectItem>
               <SelectItem value="Минимализм">Минимализм</SelectItem>
               <SelectItem value="Классика">Классика</SelectItem>
               <SelectItem value="Лофт">Лофт</SelectItem>
@@ -441,15 +455,56 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="inStock"
-            checked={productForm.inStock}
-            onChange={(e) => setProductForm({ ...productForm, inStock: e.target.checked })}
-            className="rounded"
-          />
-          <Label htmlFor="inStock">В наличии</Label>
+        <div className="border-t pt-3 space-y-3">
+          <h4 className="text-sm font-semibold flex items-center gap-2">
+            <Icon name="Database" size={16} />
+            Служебные данные (не публикуются)
+          </h4>
+          
+          <div>
+            <Label>Артикул поставщика</Label>
+            <Input
+              value={productForm.supplierArticle}
+              onChange={(e) => setProductForm({ ...productForm, supplierArticle: e.target.value })}
+              placeholder="Артикул из системы поставщика"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Для автоматизации синхронизации остатков
+            </p>
+          </div>
+
+          <div>
+            <Label>Количество на складе</Label>
+            <Input
+              type="number"
+              min="0"
+              value={productForm.stockQuantity === null ? '' : productForm.stockQuantity}
+              onChange={(e) => setProductForm({ 
+                ...productForm, 
+                stockQuantity: e.target.value ? parseInt(e.target.value) : null 
+              })}
+              placeholder="Оставьте пустым, если неизвестно"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Точное количество для автоматического учёта
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="inStock"
+              checked={productForm.inStock}
+              onChange={(e) => setProductForm({ ...productForm, inStock: e.target.checked })}
+              className="rounded"
+            />
+            <Label htmlFor="inStock">В наличии</Label>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1 ml-6">
+            Используйте галочку, если не знаете точное количество
+          </p>
         </div>
       </div>
 
