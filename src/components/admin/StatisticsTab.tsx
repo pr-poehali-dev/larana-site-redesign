@@ -59,12 +59,12 @@ const StatisticsTab = () => {
         const completedOrdersArr = orders.filter((o: any) => o.status === 'completed' || o.status === 'delivered');
         const cancelledOrdersArr = orders.filter((o: any) => o.status === 'cancelled');
         
-        const totalOrdersSum = orders.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
-        const newOrdersSum = newOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
-        const processingOrdersSum = processingOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
-        const deliveryOrdersSum = deliveryOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
-        const completedOrdersSum = completedOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
-        const cancelledOrdersSum = cancelledOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.total_price) || 0), 0);
+        const totalOrdersSum = orders.reduce((sum: number, o: any) => sum + (parseFloat(o.totalAmount) || 0), 0);
+        const newOrdersSum = newOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.totalAmount) || 0), 0);
+        const processingOrdersSum = processingOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.totalAmount) || 0), 0);
+        const deliveryOrdersSum = deliveryOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.totalAmount) || 0), 0);
+        const completedOrdersSum = completedOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.totalAmount) || 0), 0);
+        const cancelledOrdersSum = cancelledOrdersArr.reduce((sum: number, o: any) => sum + (parseFloat(o.totalAmount) || 0), 0);
         
         const averageOrderValue = orders.length > 0 ? totalOrdersSum / orders.length : 0;
 
