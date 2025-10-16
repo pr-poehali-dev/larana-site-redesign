@@ -35,6 +35,10 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     email: '',
     address: '',
     city: '',
+    apartment: '',
+    entrance: '',
+    floor: '',
+    intercom: '',
     comment: '',
     deliveryType: 'delivery',
     paymentType: 'card'
@@ -186,6 +190,85 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                     placeholder="Начните вводить название города..."
                     required
                   />
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="apartment">Квартира</Label>
+                      <Input
+                        id="apartment"
+                        type="text"
+                        placeholder="123"
+                        value={formData.apartment}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, '');
+                          setFormData({...formData, apartment: value});
+                        }}
+                        maxLength={6}
+                      />
+                      {formData.apartment && formData.apartment.length > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                          <Icon name="Info" size={12} />
+                          Только цифры
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="entrance">Подъезд</Label>
+                      <Input
+                        id="entrance"
+                        type="text"
+                        placeholder="2"
+                        value={formData.entrance}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, '');
+                          if (value === '' || (parseInt(value) >= 1 && parseInt(value) <= 99)) {
+                            setFormData({...formData, entrance: value});
+                          }
+                        }}
+                        maxLength={2}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="floor">Этаж</Label>
+                      <Input
+                        id="floor"
+                        type="text"
+                        placeholder="5"
+                        value={formData.floor}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d-]/g, '');
+                          if (value === '' || value === '-' || (parseInt(value) >= -5 && parseInt(value) <= 200)) {
+                            setFormData({...formData, floor: value});
+                          }
+                        }}
+                        maxLength={3}
+                      />
+                      {formData.floor && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {parseInt(formData.floor) < 0 ? '🅿️ Подвал/паркинг' : '🏢 Этаж'}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="intercom">Домофон</Label>
+                      <Input
+                        id="intercom"
+                        type="text"
+                        placeholder="123К456"
+                        value={formData.intercom}
+                        onChange={(e) => {
+                          const value = e.target.value.toUpperCase().replace(/[^0-9A-ZА-ЯЁ]/g, '');
+                          setFormData({...formData, intercom: value});
+                        }}
+                        maxLength={10}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
 
