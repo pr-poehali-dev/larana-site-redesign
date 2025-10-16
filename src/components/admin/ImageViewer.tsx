@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface ImageViewerProps {
   images: string[];
@@ -16,6 +16,10 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  
+  const touchStartRef = useRef<{ x: number; y: number; distance: number } | null>(null);
+  const initialZoomRef = useRef(1);
+  const swipeStartRef = useRef<{ x: number; time: number } | null>(null);
 
   useEffect(() => {
     setCurrentIndex(initialIndex);
@@ -81,12 +85,108 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
     }
   };
 
+  const getTouchDistance = (touches: React.TouchList) => {
+    if (touches.length < 2) return 0;
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const getTouchCenter = (touches: React.TouchList) => {
+    if (touches.length === 1) {
+      return { x: touches[0].clientX, y: touches[0].clientY };
+    }
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2
+    };
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const distance = getTouchDistance(e.touches);
+      const center = getTouchCenter(e.touches);
+      touchStartRef.current = { x: center.x, y: center.y, distance };
+      initialZoomRef.current = zoom;
+      swipeStartRef.current = null;
+    } else if (e.touches.length === 1) {
+      if (zoom > 1) {
+        setIsDragging(true);
+        setDragStart({
+          x: e.touches[0].clientX - position.x,
+          y: e.touches[0].clientY - position.y
+        });
+      } else {
+        swipeStartRef.current = {
+          x: e.touches[0].clientX,
+          time: Date.now()
+        };
+      }
+      touchStartRef.current = null;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchStartRef.current) {
+      e.preventDefault();
+      const distance = getTouchDistance(e.touches);
+      const scale = distance / touchStartRef.current.distance;
+      const newZoom = Math.min(Math.max(initialZoomRef.current * scale, 1), 3);
+      setZoom(newZoom);
+      
+      if (newZoom === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+    } else if (e.touches.length === 1) {
+      if (isDragging && zoom > 1) {
+        e.preventDefault();
+        setPosition({
+          x: e.touches[0].clientX - dragStart.x,
+          y: e.touches[0].clientY - dragStart.y
+        });
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
+      setIsDragging(false);
+      
+      if (swipeStartRef.current && zoom === 1) {
+        const deltaX = (e.changedTouches[0]?.clientX || 0) - swipeStartRef.current.x;
+        const deltaTime = Date.now() - swipeStartRef.current.time;
+        
+        if (Math.abs(deltaX) > 50 && deltaTime < 300) {
+          if (deltaX > 0) {
+            goToPrevious();
+          } else {
+            goToNext();
+          }
+        }
+      }
+      
+      swipeStartRef.current = null;
+      touchStartRef.current = null;
+    } else if (e.touches.length === 1) {
+      touchStartRef.current = null;
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') goToPrevious();
     if (e.key === 'ArrowRight') goToNext();
     if (e.key === 'Escape') onClose();
     if (e.key === '+' || e.key === '=') handleZoomIn();
     if (e.key === '-') handleZoomOut();
+  };
+
+  const handleDoubleTap = (e: React.MouseEvent | React.TouchEvent) => {
+    if (zoom > 1) {
+      setZoom(1);
+      setPosition({ x: 0, y: 0 });
+    } else {
+      setZoom(2);
+    }
   };
 
   return (
@@ -96,12 +196,16 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
         onKeyDown={handleKeyDown}
       >
         <div 
-          className="relative w-full h-[90vh] bg-black flex items-center justify-center overflow-hidden"
+          className="relative w-full h-[90vh] bg-black flex items-center justify-center overflow-hidden touch-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onWheel={handleWheel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onDoubleClick={handleDoubleTap}
         >
           <img
             src={images[currentIndex]}
@@ -119,7 +223,7 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
               <Button
                 variant="secondary"
                 size="icon"
-                className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full z-10 md:flex hidden"
                 onClick={goToPrevious}
               >
                 <Icon name="ChevronLeft" size={24} />
@@ -128,7 +232,7 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
               <Button
                 variant="secondary"
                 size="icon"
-                className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full z-10 md:flex hidden"
                 onClick={goToNext}
               >
                 <Icon name="ChevronRight" size={24} />
@@ -144,7 +248,7 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
             <Button
               variant="secondary"
               size="icon"
-              className="h-10 w-10 rounded-full"
+              className="h-10 w-10 rounded-full hidden md:flex"
               onClick={handleZoomOut}
               disabled={zoom <= 1}
             >
@@ -153,7 +257,7 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
             <Button
               variant="secondary"
               size="icon"
-              className="h-10 w-10 rounded-full"
+              className="h-10 w-10 rounded-full hidden md:flex"
               onClick={handleZoomIn}
               disabled={zoom >= 3}
             >
@@ -174,6 +278,13 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
               {Math.round(zoom * 100)}%
             </div>
           )}
+
+          <div className="absolute top-1/2 left-4 -translate-y-1/2 text-white/50 text-xs z-10 md:hidden">
+            <Icon name="ChevronLeft" size={32} />
+          </div>
+          <div className="absolute top-1/2 right-4 -translate-y-1/2 text-white/50 text-xs z-10 md:hidden">
+            <Icon name="ChevronRight" size={32} />
+          </div>
 
           {images.length > 1 && (
             <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-10">
