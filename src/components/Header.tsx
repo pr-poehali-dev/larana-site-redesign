@@ -42,23 +42,6 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => window.location.href = '/employee'}
-              className="hidden sm:flex"
-            >
-              <Icon name="UserCog" size={16} className="mr-2" />
-              Для сотрудников
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => window.location.href = '/employee'}
-              className="sm:hidden"
-            >
-              <Icon name="UserCog" size={20} />
-            </Button>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -45,7 +45,16 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-background/20 mt-8 pt-8 text-center text-sm opacity-80">
-          <p>© 2024 LARANA. Все права защищены.</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+            <p>© 2024 LARANA. Все права защищены.</p>
+            <button 
+              onClick={() => window.location.href = '/employee'}
+              className="text-background/80 hover:text-background underline text-sm flex items-center gap-2"
+            >
+              <Icon name="UserCog" size={16} />
+              Для сотрудников
+            </button>
+          </div>
         </div>
       </div>
     </footer>
