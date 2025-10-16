@@ -26,6 +26,8 @@ const Index = () => {
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([60000]);
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('default');
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
@@ -153,12 +155,26 @@ const Index = () => {
     }
   ];
 
-  const furnitureSets = allFurnitureSets.filter(set => {
-    if (selectedRoom && set.category !== selectedRoom) return false;
-    if (selectedStyle && set.style !== selectedStyle) return false;
-    if (budget[0] && parseInt(set.price) > budget[0]) return false;
-    return true;
-  });
+  const furnitureSets = allFurnitureSets
+    .filter(set => {
+      if (selectedRoom && set.category !== selectedRoom) return false;
+      if (selectedStyle && set.style !== selectedStyle) return false;
+      if (budget[0] && parseInt(set.price) > budget[0]) return false;
+      if (inStockOnly && !set.inStock) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-asc') {
+        return parseInt(a.price) - parseInt(b.price);
+      }
+      if (sortBy === 'price-desc') {
+        return parseInt(b.price) - parseInt(a.price);
+      }
+      if (sortBy === 'name') {
+        return a.title.localeCompare(b.title);
+      }
+      return 0;
+    });
 
   const handleAddToCart = (set: any) => {
     const existingItem = cartItems.find(item => item.id === set.id);
@@ -256,6 +272,10 @@ const Index = () => {
         budget={budget}
         setBudget={setBudget}
         resultsCount={furnitureSets.length}
+        inStockOnly={inStockOnly}
+        setInStockOnly={setInStockOnly}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
       />
       
       <CatalogSection 

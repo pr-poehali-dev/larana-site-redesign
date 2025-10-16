@@ -1,6 +1,7 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface ConfiguratorSectionProps {
   selectedRoom: string;
@@ -10,6 +11,10 @@ interface ConfiguratorSectionProps {
   budget: number[];
   setBudget: (value: number[]) => void;
   resultsCount: number;
+  inStockOnly: boolean;
+  setInStockOnly: (value: boolean) => void;
+  sortBy: string;
+  setSortBy: (value: string) => void;
 }
 
 const ConfiguratorSection = ({
@@ -19,7 +24,11 @@ const ConfiguratorSection = ({
   setSelectedStyle,
   budget,
   setBudget,
-  resultsCount
+  resultsCount,
+  inStockOnly,
+  setInStockOnly,
+  sortBy,
+  setSortBy
 }: ConfiguratorSectionProps) => {
   return (
     <section id="configurator" className="py-16 bg-white">
@@ -29,8 +38,8 @@ const ConfiguratorSection = ({
           <p className="text-lg text-muted-foreground">Подберите идеальную мебель под ваши потребности</p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
             <div>
               <Label className="mb-2 block">Тип комнаты</Label>
               <Select value={selectedRoom} onValueChange={setSelectedRoom}>
@@ -73,6 +82,37 @@ const ConfiguratorSection = ({
                 step={1000}
                 className="mt-2"
               />
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="inStock" 
+                checked={inStockOnly}
+                onCheckedChange={setInStockOnly}
+              />
+              <label
+                htmlFor="inStock"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Только в наличии
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Label className="text-sm">Сортировка:</Label>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">По умолчанию</SelectItem>
+                  <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
+                  <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
+                  <SelectItem value="name">По названию</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
