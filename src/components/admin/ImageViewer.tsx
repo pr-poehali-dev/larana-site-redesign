@@ -1,4 +1,5 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useState, useEffect, useRef } from 'react';
@@ -195,6 +196,9 @@ const ImageViewer = ({ images, initialIndex, open, onClose }: ImageViewerProps) 
         className="max-w-[95vw] max-h-[95vh] p-0"
         onKeyDown={handleKeyDown}
       >
+        <VisuallyHidden>
+          <DialogTitle>Просмотр изображения {currentIndex + 1} из {images.length}</DialogTitle>
+        </VisuallyHidden>
         <div 
           className="relative w-full h-[90vh] bg-black flex items-center justify-center overflow-hidden touch-none"
           onMouseDown={handleMouseDown}
