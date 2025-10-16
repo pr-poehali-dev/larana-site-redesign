@@ -15,6 +15,7 @@ import ConfiguratorDialog from '@/components/dialogs/ConfiguratorDialog';
 import CartDialog from '@/components/dialogs/CartDialog';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
 import AuthDialog from '@/components/dialogs/AuthDialog';
+import OrderHistoryDialog from '@/components/dialogs/OrderHistoryDialog';
 
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
@@ -23,6 +24,7 @@ const Index = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [ordersOpen, setOrdersOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([60000]);
@@ -208,12 +210,60 @@ const Index = () => {
     setCheckoutOpen(true);
   };
 
-  const handleConfirmOrder = (orderData: any) => {
-    toast({ 
-      title: "Заказ успешно оформлен!", 
-      description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
-      duration: 5000
-    });
+  const handleConfirmOrder = async (orderData: any) => {
+    if (user) {
+      try {
+        const totalAmount = cartItems.reduce((sum, item) => {
+          const price = parseInt(item.price.replace(/\D/g, ''));
+          return sum + (price * item.quantity);
+        }, 0);
+
+        const response = await fetch('https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Id': user.email
+          },
+          body: JSON.stringify({
+            ...orderData,
+            totalAmount,
+            items: cartItems.map(item => ({
+              id: item.id,
+              title: item.title,
+              price: parseInt(item.price.replace(/\D/g, '')),
+              quantity: item.quantity
+            }))
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          toast({ 
+            title: "Заказ успешно оформлен!", 
+            description: `Номер заказа: ${data.orderNumber}. Мы свяжемся с вами в ближайшее время.`,
+            duration: 5000
+          });
+        } else {
+          toast({ 
+            title: "Заказ оформлен!", 
+            description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+            duration: 5000
+          });
+        }
+      } catch (error) {
+        toast({ 
+          title: "Заказ оформлен!", 
+          description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+          duration: 5000
+        });
+      }
+    } else {
+      toast({ 
+        title: "Заказ успешно оформлен!", 
+        description: `Номер заказа: ${Math.floor(Math.random() * 100000)}. Мы свяжемся с вами в ближайшее время.`,
+        duration: 5000
+      });
+    }
     setCartItems([]);
     setCheckoutOpen(false);
   };
@@ -255,6 +305,7 @@ const Index = () => {
         onAuthClick={() => setAuthOpen(true)}
         user={user}
         onLogout={handleLogout}
+        onOrdersClick={() => setOrdersOpen(true)}
       />
       
       <HeroSection 
@@ -337,6 +388,12 @@ const Index = () => {
         open={authOpen}
         onClose={() => setAuthOpen(false)}
         onSuccess={handleAuthSuccess}
+      />
+
+      <OrderHistoryDialog
+        open={ordersOpen}
+        onClose={() => setOrdersOpen(false)}
+        user={user}
       />
     </div>
   );

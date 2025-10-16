@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Test OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Test unauthorized GET request",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test authorized GET request with no orders",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "test@example.com"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "orders": []
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
