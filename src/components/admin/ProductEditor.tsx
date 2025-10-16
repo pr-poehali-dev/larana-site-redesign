@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import ImageViewer from './ImageViewer';
 
 interface ProductEditorProps {
   product: any;
@@ -30,6 +31,8 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
   });
   const [uploading, setUploading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -161,6 +164,11 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
 
   const handleDragEnd = () => {
     setDraggedIndex(null);
+  };
+
+  const openImageViewer = (index: number) => {
+    setViewerIndex(index);
+    setViewerOpen(true);
   };
 
   const saveProduct = () => {
@@ -338,12 +346,20 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
                     } ${draggedIndex === idx ? 'opacity-50 scale-95' : ''}`}
                   >
                     <CardContent className="p-2">
-                      <div className="relative aspect-square">
+                      <div 
+                        className="relative aspect-square group"
+                        onClick={() => openImageViewer(idx)}
+                      >
                         <img 
                           src={imageUrl} 
                           alt={`Фото ${idx + 1}`}
                           className="w-full h-full object-cover rounded pointer-events-none"
                         />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+                          <div className="bg-white/90 rounded-full p-2">
+                            <Icon name="Maximize2" size={20} className="text-black" />
+                          </div>
+                        </div>
                         {productForm.image === imageUrl && (
                           <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
                             Главное
@@ -465,6 +481,13 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
           Отмена
         </Button>
       </div>
+
+      <ImageViewer
+        images={productForm.images}
+        initialIndex={viewerIndex}
+        open={viewerOpen}
+        onClose={() => setViewerOpen(false)}
+      />
     </div>
   );
 };
