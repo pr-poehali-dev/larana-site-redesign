@@ -24,7 +24,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
                 'Access-Control-Max-Age': '86400'
             },
@@ -34,8 +34,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     headers = event.get('headers', {})
     user_email = headers.get('X-User-Id') or headers.get('x-user-id')
+    query_params = event.get('queryStringParameters') or {}
+    is_admin_request = query_params.get('admin') == 'true'
     
-    if not user_email:
+    if not user_email and not is_admin_request:
         return {
             'statusCode': 401,
             'headers': {
@@ -100,30 +102,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'GET':
-            cur.execute(
-                "SELECT id FROM users WHERE email = %s",
-                (user_email,)
-            )
-            user = cur.fetchone()
-            
-            if not user:
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': json.dumps({'orders': []}),
-                    'isBase64Encoded': False
-                }
-            
-            user_id = user['id']
-            
-            cur.execute(
-                "SELECT id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_city, comment, created_at FROM orders WHERE user_id = %s ORDER BY created_at DESC",
-                (user_id,)
-            )
-            orders = cur.fetchall()
+            if is_admin_request:
+                cur.execute(
+                    "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
+                )
+                orders = cur.fetchall()
+            else:
+                cur.execute(
+                    "SELECT id FROM users WHERE email = %s",
+                    (user_email,)
+                )
+                user = cur.fetchone()
+                
+                if not user:
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'orders': []}),
+                        'isBase64Encoded': False
+                    }
+                
+                user_id = user['id']
+                
+                cur.execute(
+                    "SELECT id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_city, comment, created_at FROM orders WHERE user_id = %s ORDER BY created_at DESC",
+                    (user_id,)
+                )
+                orders = cur.fetchall()
             
             result = []
             for order in orders:
@@ -133,7 +141,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
                 items = cur.fetchall()
                 
-                result.append({
+                order_data = {
                     'id': order['id'],
                     'orderNumber': order['order_number'],
                     'totalAmount': order['total_amount'],
@@ -145,7 +153,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'comment': order['comment'],
                     'createdAt': order['created_at'].isoformat() if order['created_at'] else None,
                     'items': [dict(item) for item in items]
-                })
+                }
+                
+                if is_admin_request:
+                    order_data['userEmail'] = order.get('email')
+                    order_data['userName'] = order.get('name')
+                    order_data['userPhone'] = order.get('phone')
+                
+                result.append(order_data)
             
             return {
                 'statusCode': 200,
@@ -154,6 +169,38 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Access-Control-Allow-Origin': '*'
                 },
                 'body': json.dumps({'orders': result}),
+                'isBase64Encoded': False
+            }
+        
+        elif method == 'PUT':
+            body_data = json.loads(event.get('body', '{}'))
+            order_id = body_data.get('orderId')
+            new_status = body_data.get('status')
+            
+            if not order_id or not new_status:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'Missing orderId or status'}),
+                    'isBase64Encoded': False
+                }
+            
+            cur.execute(
+                "UPDATE orders SET status = %s WHERE id = %s",
+                (new_status, order_id)
+            )
+            conn.commit()
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'success': True}),
                 'isBase64Encoded': False
             }
         

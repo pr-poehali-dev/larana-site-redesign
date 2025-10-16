@@ -19,7 +19,7 @@ const OrdersTab = () => {
   const fetchAllOrders = async () => {
     setLoadingOrders(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0', {
+      const response = await fetch('https://functions.poehali.dev/f363b242-7b94-4530-a6e9-e75c166d29e0?admin=true', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -29,6 +29,8 @@ const OrdersTab = () => {
       if (response.ok) {
         const data = await response.json();
         setOrders(data.orders || []);
+      } else {
+        console.error('Failed to fetch orders:', response.status);
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
