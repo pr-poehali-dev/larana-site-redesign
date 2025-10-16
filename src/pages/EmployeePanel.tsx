@@ -195,7 +195,7 @@ const EmployeePanel = () => {
           'X-User-Id': 'employee'
         },
         body: JSON.stringify({
-          order_id: orderId,
+          orderId: orderId,
           status: newStatus
         })
       });
