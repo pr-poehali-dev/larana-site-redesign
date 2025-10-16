@@ -136,10 +136,12 @@ const OrdersTab = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Все заказы</SelectItem>
-              <SelectItem value="pending">Новые</SelectItem>
-              <SelectItem value="processing">В обработке</SelectItem>
-              <SelectItem value="completed">Выполненные</SelectItem>
-              <SelectItem value="cancelled">Отмененные</SelectItem>
+              <SelectItem value="new">Новые</SelectItem>
+              <SelectItem value="in_processing">В обработке</SelectItem>
+              <SelectItem value="in_delivery">В доставке</SelectItem>
+              <SelectItem value="delivered">Доставлены</SelectItem>
+              <SelectItem value="completed">Завершены</SelectItem>
+              <SelectItem value="cancelled">Отменены</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" onClick={fetchAllOrders}>
