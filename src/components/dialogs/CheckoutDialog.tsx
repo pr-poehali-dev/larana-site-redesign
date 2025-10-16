@@ -43,16 +43,25 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     deliveryType: 'delivery',
     paymentType: 'card'
   });
+  const [saveAddress, setSaveAddress] = useState(true);
+  const [hasSavedAddress, setHasSavedAddress] = useState(false);
 
   useEffect(() => {
     if (user && open) {
+      const hasAddress = user.address && user.city;
+      setHasSavedAddress(!!hasAddress);
+      
       setFormData(prev => ({
         ...prev,
         name: user.name || '',
         phone: user.phone || '',
         email: user.email || '',
         address: user.address || '',
-        city: user.city || ''
+        city: user.city || '',
+        apartment: user.apartment || '',
+        entrance: user.entrance || '',
+        floor: user.floor || '',
+        intercom: user.intercom || ''
       }));
     }
   }, [user, open]);
@@ -69,6 +78,21 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
     } else if (step === 2) {
       setStep(3);
     } else {
+      if (saveAddress) {
+        const savedUserData = {
+          ...user,
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          address: formData.address,
+          city: formData.city,
+          apartment: formData.apartment,
+          entrance: formData.entrance,
+          floor: formData.floor,
+          intercom: formData.intercom
+        };
+        localStorage.setItem('userData', JSON.stringify(savedUserData));
+      }
       onConfirmOrder(formData);
     }
   };
@@ -166,6 +190,19 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
 
               {formData.deliveryType === 'delivery' && (
                 <div className="space-y-4">
+                  {hasSavedAddress && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
+                      <Icon name="CheckCircle2" size={18} className="text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-green-900">Используется сохранённый адрес</p>
+                        <p className="text-xs text-green-700 mt-1">
+                          {formData.city}, {formData.address}
+                          {formData.apartment && `, кв. ${formData.apartment}`}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
                   <AddressAutocomplete
                     value={formData.address}
                     onChange={(value, suggestion) => {
@@ -269,6 +306,20 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                       />
                     </div>
                   </div>
+
+                  <div className="flex items-center space-x-2 bg-muted/50 rounded-lg p-4 border border-dashed">
+                    <input
+                      type="checkbox"
+                      id="saveAddress"
+                      checked={saveAddress}
+                      onChange={(e) => setSaveAddress(e.target.checked)}
+                      className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <Label htmlFor="saveAddress" className="cursor-pointer flex items-center gap-2 text-sm">
+                      <Icon name="Save" size={16} />
+                      Сохранить адрес доставки в профиль для следующих заказов
+                    </Label>
+                  </div>
                 </div>
               )}
 
@@ -354,6 +405,30 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                       <span className="text-muted-foreground">Адрес:</span>
                       <span>{formData.address}</span>
                     </div>
+                    {formData.apartment && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Квартира:</span>
+                        <span>{formData.apartment}</span>
+                      </div>
+                    )}
+                    {formData.entrance && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Подъезд:</span>
+                        <span>{formData.entrance}</span>
+                      </div>
+                    )}
+                    {formData.floor && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Этаж:</span>
+                        <span>{formData.floor}</span>
+                      </div>
+                    )}
+                    {formData.intercom && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Домофон:</span>
+                        <span>{formData.intercom}</span>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
