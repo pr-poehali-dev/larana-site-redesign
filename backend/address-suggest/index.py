@@ -1,8 +1,8 @@
 '''
-Business: Автоподсказки адресов через DaData API
-Args: event - dict с queryStringParameters['query'] (текст для поиска)
+Business: Автоподсказки адресов через DaData API + определение города по IP
+Args: event - dict с queryStringParameters или body (query, type, action, city, ip)
       context - объект с атрибутами request_id, function_name
-Returns: HTTP response dict со списком адресных подсказок
+Returns: HTTP response dict со списком подсказок или данными города
 '''
 
 import json
@@ -19,7 +19,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
@@ -27,7 +27,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
-    if method != 'GET':
+    if method not in ['GET', 'POST']:
         return {
             'statusCode': 405,
             'headers': {
@@ -37,6 +37,61 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Method not allowed'}),
             'isBase64Encoded': False
         }
+    
+    if method == 'POST':
+        body_data = json.loads(event.get('body', '{}'))
+        action = body_data.get('action', 'suggest')
+        
+        if action == 'detectCity':
+            client_ip = body_data.get('ip')
+            if not client_ip:
+                request_context = event.get('requestContext', {})
+                identity = request_context.get('identity', {})
+                client_ip = identity.get('sourceIp', '')
+            
+            api_key = os.environ.get('DADATA_API_KEY')
+            if not api_key:
+                return {
+                    'statusCode': 500,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'API key not configured'}),
+                    'isBase64Encoded': False
+                }
+            
+            try:
+                url = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address'
+                params_str = f'?ip={client_ip}' if client_ip else ''
+                
+                req = urllib.request.Request(
+                    f'{url}{params_str}',
+                    headers={
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': f'Token {api_key}'
+                    }
+                )
+                
+                with urllib.request.urlopen(req) as response:
+                    result = json.loads(response.read().decode('utf-8'))
+                    location_data = result.get('location', {}).get('data', {})
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({
+                            'city': location_data.get('city', ''),
+                            'region': location_data.get('region_with_type', '')
+                        }),
+                        'isBase64Encoded': False
+                    }
+            except Exception as e:
+                print(f'[ERROR] IP detection failed: {str(e)}')
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'city': '', 'region': ''}),
+                    'isBase64Encoded': False
+                }
     
     params = event.get('queryStringParameters', {}) or {}
     query = params.get('query', '')

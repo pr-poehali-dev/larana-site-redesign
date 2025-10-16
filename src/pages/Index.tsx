@@ -248,6 +248,15 @@ const Index = () => {
         const data = await response.json();
         console.log('Order created successfully:', data);
         
+        const fullAddress = [
+          orderData.city,
+          orderData.address,
+          orderData.apartment ? `кв. ${orderData.apartment}` : '',
+          orderData.entrance ? `подъезд ${orderData.entrance}` : '',
+          orderData.floor ? `этаж ${orderData.floor}` : '',
+          orderData.intercom ? `домофон ${orderData.intercom}` : ''
+        ].filter(Boolean).join(', ');
+        
         fetch('https://functions.poehali.dev/5bb39c34-5468-4f00-906c-c2bed52f18d9', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -259,8 +268,12 @@ const Index = () => {
               phone: orderData.phone,
               deliveryType: orderData.deliveryType,
               paymentType: orderData.paymentType,
-              address: orderData.address,
+              address: fullAddress,
               city: orderData.city,
+              apartment: orderData.apartment,
+              entrance: orderData.entrance,
+              floor: orderData.floor,
+              intercom: orderData.intercom,
               totalAmount,
               items: cartItems.map(item => ({
                 title: item.title,

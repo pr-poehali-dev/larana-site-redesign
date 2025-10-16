@@ -64,18 +64,12 @@ const AddressAutocomplete = ({
 
       try {
         const response = await fetch(
-          'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address',
+          `https://functions.poehali.dev/6441d44d-9eb8-452c-86f6-3486ac8d8cca?query=${encodeURIComponent(value)}`,
           {
-            method: 'POST',
+            method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Token 4308ec1ea2bfa7fb8aae5a84d8cef8c47e5d4d44'
-            },
-            body: JSON.stringify({
-              query: value,
-              count: 10
-            })
+              'Content-Type': 'application/json'
+            }
           }
         );
 
@@ -83,15 +77,13 @@ const AddressAutocomplete = ({
         
         const addressSuggestions: AddressSuggestion[] = data.suggestions?.map((item: any) => ({
           value: item.value,
-          fullAddress: item.unrestricted_value,
-          postalCode: item.data.postal_code,
-          city: item.data.city,
-          street: item.data.street,
-          house: item.data.house,
-          flat: item.data.flat,
-          coordinates: item.data.geo_lat && item.data.geo_lon 
-            ? { lat: item.data.geo_lat, lon: item.data.geo_lon }
-            : null
+          fullAddress: item.fullAddress,
+          postalCode: item.postalCode,
+          city: item.city,
+          street: item.street,
+          house: item.house,
+          flat: item.flat,
+          coordinates: item.coordinates
         })) || [];
 
         setSuggestions(addressSuggestions);

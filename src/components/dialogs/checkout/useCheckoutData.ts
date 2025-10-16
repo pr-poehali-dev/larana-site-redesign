@@ -65,7 +65,11 @@ export const useCheckoutData = (open: boolean, user?: any) => {
             intercom: defaultAddress.intercom || ''
           }));
           setHasSavedAddress(true);
+        } else {
+          detectCityByIP();
         }
+      } else {
+        detectCityByIP();
       }
       
       if (user) {
@@ -78,6 +82,28 @@ export const useCheckoutData = (open: boolean, user?: any) => {
       }
     }
   }, [user, open]);
+
+  const detectCityByIP = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/6441d44d-9eb8-452c-86f6-3486ac8d8cca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'detectCity' })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.city) {
+          setFormData(prev => ({
+            ...prev,
+            city: data.city
+          }));
+        }
+      }
+    } catch (error) {
+      console.log('City detection failed:', error);
+    }
+  };
 
   const handleAddAddress = (address: SavedAddress) => {
     const updatedAddresses = [...savedAddresses, address];
