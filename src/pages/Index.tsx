@@ -8,6 +8,7 @@ import CatalogSection from '@/components/CatalogSection';
 import TargetAudienceSection from '@/components/TargetAudienceSection';
 import WhyUsSection from '@/components/WhyUsSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
+import ProductCarousel from '@/components/ProductCarousel';
 import Footer from '@/components/Footer';
 import ProductDialog from '@/components/dialogs/ProductDialog';
 import HelpDialog from '@/components/dialogs/HelpDialog';
@@ -344,6 +345,22 @@ const Index = () => {
         onConfiguratorOpen={() => setConfiguratorOpen(true)}
         onHelpOpen={() => setHelpDialogOpen(true)}
       />
+      
+      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Популярные комплекты</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Готовые решения для вашего дома — выбирайте и заказывайте
+            </p>
+          </div>
+          <ProductCarousel 
+            products={allFurnitureSets.slice(0, 8)}
+            onProductClick={setSelectedSet}
+            onAddToCart={handleAddToCart}
+          />
+        </div>
+      </section>
       
       <BenefitsSection />
       
