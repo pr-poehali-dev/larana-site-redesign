@@ -33,63 +33,123 @@ const Index = () => {
   const allFurnitureSets = [
     {
       id: 1,
-      title: 'Набор для гостиной "Северный"',
-      category: 'Гостиная',
-      price: '3200 ₽',
-      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
-      items: ['Диван', 'Журнальный стол', 'Стеллаж'],
+      title: 'Спальня "Сканди Мини"',
+      category: 'Спальня',
+      price: '38900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/ed6e2b24-421a-4f81-bc83-3eb261fcc919.jpg',
+      items: ['Кровать 160', 'Шкаф 2Д', 'Тумбы'],
       style: 'Скандинавский',
-      description: 'Современная гостиная в скандинавском стиле с уютной атмосферой'
+      description: 'Кровать, 2 тумбы, шкаф, всё в скандинавском стиле. Идеально для молодых пар.',
+      colors: ['Белый/дуб', 'серый/дуб'],
+      inStock: true
     },
     {
       id: 2,
-      title: 'Комплект для спальни "Вариант"',
+      title: 'Спальня "Комфорт Люкс"',
       category: 'Спальня',
-      price: '2800 ₽',
+      price: '57900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/ed6e2b24-421a-4f81-bc83-3eb261fcc919.jpg',
-      items: ['Кровать', 'Прикроватные тумбы', 'Шкаф'],
+      items: ['Кровать 180', 'Шкаф-купе', 'Комод', 'Зеркало'],
       style: 'Современный',
-      description: 'Комфортная спальня для полноценного отдыха'
+      description: 'Расширенный комплект: кровать, шкаф-купе, комод, зеркало. Цвет — дуб сонома.',
+      colors: ['Дуб сонома', 'венге'],
+      inStock: true
     },
     {
       id: 3,
-      title: 'Набор для кухни "Контор"',
+      title: 'Кухня "Лара 180"',
       category: 'Кухня',
-      price: '4100 ₽',
+      price: '25900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5546849f-7d51-4b8f-aad6-76df00bc86c8.jpg',
-      items: ['Кухонный гарнитур', 'Стол', 'Стулья'],
+      items: ['Фасады', 'Столешница', 'Фурнитура'],
       style: 'Современный',
-      description: 'Функциональная кухня с современным дизайном и удобной планировкой'
+      description: 'Базовая кухня 180 см, верх + низ, фасады белый глянец. Подходит для арендаторов.',
+      colors: ['Белый глянец', 'графит'],
+      inStock: true
     },
     {
       id: 4,
-      title: 'Прихожая "Вахан"',
-      category: 'Прихожая',
-      price: '1900 ₽',
-      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
-      items: ['Шкаф', 'Вешалка', 'Тумба для обуви'],
-      style: 'Скандинавский',
-      description: 'Компактное решение для удобной организации пространства'
+      title: 'Кухня "Милан 240"',
+      category: 'Кухня',
+      price: '37900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5546849f-7d51-4b8f-aad6-76df00bc86c8.jpg',
+      items: ['Фасады', 'Ручки', 'Фурнитура', 'Мойка'],
+      style: 'Современный',
+      description: 'Большая кухня 240 см, серый матовый фасад. Есть опция доводчиков и сушки.',
+      colors: ['Серый мат', 'орех'],
+      inStock: true
     },
     {
       id: 5,
-      title: 'Гостиная "Контор"',
-      category: 'Гостиная',
-      price: '3800 ₽',
+      title: 'Шкаф-купе "Базис 2Д"',
+      category: 'Шкафы',
+      price: '17900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
-      items: ['Диван угловой', 'ТВ-тумба', 'Кресло'],
+      items: ['Корпус', 'Двери', 'Зеркало'],
       style: 'Современный',
-      description: 'Просторная гостиная для семейного отдыха'
+      description: 'Шкаф-купе 2-дверный, зеркало, ширина 120 см. Цвет: венге/дуб.',
+      colors: ['Дуб', 'венге'],
+      inStock: true
     },
     {
       id: 6,
-      title: 'Спальня "Нон"',
-      category: 'Спальня',
-      price: '3200 ₽',
-      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/ed6e2b24-421a-4f81-bc83-3eb261fcc919.jpg',
-      items: ['Двуспальная кровать', 'Комод', 'Зеркало'],
+      title: 'Шкаф-купе "Премиум 3Д"',
+      category: 'Шкафы',
+      price: '29900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Корпус', 'Фасады', 'Зеркало', 'Подсветка'],
+      style: 'Современный',
+      description: 'Шкаф-купе с 3 дверями, встроенное зеркало, подсветка. Современный стиль.',
+      colors: ['Белый', 'антрацит'],
+      inStock: true
+    },
+    {
+      id: 7,
+      title: 'Диван-кровать "Токио"',
+      category: 'Гостиная',
+      price: '26900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Диван', 'Подушки', 'Ящик'],
+      style: 'Современный',
+      description: 'Диван с механизмом еврокнижка. Ткань велюр. Ящик для белья.',
+      colors: ['Синий', 'серый', 'бежевый'],
+      inStock: true
+    },
+    {
+      id: 8,
+      title: 'Угловой диван-кровать "Неаполь"',
+      category: 'Гостиная',
+      price: '34900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Угловой диван', 'Подлокотники', 'Бельевой ящик'],
+      style: 'Современный',
+      description: 'Угловой диван с раскладкой, подходит для сна. Большой выбор цветов.',
+      colors: ['Бордо', 'зелёный', 'бежевый'],
+      inStock: true
+    },
+    {
+      id: 9,
+      title: 'Прихожая "Мини L1"',
+      category: 'Прихожая',
+      price: '8900 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Тумба', 'Вешалка', 'Зеркало'],
       style: 'Скандинавский',
-      description: 'Уютная спальня в минималистичном стиле'
+      description: 'Компактный комплект с тумбой, вешалкой и зеркалом. Для малых прихожих.',
+      colors: ['Дуб сонома'],
+      inStock: true
+    },
+    {
+      id: 10,
+      title: 'Прихожая "Сити Lux"',
+      category: 'Прихожая',
+      price: '15400 ₽',
+      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/6dc15d77-b11a-4009-bfbc-a76ac54e68db.jpg',
+      items: ['Шкаф', 'Обувница', 'Зеркало'],
+      style: 'Современный',
+      description: 'Шкаф + обувница + зеркало. Глянцевые фасады. Современный вид.',
+      colors: ['Белый', 'дуб сонома'],
+      inStock: true
     }
   ];
 
