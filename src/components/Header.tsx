@@ -1,14 +1,24 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
   cartItemsCount: number;
   onCartClick: () => void;
   onAuthClick: () => void;
+  user: any;
+  onLogout: () => void;
 }
 
-const Header = ({ cartItemsCount, onCartClick, onAuthClick }: HeaderProps) => {
+const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout }: HeaderProps) => {
   return (
     <header className="bg-white border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -28,9 +38,41 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick }: HeaderProps) => {
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={onAuthClick}>
-              <Icon name="User" size={20} />
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    <Icon name="User" size={20} />
+                    <span className="hidden md:inline text-sm">{user.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Icon name="User" size={16} className="mr-2" />
+                    Профиль
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Icon name="Package" size={16} className="mr-2" />
+                    Мои заказы
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Icon name="Heart" size={16} className="mr-2" />
+                    Избранное
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onLogout} className="text-destructive">
+                    <Icon name="LogOut" size={16} className="mr-2" />
+                    Выйти
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="icon" onClick={onAuthClick}>
+                <Icon name="User" size={20} />
+              </Button>
+            )}
             <Button variant="ghost" size="icon" className="relative" onClick={onCartClick}>
               <Icon name="ShoppingCart" size={20} />
               {cartItemsCount > 0 && (

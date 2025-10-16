@@ -163,12 +163,22 @@ const Index = () => {
     });
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    toast({ 
+      title: "Вы вышли из аккаунта",
+      description: "До новых встреч!"
+    });
+  };
+
   return (
     <div className="min-h-screen">
       <Header 
         cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
         onCartClick={() => setCartOpen(true)}
         onAuthClick={() => setAuthOpen(true)}
+        user={user}
+        onLogout={handleLogout}
       />
       
       <HeroSection 
