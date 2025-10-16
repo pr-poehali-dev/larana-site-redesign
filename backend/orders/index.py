@@ -60,14 +60,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             cur.execute(
                 "INSERT INTO users (email, name, phone, address, city) VALUES (%s, %s, %s, %s, %s) ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, phone = EXCLUDED.phone, address = EXCLUDED.address, city = EXCLUDED.city RETURNING id",
-                (user_email, body_data.get('name'), body_data.get('phone'), body_data.get('address'), body_data.get('city'))
+                (user_email, body_data.get('name'), body_data.get('phone'), body_data.get('address'), '')
             )
             user_id = cur.fetchone()['id']
             
             order_number = f"ORD-{datetime.now().strftime('%Y%m%d')}-{user_id}-{int(datetime.now().timestamp())}"
             
             cur.execute(
-                "INSERT INTO orders (user_id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_city, comment) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                "INSERT INTO orders (user_id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_city, delivery_apartment, delivery_entrance, delivery_floor, delivery_intercom, comment) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
                 (
                     user_id,
                     order_number,
@@ -76,7 +76,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     body_data.get('deliveryType'),
                     body_data.get('paymentType'),
                     body_data.get('address'),
-                    body_data.get('city'),
+                    '',
+                    body_data.get('apartment', ''),
+                    body_data.get('entrance', ''),
+                    body_data.get('floor', ''),
+                    body_data.get('intercom', ''),
                     body_data.get('comment')
                 )
             )
@@ -109,7 +113,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f"[GET] Fetching orders - admin: {is_admin_request}, employeeType: {employee_type}")
             if is_admin_request:
                 cur.execute(
-                    "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
+                    "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_apartment, o.delivery_entrance, o.delivery_floor, o.delivery_intercom, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
                 )
                 orders = cur.fetchall()
             elif employee_type:
@@ -134,7 +138,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 if status_filters:
                     placeholders = ','.join(['%s'] * len(status_filters))
-                    query = f"SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status IN ({placeholders}) ORDER BY o.created_at DESC"
+                    query = f"SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_apartment, o.delivery_entrance, o.delivery_floor, o.delivery_intercom, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status IN ({placeholders}) ORDER BY o.created_at DESC"
                     cur.execute(query, tuple(status_filters))
                     orders = cur.fetchall()
                 else:
@@ -160,7 +164,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 user_id = user['id']
                 
                 cur.execute(
-                    "SELECT id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_city, comment, created_at FROM orders WHERE user_id = %s ORDER BY created_at DESC",
+                    "SELECT id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_apartment, delivery_entrance, delivery_floor, delivery_intercom, comment, created_at FROM orders WHERE user_id = %s ORDER BY created_at DESC",
                     (user_id,)
                 )
                 orders = cur.fetchall()
@@ -181,7 +185,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'deliveryType': order['delivery_type'],
                     'paymentType': order['payment_type'],
                     'deliveryAddress': order['delivery_address'],
-                    'deliveryCity': order['delivery_city'],
+                    'deliveryApartment': order.get('delivery_apartment', ''),
+                    'deliveryEntrance': order.get('delivery_entrance', ''),
+                    'deliveryFloor': order.get('delivery_floor', ''),
+                    'deliveryIntercom': order.get('delivery_intercom', ''),
                     'comment': order['comment'],
                     'createdAt': order['created_at'].isoformat() if order['created_at'] else None,
                     'items': [dict(item) for item in items]

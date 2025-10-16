@@ -109,14 +109,19 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Адрес доставки</p>
                   <p className="text-sm">{order.deliveryAddress || order.address || 'Не указан'}</p>
+                  {order.deliveryApartment && (
+                    <p className="text-xs text-muted-foreground mt-1">Квартира: {order.deliveryApartment}</p>
+                  )}
+                  {order.deliveryEntrance && (
+                    <p className="text-xs text-muted-foreground">Подъезд: {order.deliveryEntrance}</p>
+                  )}
+                  {order.deliveryFloor && (
+                    <p className="text-xs text-muted-foreground">Этаж: {order.deliveryFloor}</p>
+                  )}
+                  {order.deliveryIntercom && (
+                    <p className="text-xs text-muted-foreground">Домофон: {order.deliveryIntercom}</p>
+                  )}
                 </div>
-
-                {order.deliveryCity && (
-                  <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Город</p>
-                    <p className="text-sm">{order.deliveryCity}</p>
-                  </div>
-                )}
                 
                 {order.deliveryType && (
                   <div>

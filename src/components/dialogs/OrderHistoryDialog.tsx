@@ -19,7 +19,10 @@ interface Order {
   deliveryType: string;
   paymentType: string;
   deliveryAddress?: string;
-  deliveryCity?: string;
+  deliveryApartment?: string;
+  deliveryEntrance?: string;
+  deliveryFloor?: string;
+  deliveryIntercom?: string;
   comment?: string;
   createdAt: string;
   items: Array<{
@@ -146,10 +149,10 @@ const OrderHistoryDialog = ({ open, onClose, user }: OrderHistoryDialogProps) =>
                       <Icon name={order.deliveryType === 'delivery' ? 'Truck' : 'Store'} size={16} />
                       <span>{order.deliveryType === 'delivery' ? 'Доставка' : 'Самовывоз'}</span>
                     </div>
-                    {order.deliveryType === 'delivery' && order.deliveryCity && (
+                    {order.deliveryType === 'delivery' && order.deliveryAddress && (
                       <div className="flex items-center gap-1">
                         <Icon name="MapPin" size={16} />
-                        <span>{order.deliveryCity}</span>
+                        <span>{order.deliveryAddress}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1">

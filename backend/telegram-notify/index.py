@@ -75,6 +75,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         for item in order.get('items', [])
     ])
     
+    address_parts = [order.get('address', 'Не указан')]
+    if order.get('apartment'):
+        address_parts.append(f"кв. {order.get('apartment')}")
+    if order.get('entrance'):
+        address_parts.append(f"подъезд {order.get('entrance')}")
+    if order.get('floor'):
+        address_parts.append(f"этаж {order.get('floor')}")
+    if order.get('intercom'):
+        address_parts.append(f"домофон {order.get('intercom')}")
+    
+    full_address = ', '.join(address_parts)
+    
     message = f"""🛒 <b>Новый заказ #{order.get('orderNumber', 'N/A')}</b>
 
 👤 <b>Клиент:</b> {order.get('name', 'Не указано')}
@@ -83,8 +95,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 📦 <b>Тип доставки:</b> {delivery_type}
 💳 <b>Способ оплаты:</b> {payment_type}
-📍 <b>Адрес:</b> {order.get('address', 'Не указан')}
-🏙 <b>Город:</b> {order.get('city', 'Не указан')}
+📍 <b>Адрес доставки:</b> {full_address}
 
 <b>Состав заказа:</b>
 {items_text}
