@@ -16,6 +16,7 @@ import CartDialog from '@/components/dialogs/CartDialog';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
 import AuthDialog from '@/components/dialogs/AuthDialog';
 import OrderHistoryDialog from '@/components/dialogs/OrderHistoryDialog';
+import ProfileSettingsDialog from '@/components/dialogs/ProfileSettingsDialog';
 
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
@@ -25,6 +26,7 @@ const Index = () => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [ordersOpen, setOrdersOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [budget, setBudget] = useState([60000]);
@@ -306,6 +308,7 @@ const Index = () => {
         user={user}
         onLogout={handleLogout}
         onOrdersClick={() => setOrdersOpen(true)}
+        onProfileClick={() => setProfileOpen(true)}
       />
       
       <HeroSection 
@@ -332,6 +335,7 @@ const Index = () => {
       <CatalogSection 
         furnitureSets={furnitureSets}
         onSetClick={setSelectedSet}
+        user={user}
       />
       
       <TargetAudienceSection />
@@ -393,6 +397,12 @@ const Index = () => {
       <OrderHistoryDialog
         open={ordersOpen}
         onClose={() => setOrdersOpen(false)}
+        user={user}
+      />
+
+      <ProfileSettingsDialog
+        open={profileOpen}
+        onClose={() => setProfileOpen(false)}
         user={user}
       />
     </div>

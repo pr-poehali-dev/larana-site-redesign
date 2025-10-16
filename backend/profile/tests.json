@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "Test OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/?action=addresses",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Test unauthorized request",
+      "method": "GET",
+      "path": "/?action=addresses",
+      "expectedStatus": 401
+    }
+  ]
+}

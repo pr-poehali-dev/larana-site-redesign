@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Test OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Test unauthorized GET request",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Test GET favorites",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "test@example.com"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "favorites": []
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
