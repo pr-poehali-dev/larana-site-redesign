@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import AddressAutocomplete from '@/components/AddressAutocomplete';
 
 interface CartItem {
   id: number;
@@ -167,6 +168,23 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
 
               {formData.deliveryType === 'delivery' && (
                 <div className="space-y-4">
+                  <AddressAutocomplete
+                    value={formData.address}
+                    onChange={(value, suggestion) => {
+                      if (suggestion) {
+                        setFormData({
+                          ...formData,
+                          address: suggestion.value,
+                          city: suggestion.city || formData.city
+                        });
+                      } else {
+                        setFormData({...formData, address: value});
+                      }
+                    }}
+                    label="Адрес доставки"
+                    placeholder="Начните вводить адрес..."
+                    required
+                  />
                   <div>
                     <Label htmlFor="city">Город *</Label>
                     <Input 
@@ -175,16 +193,6 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                       required
                       value={formData.city}
                       onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="address">Адрес доставки *</Label>
-                    <Input 
-                      id="address" 
-                      placeholder="ул. Примерная, д. 1, кв. 1" 
-                      required
-                      value={formData.address}
-                      onChange={(e) => setFormData({...formData, address: e.target.value})}
                     />
                   </div>
                 </div>

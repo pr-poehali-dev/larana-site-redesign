@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "Should return empty suggestions for short query",
+      "method": "GET",
+      "path": "/?query=мо",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "suggestions": []
+      },
+      "bodyMatcher": "exact"
+    },
+    {
+      "name": "Should return suggestions for valid query",
+      "method": "GET",
+      "path": "/?query=москва+тверская",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "suggestions": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Should handle OPTIONS for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
