@@ -15,8 +15,10 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
       pending: { label: 'Новый', variant: 'default' },
-      processing: { label: 'В обработке', variant: 'secondary' },
-      completed: { label: 'Выполнен', variant: 'outline' },
+      in_processing: { label: 'В обработке', variant: 'secondary' },
+      in_delivery: { label: 'Передан в доставку', variant: 'secondary' },
+      delivered: { label: 'Доставлен', variant: 'outline' },
+      completed: { label: 'Завершен', variant: 'outline' },
       cancelled: { label: 'Отменен', variant: 'destructive' }
     };
     
@@ -27,8 +29,10 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
       pending: 'Новый',
-      processing: 'В обработке',
-      completed: 'Выполнен',
+      in_processing: 'В обработке',
+      in_delivery: 'Передан в доставку',
+      delivered: 'Доставлен',
+      completed: 'Завершен',
       cancelled: 'Отменен'
     };
     return labels[status] || status;
@@ -201,8 +205,10 @@ const OrderCard = ({ order, isExpanded, onToggleExpand, onUpdateStatus }: OrderC
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pending">Новый</SelectItem>
-                  <SelectItem value="processing">В обработке</SelectItem>
-                  <SelectItem value="completed">Выполнен</SelectItem>
+                  <SelectItem value="in_processing">В обработке</SelectItem>
+                  <SelectItem value="in_delivery">Передан в доставку</SelectItem>
+                  <SelectItem value="delivered">Доставлен</SelectItem>
+                  <SelectItem value="completed">Завершен</SelectItem>
                   <SelectItem value="cancelled">Отменен</SelectItem>
                 </SelectContent>
               </Select>

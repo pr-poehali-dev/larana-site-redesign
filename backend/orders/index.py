@@ -25,7 +25,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'headers': {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
+                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Employee-Type',
                 'Access-Control-Max-Age': '86400'
             },
             'body': '',
@@ -36,8 +36,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     user_email = headers.get('X-User-Id') or headers.get('x-user-id')
     query_params = event.get('queryStringParameters') or {}
     is_admin_request = query_params.get('admin') == 'true'
+    employee_type = query_params.get('employeeType')
     
-    if not user_email and not is_admin_request:
+    if not user_email and not is_admin_request and not employee_type:
         return {
             'statusCode': 401,
             'headers': {
@@ -107,6 +108,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
                 )
                 orders = cur.fetchall()
+            elif employee_type:
+                status_filter = {
+                    'order_processing': 'in_processing',
+                    'delivery': 'in_delivery',
+                    'assembly': 'delivered'
+                }.get(employee_type)
+                
+                if status_filter:
+                    cur.execute(
+                        "SELECT o.id, o.order_number, o.total_amount, o.status, o.delivery_type, o.payment_type, o.delivery_address, o.delivery_city, o.comment, o.created_at, u.email, u.name, u.phone FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status = %s ORDER BY o.created_at DESC",
+                        (status_filter,)
+                    )
+                    orders = cur.fetchall()
+                else:
+                    orders = []
             else:
                 cur.execute(
                     "SELECT id FROM users WHERE email = %s",
@@ -155,7 +171,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'items': [dict(item) for item in items]
                 }
                 
-                if is_admin_request:
+                if is_admin_request or employee_type:
                     order_data['userEmail'] = order.get('email')
                     order_data['userName'] = order.get('name')
                     order_data['userPhone'] = order.get('phone')

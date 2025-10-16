@@ -382,6 +382,18 @@ const EmployeeCard = ({
   onEdit: () => void; 
   onDelete: () => void; 
 }) => {
+  const { toast } = useToast();
+
+  const copyEmployeeLink = () => {
+    const link = `${window.location.origin}/employee`;
+    const text = `Ссылка для входа: ${link}\nВаш ID: ${employee.id}`;
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Скопировано",
+      description: "Ссылка и ID скопированы в буфер обмена"
+    });
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -413,14 +425,25 @@ const EmployeeCard = ({
             <span className="truncate">{employee.email}</span>
           </div>
         )}
-        <div className="flex gap-2 mt-4">
-          <Button variant="outline" size="sm" onClick={onEdit} className="flex-1">
-            <Icon name="Pencil" size={16} className="mr-1" />
-            Изменить
+        <div className="flex flex-col gap-2 mt-4">
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={copyEmployeeLink}
+            className="w-full"
+          >
+            <Icon name="Link" size={16} className="mr-1" />
+            Скопировать ссылку (ID: {employee.id})
           </Button>
-          <Button variant="outline" size="sm" onClick={onDelete}>
-            <Icon name="Trash2" size={16} />
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={onEdit} className="flex-1">
+              <Icon name="Pencil" size={16} className="mr-1" />
+              Изменить
+            </Button>
+            <Button variant="outline" size="sm" onClick={onDelete}>
+              <Icon name="Trash2" size={16} />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
