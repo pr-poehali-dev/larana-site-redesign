@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "Missing fields",
+      "method": "POST",
+      "body": {
+        "employeeId": "1"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Password too short",
+      "method": "POST",
+      "body": {
+        "employeeId": "1",
+        "currentPassword": "old123",
+        "newPassword": "123"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "OPTIONS request",
+      "method": "OPTIONS",
+      "expectedStatus": 200
+    }
+  ]
+}

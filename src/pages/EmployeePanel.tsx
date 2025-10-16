@@ -6,6 +6,7 @@ import { PanelHeader } from './employee-panel/PanelHeader';
 import { OrdersStatistics } from './employee-panel/OrdersStatistics';
 import { OrdersFilter } from './employee-panel/OrdersFilter';
 import { OrdersList } from './employee-panel/OrdersList';
+import { ChangePasswordDialog } from './employee-panel/ChangePasswordDialog';
 import { EmployeeData, OrderData } from './employee-panel/types';
 
 const EmployeePanel = () => {
@@ -18,6 +19,7 @@ const EmployeePanel = () => {
   const [orders, setOrders] = useState<OrderData[]>([]);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -229,6 +231,13 @@ const EmployeePanel = () => {
         loading={loading}
         onRefresh={fetchOrders}
         onLogout={handleLogout}
+        onChangePassword={() => setChangePasswordOpen(true)}
+      />
+
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
+        employeeId={employee.id.toString()}
       />
 
       <main className="container mx-auto px-4 py-8">

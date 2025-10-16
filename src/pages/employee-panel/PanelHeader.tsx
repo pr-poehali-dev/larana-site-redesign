@@ -1,6 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { EmployeeData, EMPLOYEE_TYPES } from './types';
 
 interface PanelHeaderProps {
@@ -8,13 +15,15 @@ interface PanelHeaderProps {
   loading: boolean;
   onRefresh: () => void;
   onLogout: () => void;
+  onChangePassword: () => void;
 }
 
 export const PanelHeader = ({
   employee,
   loading,
   onRefresh,
-  onLogout
+  onLogout,
+  onChangePassword
 }: PanelHeaderProps) => {
   return (
     <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
@@ -50,13 +59,25 @@ export const PanelHeader = ({
             >
               <Icon name="RefreshCw" size={16} className={loading ? "animate-spin" : ""} />
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={onLogout}
-            >
-              <Icon name="LogOut" size={16} className="mr-2" />
-              Выход
-            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Icon name="User" size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={onChangePassword}>
+                  <Icon name="KeyRound" size={16} className="mr-2" />
+                  Изменить пароль
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onLogout} className="text-destructive">
+                  <Icon name="LogOut" size={16} className="mr-2" />
+                  Выход
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
