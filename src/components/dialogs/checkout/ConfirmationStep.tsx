@@ -28,72 +28,72 @@ interface ConfirmationStepProps {
 
 const ConfirmationStep = ({ formData, cartItems, total }: ConfirmationStepProps) => {
   return (
-    <div className="space-y-4">
-      <div className="bg-secondary rounded-lg p-4 space-y-2">
-        <h4 className="font-semibold mb-3">Данные получателя</h4>
-        <div className="flex justify-between text-sm">
+    <div className="space-y-3 sm:space-y-4">
+      <div className="bg-secondary rounded-lg p-3 sm:p-4 space-y-2">
+        <h4 className="font-semibold text-sm sm:text-base mb-2 sm:mb-3">Данные получателя</h4>
+        <div className="flex justify-between text-xs sm:text-sm gap-2">
           <span className="text-muted-foreground">Имя:</span>
-          <span>{formData.name}</span>
+          <span className="text-right">{formData.name}</span>
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm gap-2">
           <span className="text-muted-foreground">Телефон:</span>
-          <span>{formData.phone}</span>
+          <span className="text-right">{formData.phone}</span>
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm gap-2">
           <span className="text-muted-foreground">Email:</span>
-          <span>{formData.email}</span>
+          <span className="text-right break-all">{formData.email}</span>
         </div>
       </div>
 
-      <div className="bg-secondary rounded-lg p-4 space-y-2">
-        <h4 className="font-semibold mb-3">Доставка</h4>
-        <div className="flex justify-between text-sm">
+      <div className="bg-secondary rounded-lg p-3 sm:p-4 space-y-2">
+        <h4 className="font-semibold text-sm sm:text-base mb-2 sm:mb-3">Доставка</h4>
+        <div className="flex justify-between text-xs sm:text-sm gap-2">
           <span className="text-muted-foreground">Способ:</span>
-          <span>{formData.deliveryType === 'delivery' ? 'Доставка курьером' : 'Самовывоз'}</span>
+          <span className="text-right">{formData.deliveryType === 'delivery' ? 'Доставка курьером' : 'Самовывоз'}</span>
         </div>
         {formData.deliveryType === 'delivery' && (
           <>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-xs sm:text-sm gap-2">
               <span className="text-muted-foreground">Город:</span>
-              <span>{formData.city}</span>
+              <span className="text-right">{formData.city}</span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-xs sm:text-sm gap-2">
               <span className="text-muted-foreground">Адрес:</span>
-              <span>{formData.address}</span>
+              <span className="text-right">{formData.address}</span>
             </div>
             {formData.apartment && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs sm:text-sm gap-2">
                 <span className="text-muted-foreground">Квартира:</span>
-                <span>{formData.apartment}</span>
+                <span className="text-right">{formData.apartment}</span>
               </div>
             )}
             {formData.entrance && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs sm:text-sm gap-2">
                 <span className="text-muted-foreground">Подъезд:</span>
-                <span>{formData.entrance}</span>
+                <span className="text-right">{formData.entrance}</span>
               </div>
             )}
             {formData.floor && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs sm:text-sm gap-2">
                 <span className="text-muted-foreground">Этаж:</span>
-                <span>{formData.floor}</span>
+                <span className="text-right">{formData.floor}</span>
               </div>
             )}
             {formData.intercom && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs sm:text-sm gap-2">
                 <span className="text-muted-foreground">Домофон:</span>
-                <span>{formData.intercom}</span>
+                <span className="text-right">{formData.intercom}</span>
               </div>
             )}
           </>
         )}
       </div>
 
-      <div className="bg-secondary rounded-lg p-4 space-y-2">
-        <h4 className="font-semibold mb-3">Оплата</h4>
-        <div className="flex justify-between text-sm">
+      <div className="bg-secondary rounded-lg p-3 sm:p-4 space-y-2">
+        <h4 className="font-semibold text-sm sm:text-base mb-2 sm:mb-3">Оплата</h4>
+        <div className="flex justify-between text-xs sm:text-sm gap-2">
           <span className="text-muted-foreground">Способ:</span>
-          <span>
+          <span className="text-right">
             {formData.paymentType === 'card' ? 'Картой онлайн' : 
              formData.paymentType === 'cash' ? 'Наличными' : 'Рассрочка 0%'}
           </span>

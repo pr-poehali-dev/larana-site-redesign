@@ -204,20 +204,20 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Оформление заказа</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl sm:text-2xl">Оформление заказа</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Шаг {step} из 3: {step === 1 ? 'Контактные данные' : step === 2 ? 'Доставка и оплата' : 'Подтверждение'}
           </DialogDescription>
         </DialogHeader>
 
         <div className="mb-4 px-1">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-xs sm:text-sm font-medium text-muted-foreground">
               Заполнено полей
             </span>
-            <span className="text-sm font-bold text-primary">
+            <span className="text-xs sm:text-sm font-bold text-primary">
               {calculateProgress()}%
             </span>
           </div>
@@ -242,11 +242,11 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
             {[
               { num: 1, label: 'Контакты' },
               { num: 2, label: 'Доставка' },
-              { num: 3, label: 'Подтверждение' }
+              { num: 3, label: 'Готово' }
             ].map((item) => (
               <div key={item.num} className="flex flex-col items-center flex-1">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-500 ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-base font-bold transition-all duration-500 ${
                     item.num === step
                       ? 'bg-primary text-primary-foreground scale-110 shadow-lg'
                       : item.num < step
@@ -255,13 +255,13 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
                   }`}
                 >
                   {item.num < step ? (
-                    <Icon name="Check" size={20} className="animate-in fade-in zoom-in duration-300" />
+                    <Icon name="Check" size={16} className="sm:w-5 sm:h-5 animate-in fade-in zoom-in duration-300" />
                   ) : (
                     item.num
                   )}
                 </div>
                 <span
-                  className={`text-xs mt-2 transition-all duration-300 ${
+                  className={`text-[10px] sm:text-xs mt-1 sm:mt-2 transition-all duration-300 ${
                     item.num === step
                       ? 'text-primary font-semibold'
                       : item.num < step
@@ -286,8 +286,8 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative min-h-[400px]">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="relative min-h-[350px] sm:min-h-[400px]">
             <div
               className={`absolute inset-0 transition-all duration-500 ${
                 step === 1

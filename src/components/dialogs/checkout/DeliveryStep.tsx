@@ -40,33 +40,33 @@ const DeliveryStep = ({
   onSetDefaultAddress
 }: DeliveryStepProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <Label className="mb-3 block">Способ получения</Label>
         <RadioGroup 
           value={formData.deliveryType} 
           onValueChange={(value) => setFormData({...formData, deliveryType: value})}
         >
-          <div className="flex items-center space-x-2 border rounded-lg p-4">
+          <div className="flex items-center space-x-2 border rounded-lg p-3 sm:p-4">
             <RadioGroupItem value="delivery" id="delivery" />
-            <Label htmlFor="delivery" className="flex-1 cursor-pointer">
+            <Label htmlFor="delivery" className="flex-1 cursor-pointer mb-0">
               <div className="flex items-center gap-2">
-                <Icon name="Truck" size={20} />
+                <Icon name="Truck" size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold">Доставка курьером</p>
-                  <p className="text-sm text-muted-foreground">Бесплатно, 3-7 дней</p>
+                  <p className="font-semibold text-sm sm:text-base">Доставка курьером</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Бесплатно, 3-7 дней</p>
                 </div>
               </div>
             </Label>
           </div>
-          <div className="flex items-center space-x-2 border rounded-lg p-4">
+          <div className="flex items-center space-x-2 border rounded-lg p-3 sm:p-4">
             <RadioGroupItem value="pickup" id="pickup" />
-            <Label htmlFor="pickup" className="flex-1 cursor-pointer">
+            <Label htmlFor="pickup" className="flex-1 cursor-pointer mb-0">
               <div className="flex items-center gap-2">
-                <Icon name="Store" size={20} />
+                <Icon name="Store" size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold">Самовывоз из магазина</p>
-                  <p className="text-sm text-muted-foreground">Бесплатно, готов сегодня</p>
+                  <p className="font-semibold text-sm sm:text-base">Самовывоз из магазина</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Бесплатно, готов сегодня</p>
                 </div>
               </div>
             </Label>
