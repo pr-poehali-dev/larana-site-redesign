@@ -29,6 +29,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     inStock: true
   });
   const [uploading, setUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -137,6 +138,29 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       title: "Изображение удалено",
       description: "Файл удален из галереи"
     });
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newImages = [...productForm.images];
+    const draggedImage = newImages[draggedIndex];
+    
+    newImages.splice(draggedIndex, 1);
+    newImages.splice(index, 0, draggedImage);
+    
+    setProductForm({ ...productForm, images: newImages });
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
   };
 
   const saveProduct = () => {
@@ -305,29 +329,41 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
                 {productForm.images.map((imageUrl, idx) => (
                   <Card 
                     key={idx}
-                    className={`relative overflow-hidden ${
+                    draggable
+                    onDragStart={() => handleDragStart(idx)}
+                    onDragOver={(e) => handleDragOver(e, idx)}
+                    onDragEnd={handleDragEnd}
+                    className={`relative overflow-hidden cursor-move transition-all ${
                       productForm.image === imageUrl ? 'ring-2 ring-primary' : ''
-                    }`}
+                    } ${draggedIndex === idx ? 'opacity-50 scale-95' : ''}`}
                   >
                     <CardContent className="p-2">
                       <div className="relative aspect-square">
                         <img 
                           src={imageUrl} 
                           alt={`Фото ${idx + 1}`}
-                          className="w-full h-full object-cover rounded"
+                          className="w-full h-full object-cover rounded pointer-events-none"
                         />
                         {productForm.image === imageUrl && (
                           <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
                             Главное
                           </div>
                         )}
+                        <div className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
+                          <Icon name="GripVertical" size={12} />
+                          {idx + 1}
+                        </div>
                         <div className="absolute top-1 right-1 flex gap-1">
                           {productForm.image !== imageUrl && (
                             <Button
                               size="icon"
                               variant="secondary"
                               className="h-7 w-7"
-                              onClick={() => setMainImage(imageUrl)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setMainImage(imageUrl);
+                              }}
+                              onMouseDown={(e) => e.stopPropagation()}
                             >
                               <Icon name="Star" size={14} />
                             </Button>
@@ -336,7 +372,11 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
                             size="icon"
                             variant="destructive"
                             className="h-7 w-7"
-                            onClick={() => removeImage(imageUrl)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage(imageUrl);
+                            }}
+                            onMouseDown={(e) => e.stopPropagation()}
                           >
                             <Icon name="X" size={14} />
                           </Button>
@@ -351,7 +391,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
             <p className="text-xs text-muted-foreground">
               {productForm.images.length === 0 
                 ? 'Загрузите изображения товара. Первое станет главным.'
-                : `Загружено ${productForm.images.length} фото. Нажмите на звездочку, чтобы сделать главным.`
+                : `Загружено ${productForm.images.length} фото. Перетаскивайте для изменения порядка. Нажмите на звездочку, чтобы сделать главным.`
               }
             </p>
           </div>
