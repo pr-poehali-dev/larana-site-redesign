@@ -7,6 +7,9 @@ import Icon from '@/components/ui/icon';
 import ProductEditor from './ProductEditor';
 import BulkPriceUpdate from './BulkPriceUpdate';
 import BulkProductImport from './BulkProductImport';
+import BulkStockUpdate from './BulkStockUpdate';
+import * as XLSX from 'xlsx';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductsTabProps {
   products: any[];
@@ -17,29 +20,75 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showBulkStock, setShowBulkStock] = useState(false);
+  const { toast } = useToast();
 
   const startEditProduct = (product: any) => {
     setEditingProduct(product);
     setShowBulkUpdate(false);
     setShowBulkImport(false);
+    setShowBulkStock(false);
   };
 
   const startNewProduct = () => {
     setEditingProduct({ id: null });
     setShowBulkUpdate(false);
     setShowBulkImport(false);
+    setShowBulkStock(false);
   };
 
   const openBulkUpdate = () => {
     setEditingProduct(null);
     setShowBulkUpdate(true);
     setShowBulkImport(false);
+    setShowBulkStock(false);
   };
 
   const openBulkImport = () => {
     setEditingProduct(null);
     setShowBulkUpdate(false);
     setShowBulkImport(true);
+    setShowBulkStock(false);
+  };
+
+  const openBulkStock = () => {
+    setEditingProduct(null);
+    setShowBulkUpdate(false);
+    setShowBulkImport(false);
+    setShowBulkStock(true);
+  };
+
+  const exportProducts = () => {
+    const exportData = products.map(p => ({
+      'Название': p.title,
+      'Категория': p.category,
+      'Цена (₽)': p.price.replace(' ₽', ''),
+      'Стиль': p.style,
+      'Описание': p.description,
+      'Ссылка на изображение': p.image,
+      'Артикул поставщика': p.supplierArticle || '',
+      'В наличии': p.inStock ? 'да' : 'нет',
+      'Количество на складе': p.stockQuantity !== null ? p.stockQuantity : '',
+      'Состав комплекта': p.items?.join(';') || '',
+      'Цвета': p.colors?.join(';') || ''
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    
+    const colWidths = [
+      { wch: 25 }, { wch: 12 }, { wch: 10 }, { wch: 15 }, { wch: 50 },
+      { wch: 40 }, { wch: 20 }, { wch: 15 }, { wch: 20 }, { wch: 40 }, { wch: 30 }
+    ];
+    ws['!cols'] = colWidths;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Товары');
+    XLSX.writeFile(wb, `товары_экспорт_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+    toast({
+      title: "Экспорт завершён",
+      description: `Экспортировано товаров: ${products.length}`
+    });
   };
 
   return (
@@ -49,19 +98,29 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
           <div className="space-y-2 mb-3">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">Список товаров</h3>
-              <Button size="sm" onClick={startNewProduct}>
-                <Icon name="Plus" size={16} className="mr-2" />
-                Добавить товар
-              </Button>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={exportProducts}>
+                  <Icon name="Download" size={16} className="mr-2" />
+                  Экспорт
+                </Button>
+                <Button size="sm" onClick={startNewProduct}>
+                  <Icon name="Plus" size={16} className="mr-2" />
+                  Добавить
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={openBulkImport} className="flex-1">
+            <div className="grid grid-cols-3 gap-2">
+              <Button size="sm" variant="outline" onClick={openBulkImport}>
                 <Icon name="Upload" size={16} className="mr-2" />
-                Импорт товаров
+                Импорт
               </Button>
-              <Button size="sm" variant="outline" onClick={openBulkUpdate} className="flex-1">
-                <Icon name="FileSpreadsheet" size={16} className="mr-2" />
-                Обновить цены
+              <Button size="sm" variant="outline" onClick={openBulkUpdate}>
+                <Icon name="DollarSign" size={16} className="mr-2" />
+                Цены
+              </Button>
+              <Button size="sm" variant="outline" onClick={openBulkStock}>
+                <Icon name="Package" size={16} className="mr-2" />
+                Остатки
               </Button>
             </div>
           </div>
@@ -120,6 +179,11 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
           />
         ) : showBulkUpdate ? (
           <BulkPriceUpdate 
+            products={products}
+            onProductsUpdate={onProductUpdate}
+          />
+        ) : showBulkStock ? (
+          <BulkStockUpdate 
             products={products}
             onProductsUpdate={onProductUpdate}
           />
