@@ -212,7 +212,7 @@ const FAQ = () => {
             </nav>
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Меню">
                   <Icon name="Menu" size={24} />
                 </Button>
               </SheetTrigger>
@@ -273,19 +273,19 @@ const FAQ = () => {
         <Card className="mb-8 bg-gradient-to-br from-primary/10 via-primary/5 to-background border-2 border-primary/30 overflow-hidden">
           <button
             onClick={() => setDeliveryFormOpen(!deliveryFormOpen)}
-            className="w-full text-left p-8 hover:bg-primary/5 transition-colors"
+            className="w-full text-left p-4 md:p-8 hover:bg-primary/5 transition-colors"
           >
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-3 md:gap-4">
               <Icon 
                 name={deliveryFormOpen ? "ChevronDown" : "ChevronRight"}
-                size={32}
-                className="text-primary flex-shrink-0 mt-1 transition-transform"
+                size={24}
+                className="text-primary flex-shrink-0 mt-1 transition-transform md:w-8 md:h-8"
               />
               <div className="flex-1">
-                <h2 className="text-2xl font-bold mb-2">
+                <h2 className="text-lg md:text-2xl font-bold mb-1 md:mb-2">
                   Узнать стоимость доставки в ваш регион
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-sm md:text-base text-muted-foreground">
                   Оставьте заявку, и мы рассчитаем точную стоимость доставки мебели в ваш город
                 </p>
               </div>
@@ -293,7 +293,7 @@ const FAQ = () => {
           </button>
           
           {deliveryFormOpen && (
-            <CardContent className="px-8 pb-8 pt-0">
+            <CardContent className="px-4 md:px-8 pb-4 md:pb-8 pt-0">
               <form onSubmit={handleDeliveryCalculation} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <CityAutocomplete
@@ -347,7 +347,7 @@ const FAQ = () => {
                 </p>
               </div>
 
-              <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
@@ -356,7 +356,7 @@ const FAQ = () => {
                 ) : (
                   <>
                     <Icon name="Send" size={18} className="mr-2" />
-                    Рассчитать стоимость доставки
+                    Рассчитать доставку
                   </>
                 )}
               </Button>
@@ -373,23 +373,23 @@ const FAQ = () => {
             >
               <button
                 onClick={() => toggleQuestion(index)}
-                className="w-full text-left p-6 flex items-start gap-4 hover:bg-muted/30 transition-colors"
+                className="w-full text-left p-4 md:p-6 flex items-start gap-3 md:gap-4 hover:bg-muted/30 transition-colors"
               >
                 <Icon 
                   name={expandedIndex === index ? "ChevronDown" : "ChevronRight"}
-                  size={24}
-                  className="text-primary mt-1 flex-shrink-0"
+                  size={20}
+                  className="text-primary mt-1 flex-shrink-0 md:w-6 md:h-6"
                 />
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold pr-4">
+                  <h3 className="text-base md:text-lg font-semibold pr-2 md:pr-4">
                     {item.question}
                   </h3>
                 </div>
               </button>
 
               {expandedIndex === index && (
-                <CardContent className="px-6 pb-6 pt-0">
-                  <div className="pl-10 text-muted-foreground leading-relaxed">
+                <CardContent className="px-4 md:px-6 pb-4 md:pb-6 pt-0">
+                  <div className="pl-8 md:pl-10 text-sm md:text-base text-muted-foreground leading-relaxed">
                     {item.answer}
                   </div>
                 </CardContent>
@@ -398,30 +398,30 @@ const FAQ = () => {
           ))}
         </div>
 
-        <div className="mt-12 p-8 bg-primary/5 rounded-lg border-2 border-primary/20">
-          <div className="flex items-start gap-4">
-            <Icon name="MessageCircle" size={32} className="text-primary flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="text-xl font-semibold mb-2">
+        <div className="mt-12 p-4 md:p-8 bg-primary/5 rounded-lg border-2 border-primary/20">
+          <div className="flex items-start gap-3 md:gap-4">
+            <Icon name="MessageCircle" size={24} className="text-primary flex-shrink-0 mt-1 md:w-8 md:h-8" />
+            <div className="flex-1">
+              <h3 className="text-lg md:text-xl font-semibold mb-2">
                 Не нашли ответ на свой вопрос?
               </h3>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-sm md:text-base text-muted-foreground mb-4">
                 Свяжитесь с нами любым удобным способом, и мы с радостью поможем вам!
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <a 
-                  href="tel:+79000000000" 
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                  href="tel:+73433511912" 
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm md:text-base whitespace-nowrap"
                 >
                   <Icon name="Phone" size={18} />
                   Позвонить
                 </a>
                 <a 
-                  href="mailto:info@example.com" 
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary/10 transition-colors"
+                  href="/contacts" 
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary/10 transition-colors text-sm md:text-base whitespace-nowrap"
                 >
                   <Icon name="Mail" size={18} />
-                  Написать email
+                  Написать
                 </a>
               </div>
             </div>

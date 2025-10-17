@@ -192,26 +192,26 @@ const Contacts = () => {
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           <div className="space-y-6">
             <Card>
-              <CardContent className="p-6 space-y-4">
-                <h2 className="text-2xl font-bold mb-4">Наши контакты</h2>
+              <CardContent className="p-4 md:p-6 space-y-4">
+                <h2 className="text-xl md:text-2xl font-bold mb-4">Наши контакты</h2>
 
                 <div className="flex items-start gap-3">
-                  <Icon name="MapPin" size={24} className="text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-1">Адрес офиса и пункта самовывоза</h3>
-                    <p className="text-muted-foreground">
+                  <Icon name="MapPin" size={20} className="text-primary flex-shrink-0 mt-1 md:w-6 md:h-6" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm md:text-base font-semibold mb-1">Адрес офиса и пункта самовывоза</h3>
+                    <p className="text-sm md:text-base text-muted-foreground break-words">
                       г. Екатеринбург, ул. Крупносортщиков, 14, офис 102
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Icon name="Phone" size={24} className="text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-1">Телефон</h3>
+                  <Icon name="Phone" size={20} className="text-primary flex-shrink-0 mt-1 md:w-6 md:h-6" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm md:text-base font-semibold mb-1">Телефон</h3>
                     <a 
                       href="tel:+73433511912" 
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors break-all"
                     >
                       +7 (343) 351-19-12
                     </a>
@@ -219,12 +219,12 @@ const Contacts = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Icon name="Mail" size={24} className="text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-1">Электронная почта</h3>
+                  <Icon name="Mail" size={20} className="text-primary flex-shrink-0 mt-1 md:w-6 md:h-6" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm md:text-base font-semibold mb-1">Электронная почта</h3>
                     <a 
                       href="mailto:zakaz@larana.market" 
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors break-all"
                     >
                       zakaz@larana.market
                     </a>
@@ -279,9 +279,9 @@ const Contacts = () => {
 
           <div>
             <Card>
-              <CardContent className="p-6">
-                <h2 className="text-2xl font-bold mb-4">Написать нам</h2>
-                <p className="text-muted-foreground mb-6">
+              <CardContent className="p-4 md:p-6">
+                <h2 className="text-xl md:text-2xl font-bold mb-4">Написать нам</h2>
+                <p className="text-sm md:text-base text-muted-foreground mb-6">
                   Оставьте сообщение, и мы свяжемся с вами в ближайшее время
                 </p>
 
@@ -340,10 +340,10 @@ const Contacts = () => {
                   </Button>
                 </form>
 
-                <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                  <p className="text-sm text-muted-foreground flex items-start gap-2">
-                    <Icon name="Info" size={16} className="flex-shrink-0 mt-0.5" />
-                    Мы ответим на ваше сообщение в течение рабочего дня
+                <div className="mt-6 p-3 md:p-4 bg-primary/5 rounded-lg border border-primary/20">
+                  <p className="text-xs md:text-sm text-muted-foreground flex items-start gap-2">
+                    <Icon name="Info" size={14} className="flex-shrink-0 mt-0.5 md:w-4 md:h-4" />
+                    <span className="flex-1">Мы ответим на ваше сообщение в течение рабочего дня</span>
                   </p>
                 </div>
               </CardContent>
