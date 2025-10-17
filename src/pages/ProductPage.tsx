@@ -1,6 +1,6 @@
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -23,13 +23,19 @@ const ProductPage = () => {
   const { toast } = useToast();
   
   const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
-  const [selectedColor, setSelectedColor] = useState(product?.colors[0] || '');
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [user] = useState<any>(null);
   
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
+
+  useEffect(() => {
+    if (product && product.colors && product.colors.length > 0) {
+      setSelectedColor(product.colors[0]);
+    }
+  }, [product?.id, product?.colors]);
 
   if (!product) {
     return <Navigate to="/404" replace />;
@@ -123,21 +129,30 @@ const ProductPage = () => {
                   </p>
                 </div>
 
-                <div>
-                  <h3 className="font-semibold mb-3">Выберите цвет:</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.colors.map((color) => (
-                      <Button
-                        key={color}
-                        variant={selectedColor === color ? "default" : "outline"}
-                        onClick={() => setSelectedColor(color)}
-                        className="min-w-[120px]"
-                      >
-                        {color}
-                      </Button>
-                    ))}
+                {product.colors && product.colors.length > 1 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Выберите цвет:</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {product.colors.map((color) => (
+                        <Button
+                          key={color}
+                          variant={selectedColor === color ? "default" : "outline"}
+                          onClick={() => setSelectedColor(color)}
+                          className="min-w-[120px]"
+                        >
+                          {color}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {product.colors && product.colors.length === 1 && (
+                  <div>
+                    <h3 className="font-semibold mb-2">Цвет:</h3>
+                    <p className="text-muted-foreground">{product.colors[0]}</p>
+                  </div>
+                )}
 
                 <div>
                   <h3 className="font-semibold mb-3">Количество:</h3>
@@ -228,10 +243,14 @@ const ProductPage = () => {
                       <dt className="text-sm text-muted-foreground">Стиль</dt>
                       <dd className="font-semibold">{product.style}</dd>
                     </div>
-                    <div>
-                      <dt className="text-sm text-muted-foreground">Доступные цвета</dt>
-                      <dd className="font-semibold">{product.colors.join(', ')}</dd>
-                    </div>
+                    {product.colors && product.colors.length > 0 && (
+                      <div>
+                        <dt className="text-sm text-muted-foreground">
+                          {product.colors.length > 1 ? 'Доступные цвета' : 'Цвет'}
+                        </dt>
+                        <dd className="font-semibold">{product.colors.join(', ')}</dd>
+                      </div>
+                    )}
                     <div>
                       <dt className="text-sm text-muted-foreground">Наличие</dt>
                       <dd className="font-semibold">
