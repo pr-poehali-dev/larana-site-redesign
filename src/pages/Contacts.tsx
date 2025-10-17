@@ -279,7 +279,7 @@ const Contacts = () => {
                     className="w-full"
                     onClick={() =>
                       window.open(
-                        'https://yandex.ru/maps/?rtext=~56.798422,60.624486&rtt=auto',
+                        'https://yandex.ru/maps/54/yekaterinburg/?ll=60.624486%2C56.798422&mode=routes&rtext=~56.798422%2C60.624486&rtt=auto&ruri=~&z=16',
                         '_blank'
                       )
                     }
