@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import CityAutocomplete from '@/components/CityAutocomplete';
 import Icon from '@/components/ui/icon';
@@ -50,6 +51,7 @@ const FAQ = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
+  const [comment, setComment] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -139,6 +141,7 @@ const FAQ = () => {
           type: 'delivery_calculation',
           city: city.trim(),
           phone: phone.trim(),
+          comment: comment.trim(),
           timestamp: new Date().toLocaleString('ru-RU')
         })
       });
@@ -154,6 +157,7 @@ const FAQ = () => {
 
       setCity('');
       setPhone('');
+      setComment('');
     } catch (error) {
       toast({
         title: "Ошибка отправки",
@@ -226,6 +230,24 @@ const FAQ = () => {
                   )}
                 </div>
               </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Комментарий
+                </label>
+                <Textarea
+                  placeholder="Укажите примерный вес или габариты товара, количество мест, особые пожелания..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full min-h-[100px] resize-none"
+                  maxLength={500}
+                />
+                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                  <Icon name="Info" size={12} />
+                  Необязательно. Максимум 500 символов
+                </p>
+              </div>
+
               <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>

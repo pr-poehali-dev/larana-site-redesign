@@ -60,6 +60,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     if request_type == 'delivery_calculation':
         city = body_data.get('city', 'Не указан')
         phone = body_data.get('phone', 'Не указан')
+        comment = body_data.get('comment', '')
         timestamp = body_data.get('timestamp', 'Не указано')
         
         message = f"""📊 <b>Запрос расчета доставки</b>
@@ -67,9 +68,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 🏙 <b>Город:</b> {city}
 📱 <b>Телефон:</b> {phone}
 🕐 <b>Время:</b> {timestamp}
-
-<i>Клиент запросил расчет стоимости доставки в другой регион</i>
 """
+        
+        if comment:
+            message += f"\n💬 <b>Комментарий:</b> {comment}\n"
+        
+        message += "\n<i>Клиент запросил расчет стоимости доставки в другой регион</i>"
         
         telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         data = {
