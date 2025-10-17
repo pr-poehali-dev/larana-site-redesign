@@ -92,6 +92,30 @@ const Contacts = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <header className="bg-white border-b sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <a href="/" className="flex items-center gap-3">
+              <img 
+                src="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" 
+                alt="LARANA" 
+                className="h-16 md:h-20 w-auto"
+              />
+            </a>
+            <nav className="hidden md:flex gap-6">
+              <a href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Главная</a>
+              <a href="/#catalog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Каталог</a>
+              <a href="/#configurator" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Конфигуратор</a>
+              <a href="/faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">FAQ</a>
+              <a href="/contacts" className="text-sm font-medium text-primary border-b-2 border-primary transition-colors">Контакты</a>
+            </nav>
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => window.location.href = '/'}>
+              <Icon name="Home" size={24} />
+            </Button>
+          </div>
+        </div>
+      </header>
+
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
