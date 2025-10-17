@@ -84,14 +84,9 @@ const CategoryPage = () => {
         return product.category === targetCategory;
       })
       .map(product => ({
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        inStock: product.inStock,
+        ...product,
         width: product.items[0] || '',
-        material: product.colors[0] || '',
-        style: product.style
+        material: product.colors[0] || ''
       }));
 
     filtered = filtered.filter(product => {
@@ -117,10 +112,33 @@ const CategoryPage = () => {
         }
 
         if (filterId === 'color' && Array.isArray(values)) {
-          const colorMatch = values.some((v: string) => 
-            product.material?.toLowerCase().includes(v.toLowerCase())
-          );
+          const colorMatch = values.some((v: string) => {
+            const productColors = Array.isArray(product.colors) 
+              ? product.colors.join(' ').toLowerCase() 
+              : (product.material?.toLowerCase() || '');
+            return productColors.includes(v.toLowerCase());
+          });
           if (!colorMatch) return false;
+        }
+
+        if (filterId === 'material' && Array.isArray(values)) {
+          const materialMatch = values.some((v: string) => {
+            const productMaterials = Array.isArray(product.items)
+              ? product.items.join(' ').toLowerCase()
+              : product.width?.toLowerCase() || '';
+            return productMaterials.includes(v.toLowerCase());
+          });
+          if (!materialMatch) return false;
+        }
+
+        if ((filterId === 'width' || filterId === 'length' || filterId === 'bed-size') && Array.isArray(values)) {
+          const sizeMatch = values.some((v: string) => {
+            const productSize = Array.isArray(product.items)
+              ? product.items.join(' ')
+              : product.width || '';
+            return productSize.includes(v) || productSize.includes(v.replace('-', ''));
+          });
+          if (!sizeMatch) return false;
         }
       }
 

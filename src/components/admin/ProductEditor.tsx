@@ -154,9 +154,25 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
 
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold">
-        {product.id ? 'Редактировать товар' : 'Новый товар'}
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold">
+          {product.id ? 'Редактировать товар' : 'Новый товар'}
+        </h3>
+      </div>
+
+      <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg text-sm">
+        <p className="font-semibold mb-1 flex items-center gap-2">
+          <Icon name="Info" size={16} />
+          Влияние на фильтры каталога:
+        </p>
+        <ul className="text-xs space-y-1 ml-6">
+          <li>• <strong>Категория</strong> — определяет раздел каталога</li>
+          <li>• <strong>Стиль</strong> — фильтр "Стиль" в каталоге</li>
+          <li>• <strong>Цвета</strong> — фильтр "Цвет" (Белый, Венге, Дуб, Серый и т.д.)</li>
+          <li>• <strong>Состав</strong> — фильтр по размерам/ширине (указывайте размеры в см)</li>
+          <li>• <strong>В наличии</strong> — фильтр "Только в наличии"</li>
+        </ul>
+      </div>
 
       <div className="space-y-3">
         <ProductBasicFields

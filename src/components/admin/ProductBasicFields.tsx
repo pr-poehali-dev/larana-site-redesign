@@ -38,12 +38,11 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
             <SelectValue placeholder="Выберите категорию" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Спальня">Спальня</SelectItem>
-            <SelectItem value="Гостиная">Гостиная</SelectItem>
-            <SelectItem value="Кухня">Кухня</SelectItem>
+            <SelectItem value="Спальни">Спальни</SelectItem>
+            <SelectItem value="Гостиные">Гостиные</SelectItem>
+            <SelectItem value="Кухни">Кухни</SelectItem>
             <SelectItem value="Шкафы">Шкафы</SelectItem>
-            <SelectItem value="Детская">Детская</SelectItem>
-            <SelectItem value="Прихожая">Прихожая</SelectItem>
+            <SelectItem value="Прихожие">Прихожие</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -75,6 +74,9 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
             <SelectItem value="Модерн">Модерн</SelectItem>
           </SelectContent>
         </Select>
+        <p className="text-xs text-muted-foreground mt-1">
+          Используется в фильтре по стилям
+        </p>
       </div>
 
       <div>
@@ -84,6 +86,9 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
           onChange={(e) => onChange('items', e.target.value)}
           placeholder="Кровать 160, Шкаф 2Д, Тумбы"
         />
+        <p className="text-xs text-muted-foreground mt-1">
+          Используется в фильтрах по размерам/ширине
+        </p>
       </div>
 
       <div>
@@ -91,8 +96,11 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
         <Input
           value={formData.colors}
           onChange={(e) => onChange('colors', e.target.value)}
-          placeholder="Белый, Серый, Дуб"
+          placeholder="Белый/дуб, Серый/венге"
         />
+        <p className="text-xs text-muted-foreground mt-1">
+          Используется в фильтре по цветам. Примеры: Белый, Венге, Дуб, Серый
+        </p>
       </div>
 
       <div>
