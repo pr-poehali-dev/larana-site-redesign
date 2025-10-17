@@ -37,7 +37,16 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
 
   const navLinks = [
     { href: '/', label: 'Главная', exact: true },
-    { href: '/#catalog', label: 'Каталог', exact: false },
+    { 
+      href: '/#catalog', 
+      label: 'Каталог', 
+      exact: false,
+      submenu: [
+        { href: '/catalog/shkafy-kupe', label: 'Шкафы-купе' },
+        { href: '/catalog/divany', label: 'Диваны' },
+        { href: '/#catalog', label: 'Все товары' }
+      ]
+    },
     { href: '/#configurator', label: 'Конфигуратор', exact: false },
     { href: '/blog', label: 'Блог', exact: true },
     { href: '/faq', label: 'FAQ', exact: true },
