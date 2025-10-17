@@ -69,10 +69,10 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                     >
                       {product.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-3">{product.category}</p>
-                    <div className="text-2xl font-bold text-foreground mb-3">
-                      {formatPrice(product.price)}
-                    </div>
+                    <p className="text-sm text-muted-foreground">{product.category}</p>
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">
+                    {formatPrice(product.price)}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {product.items.slice(0, 3).map((item, idx) => (

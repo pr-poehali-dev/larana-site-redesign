@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { formatPrice } from '@/utils/formatPrice';
 import { useState, useEffect } from 'react';
 
 interface FurnitureSet {
@@ -130,7 +131,7 @@ const CatalogSection = ({ furnitureSets, onSetClick, user }: CatalogSectionProps
                   ))}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">{set.price}</span>
+                  <span className="text-2xl font-bold">{formatPrice(set.price)}</span>
                   <Button className="bg-foreground hover:bg-foreground/90 text-background" onClick={(e) => { e.stopPropagation(); onSetClick(set); }}>
                     Подробнее
                   </Button>
