@@ -1,10 +1,11 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { categories, categoryFilters } from '@/data/catalogData';
+import { useProductData } from '@/hooks/useProductData';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +28,8 @@ const CategoryPage = () => {
   const [priceRange, setPriceRange] = useState<number[]>([15000, 80000]);
   const [sortBy, setSortBy] = useState('popular');
 
+  const { allFurnitureSets } = useProductData();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
@@ -42,35 +45,28 @@ const CategoryPage = () => {
     }));
   };
 
-  const mockProducts = [
-    {
-      id: 1,
-      title: 'Шкаф-купе "Базис 2Д"',
-      price: '17900 ₽',
-      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
-      inStock: true,
-      width: '120 см',
-      material: 'Зеркало + ЛДСП'
-    },
-    {
-      id: 2,
-      title: 'Шкаф-купе "Премиум 3Д"',
-      price: '29900 ₽',
-      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/3141aeac-5ce4-4d14-b899-130e0e1c1761.jpg',
-      inStock: true,
-      width: '180 см',
-      material: 'Зеркало'
-    },
-    {
-      id: 3,
-      title: 'Диван-кровать "Токио"',
-      price: '26900 ₽',
-      image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
-      inStock: true,
-      width: '200 см',
-      material: 'Велюр'
-    }
-  ];
+  const categoryMapping: Record<string, string> = {
+    'shkafy-kupe': 'Шкафы',
+    'divany': 'Гостиная'
+  };
+
+  const targetCategory = categoryMapping[slug || ''];
+
+  const mockProducts = useMemo(() => {
+    if (!targetCategory) return [];
+    
+    return allFurnitureSets
+      .filter(product => product.category === targetCategory)
+      .map(product => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        inStock: product.inStock,
+        width: product.items[0] || '',
+        material: product.colors[0] || ''
+      }));
+  }, [allFurnitureSets, targetCategory]);
 
   return (
     <>
