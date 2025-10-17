@@ -116,9 +116,22 @@ const Footer = () => {
         <div className="border-t border-background/20 mt-8 pt-8 text-center text-sm opacity-80">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
             <p>© 2024 LARANA. Все права защищены.</p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <a href="/privacy-policy" className="hover:opacity-100 underline">
+                Политика конфиденциальности
+              </a>
+              <a href="/terms-of-service" className="hover:opacity-100 underline">
+                Пользовательское соглашение
+              </a>
+              <a href="/oferta" className="hover:opacity-100 underline">
+                Договор-оферта
+              </a>
+            </div>
+          </div>
+          <div className="mt-4">
             <button 
               onClick={() => window.location.href = '/employee'}
-              className="text-background/80 hover:text-background underline text-sm flex items-center gap-2"
+              className="text-background/80 hover:text-background underline text-sm flex items-center gap-2 mx-auto"
             >
               <Icon name="UserCog" size={16} />
               Для сотрудников
