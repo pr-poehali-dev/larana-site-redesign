@@ -1,208 +1,257 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Main page -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Главная страница -->
   <url>
     <loc>https://larana-mebel.ru/</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Static pages -->
+  <!-- Каталог -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Категории каталога -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog/spalnya</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/kuhni</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/gostinaya</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/shkafy</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/prihojaya</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Товары - Спальни -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog/spalnya/1</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d6e0d2f2-8f4d-41f4-b563-ea53d8e436e4.jpg</image:loc>
+      <image:title>Спальня "Сканди Мини"</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/spalnya/2</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/10717cc5-40db-4449-abd5-71b9d8b6c269.jpg</image:loc>
+      <image:title>Спальня "Комфорт Люкс"</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Товары - Кухни -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog/kuhni/3</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/28dd2d42-f20f-4093-a79c-3581f1162a03.jpg</image:loc>
+      <image:title>Кухня "Лара 180"</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/kuhni/4</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/0ce710ad-5197-4e39-accf-50b5f8ffe640.jpg</image:loc>
+      <image:title>Кухня "Милан 240"</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Товары - Гостиные -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog/gostinaya/5</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/3df816ee-8a95-4339-bf44-cda7f25d59a7.jpg</image:loc>
+      <image:title>Гостиная "Фиеста"</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/gostinaya/6</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5bcce75e-8fd6-45ae-bdac-3aade8786678.jpg</image:loc>
+      <image:title>Гостиная "Модерн"</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/gostinaya/7</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/c58a6ff8-f6db-4de5-8785-0293ccb4ea98.jpg</image:loc>
+      <image:title>Гостиная "Классика Плюс"</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Товары - Шкафы -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog/shkafy/8</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d50db947-51b9-44ed-9994-f0075c68c626.jpg</image:loc>
+      <image:title>Шкаф-купе "Комфорт 180"</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://larana-mebel.ru/catalog/shkafy/9</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/289830eb-e60b-426f-9f3c-8e92e8eef16a.jpg</image:loc>
+      <image:title>Шкаф-купе "Макси 240"</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Товары - Прихожие -->
+  <url>
+    <loc>https://larana-mebel.ru/catalog/prihojaya/10</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d673daa8-2d56-408f-84f4-d906def95350.jpg</image:loc>
+      <image:title>Прихожая "Лайт"</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Блог -->
   <url>
     <loc>https://larana-mebel.ru/blog</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/faq</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/contacts</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
-  <!-- Blog articles -->
+  <!-- Статьи блога -->
   <url>
-    <loc>https://larana-mebel.ru/blog/kuhni-na-zakaz-ekaterinburg-ceny-2025</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/blog/besplatnyj-zamer-kuhni-ekaterinburg</loc>
+    <loc>https://larana-mebel.ru/blog/kak-vybrat-divan-dlya-gostinoj</loc>
     <lastmod>2025-10-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg</image:loc>
+      <image:title>Как выбрать диван для гостиной</image:title>
+    </image:image>
   </url>
+  
   <url>
-    <loc>https://larana-mebel.ru/blog/shkaf-kupe-surgut-nizhnevartovsk</loc>
-    <lastmod>2025-10-12</lastmod>
+    <loc>https://larana-mebel.ru/blog/shkaf-kupe-v-spalnyu</loc>
+    <lastmod>2025-10-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg</image:loc>
+      <image:title>Шкаф-купе в спальню</image:title>
+    </image:image>
   </url>
   
-  <!-- Екатеринбург - Priority 1 -->
   <url>
-    <loc>https://larana-mebel.ru/city/ekaterinburg/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/ekaterinburg/wardrobe</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/ekaterinburg/wardrobe_room</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/ekaterinburg/countertop</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/ekaterinburg/facade</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://larana-mebel.ru/blog/spalnya-v-skandinavskom-stile</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/f6c52090-2b82-4b51-af64-5c4069010a78.jpg</image:loc>
+      <image:title>Спальня в скандинавском стиле</image:title>
+    </image:image>
   </url>
   
-  <!-- Верхняя Пышма -->
+  <!-- Информационные страницы -->
   <url>
-    <loc>https://larana-mebel.ru/city/verkhnyaya-pyshma/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://larana-mebel.ru/about</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   
-  <!-- Берёзовский -->
   <url>
-    <loc>https://larana-mebel.ru/city/berezovsky/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://larana-mebel.ru/contacts</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   
-  <!-- Среднеуральск -->
   <url>
-    <loc>https://larana-mebel.ru/city/sredneuralsk/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://larana-mebel.ru/faq</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   
-  <!-- Тюмень - Priority 1 -->
   <url>
-    <loc>https://larana-mebel.ru/city/tyumen/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/tyumen/wardrobe</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/tyumen/countertop</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/tyumen/wardrobe_room</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://larana-mebel.ru/privacy-policy</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   
-  <!-- Челябинск - Priority 1 -->
   <url>
-    <loc>https://larana-mebel.ru/city/chelyabinsk/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://larana-mebel.ru/terms-of-service</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   
-  <!-- Сургут - Priority 1 -->
   <url>
-    <loc>https://larana-mebel.ru/city/surgut/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/surgut/wardrobe</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://larana-mebel.ru/oferta</loc>
+    <lastmod>2025-10-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   
-  <!-- Нижневартовск - Priority 1 -->
-  <url>
-    <loc>https://larana-mebel.ru/city/nizhnevartovsk/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://larana-mebel.ru/city/nizhnevartovsk/wardrobe</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Ханты-Мансийск -->
-  <url>
-    <loc>https://larana-mebel.ru/city/khanty-mansiysk/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Ноябрьск -->
-  <url>
-    <loc>https://larana-mebel.ru/city/noyabrsk/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Новый Уренгой -->
-  <url>
-    <loc>https://larana-mebel.ru/city/novy-urengoy/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Салехард -->
-  <url>
-    <loc>https://larana-mebel.ru/city/salekhard/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Надым -->
-  <url>
-    <loc>https://larana-mebel.ru/city/nadym/kitchen</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
 </urlset>
