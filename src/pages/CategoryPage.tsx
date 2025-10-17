@@ -166,10 +166,17 @@ const CategoryPage = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-lg">Фильтры</h3>
-                      <Button variant="ghost" size="sm" onClick={() => {
-                        setSelectedFilters({});
-                        setPriceRange([15000, 80000]);
-                      }}>
+                      <Button 
+                        type="button"
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelectedFilters({});
+                          setPriceRange([15000, 80000]);
+                        }}
+                      >
                         Сбросить
                       </Button>
                     </div>
