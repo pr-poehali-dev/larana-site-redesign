@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import ProductEditor from './ProductEditor';
+import BulkPriceUpdate from './BulkPriceUpdate';
 
 interface ProductsTabProps {
   products: any[];
@@ -13,13 +14,21 @@ interface ProductsTabProps {
 
 const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [showBulkUpdate, setShowBulkUpdate] = useState(false);
 
   const startEditProduct = (product: any) => {
     setEditingProduct(product);
+    setShowBulkUpdate(false);
   };
 
   const startNewProduct = () => {
     setEditingProduct({ id: null });
+    setShowBulkUpdate(false);
+  };
+
+  const openBulkUpdate = () => {
+    setEditingProduct(null);
+    setShowBulkUpdate(true);
   };
 
   return (
@@ -28,10 +37,16 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold">Список товаров</h3>
-            <Button size="sm" onClick={startNewProduct}>
-              <Icon name="Plus" size={16} className="mr-2" />
-              Добавить товар
-            </Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={openBulkUpdate}>
+                <Icon name="FileSpreadsheet" size={16} className="mr-2" />
+                Обновить цены
+              </Button>
+              <Button size="sm" onClick={startNewProduct}>
+                <Icon name="Plus" size={16} className="mr-2" />
+                Добавить товар
+              </Button>
+            </div>
           </div>
           {products.map((product) => (
             <Card 
@@ -81,7 +96,12 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
       </ScrollArea>
 
       <ScrollArea className="h-[500px] pr-4">
-        {editingProduct ? (
+        {showBulkUpdate ? (
+          <BulkPriceUpdate 
+            products={products}
+            onProductsUpdate={onProductUpdate}
+          />
+        ) : editingProduct ? (
           <ProductEditor
             product={editingProduct}
             products={products}
