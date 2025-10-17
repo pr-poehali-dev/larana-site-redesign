@@ -275,6 +275,15 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
                   </div>
                 </Label>
               </div>
+              <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                <RadioGroupItem value="card-on-delivery" id="card-on-delivery" />
+                <Label htmlFor="card-on-delivery" className="flex-1 cursor-pointer mb-0">
+                  <div className="flex items-center gap-2">
+                    <Icon name="CreditCard" size={18} />
+                    <span className="text-sm sm:text-base">Картой при получении</span>
+                  </div>
+                </Label>
+              </div>
             </RadioGroup>
           </div>
 
