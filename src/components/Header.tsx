@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { useLocation } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 interface HeaderProps {
   cartItemsCount: number;
@@ -23,6 +31,24 @@ interface HeaderProps {
 }
 
 const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOrdersClick, onProfileClick, onFavoritesClick, onAdminClick }: HeaderProps) => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const navLinks = [
+    { href: '/', label: 'Главная', exact: true },
+    { href: '/#catalog', label: 'Каталог', exact: false },
+    { href: '/#configurator', label: 'Конфигуратор', exact: false },
+    { href: '/faq', label: 'FAQ', exact: true },
+    { href: '/contacts', label: 'Контакты', exact: true },
+  ];
+
+  const isActive = (href: string, exact: boolean) => {
+    if (exact) {
+      return currentPath === href;
+    }
+    return href.includes('#') && currentPath === '/';
+  };
+
   return (
     <header className="bg-white border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -36,13 +62,49 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
               />
             </a>
             <nav className="hidden md:flex gap-6">
-              <a href="/#catalog" className="text-sm hover:text-primary transition-colors">Каталог</a>
-              <a href="/#configurator" className="text-sm hover:text-primary transition-colors">Конфигуратор</a>
-              <a href="/faq" className="text-sm hover:text-primary transition-colors">FAQ</a>
-              <a href="/contacts" className="text-sm hover:text-primary transition-colors">Контакты</a>
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={`text-sm transition-colors font-medium ${
+                    isActive(link.href, link.exact)
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-muted-foreground hover:text-primary'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              ))}
             </nav>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle>Меню</SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-4 mt-6">
+                  {navLinks.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className={`text-base py-2 px-3 rounded-md transition-colors ${
+                        isActive(link.href, link.exact)
+                          ? 'bg-primary text-primary-foreground font-medium'
+                          : 'text-foreground hover:bg-accent'
+                      }`}
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
