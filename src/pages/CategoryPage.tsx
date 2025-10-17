@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { categories, categoryFilters } from '@/data/catalogData';
 import { useProductData } from '@/hooks/useProductData';
+import { useCartLogic } from '@/hooks/useCartLogic';
+import { useOrderLogic } from '@/hooks/useOrderLogic';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +20,7 @@ import {
 } from "@/components/ui/accordion";
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
+import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -30,8 +33,12 @@ const CategoryPage = () => {
   const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
   const [priceRange, setPriceRange] = useState<number[]>(initialPriceRange);
   const [sortBy, setSortBy] = useState('popular');
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [user] = useState<any>(null);
 
   const { allFurnitureSets } = useProductData();
+  const { cartItems, handleAddToCart: addToCart, clearCart } = useCartLogic();
+  const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -51,6 +58,11 @@ const CategoryPage = () => {
       ...prev,
       [filterId]: value
     }));
+  };
+
+  const handleConfirmOrder = async (orderData: any) => {
+    await confirmOrder(orderData);
+    setCheckoutOpen(false);
   };
 
   const categoryMapping: Record<string, string> = {
@@ -338,7 +350,15 @@ const CategoryPage = () => {
                           <p className="text-sm text-muted-foreground mb-3">{product.width} • {product.material}</p>
                           <div className="flex items-center justify-between">
                             <span className="text-2xl font-bold text-primary">{product.price}</span>
-                            <Button size="sm" onClick={(e) => e.preventDefault()}>
+                            <Button size="sm" onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const fullProduct = allFurnitureSets.find(p => p.id === product.id);
+                              if (fullProduct) {
+                                addToCart(fullProduct);
+                                setCheckoutOpen(true);
+                              }
+                            }}>
                               <Icon name="ShoppingCart" size={16} className="mr-2" />
                               Купить
                             </Button>
@@ -381,6 +401,14 @@ const CategoryPage = () => {
         <Footer />
         <ScrollToTop />
       </div>
+
+      <CheckoutDialog
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        cartItems={cartItems}
+        onConfirm={handleConfirmOrder}
+        user={user}
+      />
     </>
   );
 };
