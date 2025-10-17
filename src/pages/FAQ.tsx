@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
 interface FAQItem {
@@ -44,9 +47,33 @@ const faqData: FAQItem[] = [
 
 const FAQ = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+  const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
+  const { toast } = useToast();
 
   const toggleQuestion = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
+  const handleDeliveryCalculation = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!city.trim() || !phone.trim()) {
+      toast({
+        title: "Заполните все поля",
+        description: "Укажите ваш город и номер телефона",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Заявка отправлена!",
+      description: "Мы свяжемся с вами в ближайшее время для расчета стоимости доставки"
+    });
+
+    setCity('');
+    setPhone('');
   };
 
   return (
@@ -60,6 +87,55 @@ const FAQ = () => {
             Ответы на популярные вопросы о доставке, оплате и условиях работы
           </p>
         </div>
+
+        <Card className="mb-8 bg-gradient-to-br from-primary/10 via-primary/5 to-background border-2 border-primary/30">
+          <CardContent className="p-8">
+            <div className="flex items-start gap-4 mb-6">
+              <Icon name="Calculator" size={32} className="text-primary flex-shrink-0" />
+              <div>
+                <h2 className="text-2xl font-bold mb-2">
+                  Узнать стоимость доставки в ваш регион
+                </h2>
+                <p className="text-muted-foreground">
+                  Оставьте заявку, и мы рассчитаем точную стоимость доставки мебели в ваш город
+                </p>
+              </div>
+            </div>
+            
+            <form onSubmit={handleDeliveryCalculation} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Ваш город
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Например: Москва"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Телефон для связи
+                  </label>
+                  <Input
+                    type="tel"
+                    placeholder="+7 (999) 123-45-67"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+              <Button type="submit" className="w-full md:w-auto">
+                <Icon name="Send" size={18} className="mr-2" />
+                Рассчитать стоимость доставки
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
         <div className="space-y-4">
           {faqData.map((item, index) => (
