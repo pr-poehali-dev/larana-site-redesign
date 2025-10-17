@@ -36,7 +36,9 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
         'В наличии (да/нет)',
         'Количество на складе',
         'Состав комплекта (через ;)',
-        'Цвета (через ;)'
+        'Цвета (через ;)',
+        'ID группы вариантов',
+        'Цвет варианта'
       ],
       [
         'Спальня "Модерн"',
@@ -49,20 +51,39 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
         'да',
         '5',
         'Кровать 160;Тумбы прикроватные 2 шт;Комод',
-        'Белый;Дуб натуральный;Графит'
+        'Белый;Дуб натуральный;Графит',
+        '',
+        ''
       ],
       [
-        'Кухня "Лофт 260"',
-        'Кухня',
-        '52900',
+        'Диван "Комфорт" (серый)',
+        'Диваны',
+        '35900',
         'Современный',
-        'Стильная кухня в стиле лофт с металлическими акцентами',
-        'https://cdn.poehali.dev/files/kitchen-example.jpg',
-        'ART-KITCHEN-002',
-        'нет',
-        '0',
-        'Верхние шкафы;Нижние шкафы;Столешница;Фурнитура',
-        'Черный матовый;Бетон серый'
+        'Удобный трёхместный диван с механизмом еврокнижка',
+        'https://cdn.poehali.dev/files/sofa-grey.jpg',
+        'ART-SOFA-004',
+        'да',
+        '3',
+        'Каркас;Механизм трансформации;Ящик для белья',
+        'Серый',
+        'sofa-comfort-001',
+        'Серый'
+      ],
+      [
+        'Диван "Комфорт" (бежевый)',
+        'Диваны',
+        '35900',
+        'Современный',
+        'Удобный трёхместный диван с механизмом еврокнижка',
+        'https://cdn.poehali.dev/files/sofa-beige.jpg',
+        'ART-SOFA-005',
+        'да',
+        '5',
+        'Каркас;Механизм трансформации;Ящик для белья',
+        'Бежевый',
+        'sofa-comfort-001',
+        'Бежевый'
       ],
       [
         'Шкаф-купе "Премиум 2Д"',
@@ -75,7 +96,9 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
         'да',
         '12',
         'Корпус;Двери 2 шт;Зеркало;Внутренние полки',
-        'Венге;Дуб сонома'
+        'Венге;Дуб сонома',
+        '',
+        ''
       ]
     ];
 
@@ -92,7 +115,9 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
       { wch: 15 },
       { wch: 20 },
       { wch: 40 },
-      { wch: 30 }
+      { wch: 30 },
+      { wch: 20 },
+      { wch: 15 }
     ];
     ws['!cols'] = colWidths;
 
@@ -148,6 +173,8 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
         const items = itemsText ? itemsText.split(';').map(s => s.trim()).filter(s => s) : [];
         const colorsText = row[10]?.toString().trim() || '';
         const colors = colorsText ? colorsText.split(';').map(s => s.trim()).filter(s => s) : [];
+        const variantGroupId = row[11]?.toString().trim() || '';
+        const colorVariant = row[12]?.toString().trim() || '';
 
         maxId++;
         
@@ -163,7 +190,9 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
           inStock,
           stockQuantity,
           items,
-          colors
+          colors,
+          variantGroupId: variantGroupId || undefined,
+          colorVariant: colorVariant || undefined
         });
       }
 
@@ -264,6 +293,8 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
             <li><strong>Количество на складе</strong> — число или пусто</li>
             <li><strong>Состав комплекта</strong> — элементы через точку с запятой</li>
             <li><strong>Цвета</strong> — доступные цвета через точку с запятой</li>
+            <li><strong>ID группы вариантов</strong> — одинаковый ID для товаров с разными цветами (опционально)</li>
+            <li><strong>Цвет варианта</strong> — конкретный цвет данного варианта (опционально)</li>
           </ul>
           
           <p className="pt-2"><strong>Инструкция:</strong></p>
