@@ -379,9 +379,23 @@ const CategoryPage = () => {
                         </div>
                         <CardContent className="p-4">
                           <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-4">{product.width} • {product.material}</p>
-                          <div className="mb-4">
-                            <div className="text-3xl font-bold text-foreground">{formatPrice(product.price)}</div>
+                          <p className="text-sm text-muted-foreground mb-3">{product.width} • {product.material}</p>
+                          <div className="mb-3">
+                            <div className="text-3xl font-bold text-foreground mb-2">{formatPrice(product.price)}</div>
+                            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground mb-3">
+                              <div className="flex items-center gap-1">
+                                <Icon name="Truck" size={14} />
+                                <span>Доставка в подарок</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Icon name="Wrench" size={14} />
+                                <span>Монтаж включён</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Icon name="Wallet" size={14} />
+                                <span>Оплата при получении</span>
+                              </div>
+                            </div>
                           </div>
                           <Button className="w-full" size="lg" onClick={(e) => {
                             e.preventDefault();

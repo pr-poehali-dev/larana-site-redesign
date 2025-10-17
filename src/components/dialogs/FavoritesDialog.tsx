@@ -160,8 +160,18 @@ const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: F
                         </Badge>
                       )}
                     </div>
-                    <div className="mb-4">
-                      <div className="text-2xl font-bold text-foreground">{formatPrice(product.price)}</div>
+                    <div className="mb-3">
+                      <div className="text-2xl font-bold text-foreground mb-2">{formatPrice(product.price)}</div>
+                      <div className="flex flex-wrap gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Icon name="Truck" size={12} />
+                          <span>Доставка в подарок</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Icon name="Shield" size={12} />
+                          <span>Гарантия 12 мес</span>
+                        </div>
+                      </div>
                     </div>
                     <Button 
                       className="w-full"

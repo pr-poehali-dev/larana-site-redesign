@@ -130,12 +130,22 @@ const CatalogSection = ({ furnitureSets, onSetClick, user }: CatalogSectionProps
                     <Badge key={idx} variant="outline" className="text-xs">{item}</Badge>
                   ))}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">{formatPrice(set.price)}</span>
-                  <Button className="bg-foreground hover:bg-foreground/90 text-background" onClick={(e) => { e.stopPropagation(); onSetClick(set); }}>
-                    Подробнее
-                  </Button>
+                <div className="mb-3">
+                  <div className="text-2xl font-bold mb-3">{formatPrice(set.price)}</div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Icon name="Truck" size={14} />
+                      <span>Доставка в подарок</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Icon name="Shield" size={14} />
+                      <span>Гарантия 12 мес</span>
+                    </div>
+                  </div>
                 </div>
+                <Button className="w-full bg-foreground hover:bg-foreground/90 text-background" onClick={(e) => { e.stopPropagation(); onSetClick(set); }}>
+                  Подробнее
+                </Button>
               </CardContent>
             </Card>
           ))}

@@ -74,6 +74,24 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                   <div className="text-2xl font-bold text-foreground">
                     {formatPrice(product.price)}
                   </div>
+                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Icon name="Truck" size={14} />
+                      <span>Доставка в подарок</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Icon name="Wrench" size={14} />
+                      <span>Монтаж включён</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Icon name="Shield" size={14} />
+                      <span>Гарантия 12 мес</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Icon name="Wallet" size={14} />
+                      <span>Оплата при получении</span>
+                    </div>
+                  </div>
                   <div className="flex flex-wrap gap-1">
                     {product.items.slice(0, 3).map((item, idx) => (
                       <span key={idx} className="text-xs bg-secondary px-2 py-1 rounded">
