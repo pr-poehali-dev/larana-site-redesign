@@ -4,7 +4,7 @@ import { smoothScrollToSection } from '@/utils/smoothScroll';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import BenefitsSection from '@/components/BenefitsSection';
-import ConfiguratorSection from '@/components/ConfiguratorSection';
+
 import CatalogSection from '@/components/CatalogSection';
 import TargetAudienceSection from '@/components/TargetAudienceSection';
 import WhyUsSection from '@/components/WhyUsSection';
@@ -22,7 +22,7 @@ import { useOrderLogic } from '@/hooks/useOrderLogic';
 const Index = () => {
   const [selectedSet, setSelectedSet] = useState<any>(null);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
-  const [configuratorOpen, setConfiguratorOpen] = useState(false);
+
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -160,7 +160,6 @@ const Index = () => {
       />
       
       <HeroSection 
-        onConfiguratorOpen={() => setConfiguratorOpen(true)}
         onHelpOpen={() => setHelpDialogOpen(true)}
       />
       
@@ -182,19 +181,7 @@ const Index = () => {
       
       <BenefitsSection />
       
-      <ConfiguratorSection
-        selectedRoom={selectedRoom}
-        setSelectedRoom={setSelectedRoom}
-        selectedStyle={selectedStyle}
-        setSelectedStyle={setSelectedStyle}
-        budget={budget}
-        setBudget={setBudget}
-        resultsCount={furnitureSets.length}
-        inStockOnly={inStockOnly}
-        setInStockOnly={setInStockOnly}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
+
       
       <CatalogSection 
         furnitureSets={furnitureSets}
@@ -221,8 +208,7 @@ const Index = () => {
         setSelectedSet={setSelectedSet}
         helpDialogOpen={helpDialogOpen}
         setHelpDialogOpen={setHelpDialogOpen}
-        configuratorOpen={configuratorOpen}
-        setConfiguratorOpen={setConfiguratorOpen}
+
         cartOpen={cartOpen}
         setCartOpen={setCartOpen}
         checkoutOpen={checkoutOpen}
