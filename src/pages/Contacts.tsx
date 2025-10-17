@@ -265,12 +265,12 @@ const Contacts = () => {
               <CardContent className="p-0">
                 <div className="relative w-full h-[400px]">
                   <iframe
-                    src="https://yandex.ru/map-widget/v1/?um=constructor%3Adc6fa943aab55af6a7b9e8bc53b17e98605bbf5deacc8fc6d8f56dcd28b3cae9&amp;source=constructor"
+                    src="https://yandex.ru/map-widget/v1/?ll=60.565162%2C56.862849&mode=search&ol=geo&ouri=ymapsbm1%3A%2F%2Fgeo%3Fdata%3DCgg1MzA3ODA1MRKEAdCg0L7RgdGB0LjRjywg0KHQstC10YDQtNC70L7QstGB0LrQsNGPINC%2B0LHQu9Cw0YHRgtGMLCDQldC60LDRgtC10YDQuNC90LHRg9GA0LMsINGD0LvQuNGG0LAg0JrRgNGD0L%2FQvdC%2B0YHQvtGA0YLRidC40LrQvtCyLCAxNCDQutC%2B0YDQv9GD0YEgMiIKDQOYXEIVIy5gQg%2C%2C&z=16"
                     width="100%"
                     height="400"
                     frameBorder="0"
                     className="w-full h-full"
-                    title="Карта офиса и склада LARANA - г. Екатеринбург, ул. Крупносортщиков, 14, офис 102"
+                    title="Карта офиса и склада LARANA - г. Екатеринбург, ул. Крупносортщиков, 14, корпус 2"
                   ></iframe>
                 </div>
                 <div className="p-4 border-t">
@@ -279,7 +279,7 @@ const Contacts = () => {
                     className="w-full"
                     onClick={() =>
                       window.open(
-                        'https://yandex.ru/maps/54/yekaterinburg/?ll=60.624486%2C56.798422&mode=routes&rtext=~56.798422%2C60.624486&rtt=auto&ruri=~&z=16',
+                        'https://yandex.ru/maps/54/yekaterinburg/?ll=60.565162%2C56.862849&mode=routes&rtext=~56.862849%2C60.565162&rtt=auto&ruri=~&z=16',
                         '_blank'
                       )
                     }
