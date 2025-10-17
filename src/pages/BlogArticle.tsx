@@ -25,7 +25,11 @@ const BlogArticle = () => {
   }
 
   const handleConsultation = () => {
-    navigate('/?action=consultation');
+    if (article.content.cta.link) {
+      navigate(article.content.cta.link);
+    } else {
+      navigate('/?action=consultation');
+    }
   };
 
   return (

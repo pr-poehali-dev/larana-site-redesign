@@ -32,6 +32,7 @@ export interface BlogArticle {
       title: string;
       description: string;
       buttonText: string;
+      link?: string;
     };
   };
 }
@@ -152,7 +153,8 @@ export const blogArticles: BlogArticle[] = [
       cta: {
         title: 'Выбирайте диван в нашем каталоге',
         description: 'Все диваны в наличии на складе с быстрой доставкой по Екатеринбургу',
-        buttonText: 'Смотреть каталог диванов'
+        buttonText: 'Смотреть каталог диванов',
+        link: '/catalog/divany'
       }
     }
   },
@@ -247,7 +249,8 @@ export const blogArticles: BlogArticle[] = [
       cta: {
         title: 'Выбирайте шкаф-купе в каталоге',
         description: 'Готовые шкафы-купе в наличии с доставкой за 1-2 дня',
-        buttonText: 'Смотреть шкафы-купе'
+        buttonText: 'Смотреть шкафы-купе',
+        link: '/catalog/shkafy'
       }
     }
   },
@@ -402,7 +405,8 @@ export const blogArticles: BlogArticle[] = [
       cta: {
         title: 'Мебель в скандинавском стиле в каталоге',
         description: 'Готовые комплекты мебели в скандинавском стиле с доставкой',
-        buttonText: 'Смотреть каталог'
+        buttonText: 'Смотреть каталог',
+        link: '/catalog?style=skandinavskij'
       }
     }
   }
