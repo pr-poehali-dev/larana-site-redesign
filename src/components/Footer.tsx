@@ -65,13 +65,13 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Мебель на заказ</h4>
+            <h4 className="font-semibold mb-4">Популярное</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li><a href="/city/ekaterinburg/kitchen" className="hover:opacity-100">Кухни на заказ Екатеринбург</a></li>
-              <li><a href="/city/ekaterinburg/wardrobe" className="hover:opacity-100">Шкафы-купе Екатеринбург</a></li>
-              <li><a href="/city/tyumen/kitchen" className="hover:opacity-100">Кухни на заказ Тюмень</a></li>
-              <li><a href="/city/chelyabinsk/kitchen" className="hover:opacity-100">Кухни на заказ Челябинск</a></li>
-              <li><a href="/city/surgut/kitchen" className="hover:opacity-100">Кухни на заказ Сургут</a></li>
+              <li><a href="/catalog/shkafy-kupe" className="hover:opacity-100">Шкафы-купе</a></li>
+              <li><a href="/catalog/divany" className="hover:opacity-100">Диваны</a></li>
+              <li><a href="/#catalog" className="hover:opacity-100">Все товары</a></li>
+              <li><a href="/blog" className="hover:opacity-100">Блог</a></li>
+              <li><a href="/faq" className="hover:opacity-100">Частые вопросы</a></li>
             </ul>
           </div>
           <div>
@@ -80,15 +80,7 @@ const Footer = () => {
               <li><a href="/" className="hover:opacity-100">О нас</a></li>
               <li><a href="/blog" className="hover:opacity-100">Блог</a></li>
               <li><a href="/faq" className="hover:opacity-100">FAQ</a></li>
-              <li>
-                <a 
-                  href="/#configurator" 
-                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#configurator'); }}
-                  className="hover:opacity-100 cursor-pointer"
-                >
-                  Конфигуратор
-                </a>
-              </li>
+
               <li><a href="/contacts" className="hover:opacity-100">Контакты</a></li>
             </ul>
           </div>

@@ -13,7 +13,6 @@ import Contacts from "./pages/Contacts";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Oferta from "./pages/Oferta";
-import CityCategory from "./pages/CityCategory";
 import CategoryPage from "./pages/CategoryPage";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
@@ -40,7 +39,6 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/catalog/:slug" element={<CategoryPage />} />
-            <Route path="/city/:city/:category" element={<CityCategory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
