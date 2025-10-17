@@ -8,6 +8,7 @@ import CatalogSection from '@/components/CatalogSection';
 import TargetAudienceSection from '@/components/TargetAudienceSection';
 import WhyUsSection from '@/components/WhyUsSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
+import FAQSection from '@/components/FAQSection';
 import ProductCarousel from '@/components/ProductCarousel';
 import Footer from '@/components/Footer';
 import IndexDialogs from '@/components/IndexDialogs';
@@ -184,6 +185,8 @@ const Index = () => {
       <WhyUsSection />
       
       <TestimonialsSection />
+      
+      <FAQSection />
       
       <Footer />
 
