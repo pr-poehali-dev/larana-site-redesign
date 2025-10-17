@@ -8,20 +8,20 @@ import Icon from '@/components/ui/icon';
 
 const catalogCategories = [
   {
-    slug: 'shkafy-kupe',
-    title: 'Шкафы-купе',
-    description: 'Встраиваемые и корпусные шкафы-купе различных размеров',
-    icon: 'Home',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
+    slug: 'gostinaya',
+    title: 'Гостиные',
+    description: 'Стенки, витрины, тумбы под ТВ, диваны',
+    icon: 'Tv',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
     count: 2
   },
   {
-    slug: 'divany',
-    title: 'Диваны',
-    description: 'Угловые и прямые диваны для гостиной',
-    icon: 'Sofa',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
-    count: 2
+    slug: 'spalnya',
+    title: 'Спальни',
+    description: 'Кровати, комоды, тумбы для спальни',
+    icon: 'Bed',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
+    count: 0
   },
   {
     slug: 'kuhni',
@@ -32,12 +32,12 @@ const catalogCategories = [
     count: 0
   },
   {
-    slug: 'spalnya',
-    title: 'Спальни',
-    description: 'Кровати, комоды, тумбы для спальни',
-    icon: 'Bed',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
-    count: 0
+    slug: 'shkafy',
+    title: 'Шкафы',
+    description: 'Шкафы-купе и распашные шкафы',
+    icon: 'Box',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
+    count: 2
   },
   {
     slug: 'prihozhaya',
@@ -45,30 +45,6 @@ const catalogCategories = [
     description: 'Компактные решения для коридора и прихожей',
     icon: 'DoorOpen',
     image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
-    count: 0
-  },
-  {
-    slug: 'detskaya',
-    title: 'Детские',
-    description: 'Мебель для детской комнаты',
-    icon: 'Baby',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
-    count: 0
-  },
-  {
-    slug: 'gostinaya',
-    title: 'Гостиные',
-    description: 'Стенки, витрины, тумбы под ТВ',
-    icon: 'Tv',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
-    count: 0
-  },
-  {
-    slug: 'kabinet',
-    title: 'Кабинеты',
-    description: 'Рабочие столы, кресла, стеллажи',
-    icon: 'Briefcase',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
     count: 0
   }
 ];
