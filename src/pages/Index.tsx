@@ -105,6 +105,14 @@ const Index = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const favoritesParam = params.get('favorites');
+    const roomParam = params.get('room');
+    
+    if (roomParam) {
+      setSelectedRoom(roomParam);
+      setTimeout(() => {
+        smoothScrollToSection('catalog');
+      }, 500);
+    }
     
     if (favoritesParam) {
       const favoriteIds = favoritesParam.split(',').map(Number);
@@ -123,7 +131,7 @@ const Index = () => {
         }, 500);
       }
     }
-  }, [allFurnitureSets, toast]);
+  }, [allFurnitureSets, toast, setSelectedRoom]);
 
   return (
     <div className="min-h-screen">

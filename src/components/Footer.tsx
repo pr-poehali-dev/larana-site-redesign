@@ -19,8 +19,8 @@ const Footer = () => {
             <ul className="space-y-2 text-sm opacity-80">
               <li>
                 <a 
-                  href="/#catalog" 
-                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  href="/?room=Гостиная#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/?room=Гостиная#catalog'); }}
                   className="hover:opacity-100 cursor-pointer"
                 >
                   Гостиные
@@ -28,8 +28,8 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="/#catalog" 
-                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  href="/?room=Спальня#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/?room=Спальня#catalog'); }}
                   className="hover:opacity-100 cursor-pointer"
                 >
                   Спальни
@@ -37,8 +37,8 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="/#catalog" 
-                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  href="/?room=Кухня#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/?room=Кухня#catalog'); }}
                   className="hover:opacity-100 cursor-pointer"
                 >
                   Кухни
@@ -46,8 +46,8 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="/#catalog" 
-                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  href="/?room=Прихожая#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/?room=Прихожая#catalog'); }}
                   className="hover:opacity-100 cursor-pointer"
                 >
                   Прихожие
