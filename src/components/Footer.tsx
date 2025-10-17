@@ -10,7 +10,7 @@ const Footer = () => {
             <img 
               src="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" 
               alt="LARANA" 
-              className="h-16 w-auto mb-4 brightness-0 invert"
+              className="h-16 w-auto mb-4"
             />
             <p className="text-sm opacity-80">Готовые интерьеры под ключ</p>
           </div>
