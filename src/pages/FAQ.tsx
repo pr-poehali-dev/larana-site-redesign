@@ -236,7 +236,7 @@ const FAQ = () => {
                   Комментарий
                 </label>
                 <Textarea
-                  placeholder="Укажите примерный вес или габариты товара, количество мест, особые пожелания..."
+                  placeholder="Укажите название планируемой покупки"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   className="w-full min-h-[100px] resize-none"
