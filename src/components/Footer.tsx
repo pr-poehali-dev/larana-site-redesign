@@ -78,6 +78,7 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Компания</h4>
             <ul className="space-y-2 text-sm opacity-80">
               <li><a href="/" className="hover:opacity-100">О нас</a></li>
+              <li><a href="/blog" className="hover:opacity-100">Блог</a></li>
               <li><a href="/faq" className="hover:opacity-100">FAQ</a></li>
               <li>
                 <a 
