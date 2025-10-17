@@ -1,5 +1,5 @@
 '''
-Business: Автоподсказки адресов через DaData API + определение города по IP
+Business: Автоподсказки адресов через DaData API + определение города по IP клиента
 Args: event - dict с queryStringParameters или body (query, type, action, city, ip)
       context - объект с атрибутами request_id, function_name
 Returns: HTTP response dict со списком подсказок или данными города
