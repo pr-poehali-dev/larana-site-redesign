@@ -47,6 +47,7 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
         { href: '/#catalog', label: 'Все товары' }
       ]
     },
+    { href: '/about', label: 'О нас', exact: true },
     { href: '/blog', label: 'Блог', exact: true },
     { href: '/faq', label: 'FAQ', exact: true },
     { href: '/contacts', label: 'Контакты', exact: true },
