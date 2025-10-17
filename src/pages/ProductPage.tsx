@@ -176,7 +176,7 @@ const ProductPage = () => {
                       <Icon name="Truck" size={24} className="text-primary flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold mb-1">Бесплатная доставка</h4>
-                        <p className="text-sm text-muted-foreground">По Москве и области при заказе от 30 000 ₽</p>
+                        <p className="text-sm text-muted-foreground">По Екатеринбургу, Верхняя Пышма, Среднеуральск</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
