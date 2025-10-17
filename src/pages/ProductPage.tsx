@@ -22,12 +22,13 @@ const ProductPage = () => {
   const { cartItems, handleAddToCart: addToCart, handleRemoveFromCart, handleUpdateQuantity, clearCart } = useCartLogic();
   const { toast } = useToast();
   
-  const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [user] = useState<any>(null);
+  
+  const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
   
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
