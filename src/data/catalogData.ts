@@ -145,10 +145,10 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Ширина',
       type: 'checkbox',
       options: [
-        { value: '120-150', label: '120-150 см', count: 12 },
-        { value: '150-180', label: '150-180 см', count: 18 },
-        { value: '180-220', label: '180-220 см', count: 24 },
-        { value: '220+', label: 'От 220 см', count: 15 }
+        { value: '120-150', label: '120-150 см' },
+        { value: '150-180', label: '150-180 см' },
+        { value: '180-220', label: '180-220 см' },
+        { value: '220+', label: 'От 220 см' }
       ]
     },
     {
@@ -156,9 +156,9 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Материал фасада',
       type: 'checkbox',
       options: [
-        { value: 'mirror', label: 'Зеркало', count: 45 },
-        { value: 'ldsp', label: 'ЛДСП', count: 38 },
-        { value: 'combined', label: 'Комбинированный', count: 28 }
+        { value: 'mirror', label: 'Зеркало' },
+        { value: 'ldsp', label: 'ЛДСП' },
+        { value: 'combined', label: 'Комбинированный' }
       ]
     },
     {
@@ -166,10 +166,10 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Цвет',
       type: 'checkbox',
       options: [
-        { value: 'white', label: 'Белый', count: 22 },
-        { value: 'wenge', label: 'Венге', count: 18 },
-        { value: 'oak', label: 'Дуб', count: 25 },
-        { value: 'grey', label: 'Серый', count: 14 }
+        { value: 'white', label: 'Белый' },
+        { value: 'wenge', label: 'Венге' },
+        { value: 'oak', label: 'Дуб' },
+        { value: 'grey', label: 'Серый' }
       ]
     },
     {
@@ -177,7 +177,7 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'В наличии',
       type: 'checkbox',
       options: [
-        { value: 'true', label: 'Только в наличии', count: 35 }
+        { value: 'true', label: 'Только в наличии' }
       ]
     }
   ],
@@ -195,9 +195,9 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Тип',
       type: 'checkbox',
       options: [
-        { value: 'straight', label: 'Прямой', count: 42 },
-        { value: 'corner', label: 'Угловой', count: 38 },
-        { value: 'modular', label: 'Модульный', count: 12 }
+        { value: 'straight', label: 'Прямой' },
+        { value: 'corner', label: 'Угловой' },
+        { value: 'modular', label: 'Модульный' }
       ]
     },
     {
@@ -205,10 +205,10 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Механизм',
       type: 'checkbox',
       options: [
-        { value: 'eurobook', label: 'Еврокнижка', count: 35 },
-        { value: 'dolphin', label: 'Дельфин', count: 28 },
-        { value: 'accordion', label: 'Аккордеон', count: 18 },
-        { value: 'without', label: 'Без механизма', count: 12 }
+        { value: 'eurobook', label: 'Еврокнижка' },
+        { value: 'dolphin', label: 'Дельфин' },
+        { value: 'accordion', label: 'Аккордеон' },
+        { value: 'without', label: 'Без механизма' }
       ]
     },
     {
@@ -216,10 +216,10 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Обивка',
       type: 'checkbox',
       options: [
-        { value: 'velour', label: 'Велюр', count: 32 },
-        { value: 'cloth', label: 'Рогожка', count: 28 },
-        { value: 'eco-leather', label: 'Экокожа', count: 18 },
-        { value: 'chenille', label: 'Шенилл', count: 15 }
+        { value: 'velour', label: 'Велюр' },
+        { value: 'cloth', label: 'Рогожка' },
+        { value: 'eco-leather', label: 'Экокожа' },
+        { value: 'chenille', label: 'Шенилл' }
       ]
     },
     {
@@ -227,7 +227,7 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'Ящик для белья',
       type: 'checkbox',
       options: [
-        { value: 'true', label: 'С ящиком', count: 45 }
+        { value: 'true', label: 'С ящиком' }
       ]
     },
     {
@@ -235,7 +235,7 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       name: 'В наличии',
       type: 'checkbox',
       options: [
-        { value: 'true', label: 'Только в наличии', count: 28 }
+        { value: 'true', label: 'Только в наличии' }
       ]
     }
   ]
