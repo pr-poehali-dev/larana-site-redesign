@@ -43,9 +43,17 @@ const ProductPage = () => {
   }
 
   const handleAddToCart = () => {
+    console.log('=== ДОБАВЛЕНИЕ В КОРЗИНУ ===');
+    console.log('Товар:', product);
+    console.log('Количество:', quantity);
+    console.log('Корзина до:', cartItems);
+    
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
+    
+    console.log('Корзина после:', cartItems);
+    
     toast({
       title: "Товар добавлен в корзину",
       description: `${product.title} × ${quantity}`,
