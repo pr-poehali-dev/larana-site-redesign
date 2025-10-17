@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main page -->
+  <url>
+    <loc>https://larana-mebel.ru/</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Static pages -->
+  <url>
+    <loc>https://larana-mebel.ru/faq</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/contacts</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Екатеринбург - Priority 1 -->
+  <url>
+    <loc>https://larana-mebel.ru/city/ekaterinburg/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/ekaterinburg/wardrobe</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/ekaterinburg/wardrobe_room</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/ekaterinburg/countertop</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/ekaterinburg/facade</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Верхняя Пышма -->
+  <url>
+    <loc>https://larana-mebel.ru/city/verkhnyaya-pyshma/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Берёзовский -->
+  <url>
+    <loc>https://larana-mebel.ru/city/berezovsky/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Среднеуральск -->
+  <url>
+    <loc>https://larana-mebel.ru/city/sredneuralsk/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Тюмень - Priority 1 -->
+  <url>
+    <loc>https://larana-mebel.ru/city/tyumen/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/tyumen/wardrobe</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/tyumen/countertop</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/tyumen/wardrobe_room</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Челябинск - Priority 1 -->
+  <url>
+    <loc>https://larana-mebel.ru/city/chelyabinsk/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Сургут - Priority 1 -->
+  <url>
+    <loc>https://larana-mebel.ru/city/surgut/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/surgut/wardrobe</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Нижневартовск - Priority 1 -->
+  <url>
+    <loc>https://larana-mebel.ru/city/nizhnevartovsk/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://larana-mebel.ru/city/nizhnevartovsk/wardrobe</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Ханты-Мансийск -->
+  <url>
+    <loc>https://larana-mebel.ru/city/khanty-mansiysk/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Ноябрьск -->
+  <url>
+    <loc>https://larana-mebel.ru/city/noyabrsk/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Новый Уренгой -->
+  <url>
+    <loc>https://larana-mebel.ru/city/novy-urengoy/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Салехард -->
+  <url>
+    <loc>https://larana-mebel.ru/city/salekhard/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Надым -->
+  <url>
+    <loc>https://larana-mebel.ru/city/nadym/kitchen</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

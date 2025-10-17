@@ -1,5 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /employee
+
+Sitemap: https://larana-mebel.ru/sitemap.xml
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /employee
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term
+
+# Google
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /employee
 
 User-agent: Bingbot
 Allow: /
@@ -10,5 +27,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+Crawl-delay: 1
