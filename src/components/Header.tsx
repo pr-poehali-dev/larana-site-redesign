@@ -38,13 +38,16 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
   const navLinks = [
     { href: '/', label: 'Главная', exact: true },
     { 
-      href: '/#catalog', 
+      href: '/catalog', 
       label: 'Каталог', 
       exact: false,
       submenu: [
-        { href: '/catalog/shkafy-kupe', label: 'Шкафы-купе' },
-        { href: '/catalog/divany', label: 'Диваны' },
-        { href: '/#catalog', label: 'Все товары' }
+        { href: '/catalog/gostinaya', label: 'Гостиные' },
+        { href: '/catalog/spalnya', label: 'Спальни' },
+        { href: '/catalog/kuhni', label: 'Кухни' },
+        { href: '/catalog/shkafy', label: 'Шкафы' },
+        { href: '/catalog/prihozhaya', label: 'Прихожие' },
+        { href: '/catalog', label: 'Все категории' }
       ]
     },
     { href: '/about', label: 'О нас', exact: true },
