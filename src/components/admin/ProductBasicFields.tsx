@@ -12,6 +12,8 @@ interface ProductBasicFieldsProps {
     items: string;
     colors: string;
     description: string;
+    variantGroupId?: string;
+    colorVariant?: string;
   };
   onChange: (field: string, value: string) => void;
 }
@@ -103,9 +105,44 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
           placeholder="Белый глянец, Серый матовый, Венге"
         />
         <p className="text-xs text-muted-foreground mt-1">
-          💡 Товары с одинаковым базовым названием автоматически группируются — 
-          все их цвета будут показаны в одной карточке для удобства выбора покупателя
+          Основные цвета этого товара
         </p>
+      </div>
+
+      <div className="border-t pt-4 mt-2">
+        <h4 className="font-semibold text-sm mb-3">🎨 Группировка вариантов цветов</h4>
+        <p className="text-xs text-muted-foreground mb-3">
+          Если этот товар имеет варианты других цветов (с разными артикулами), 
+          укажите ID группы и конкретный цвет варианта
+        </p>
+        
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label className="text-xs">ID группы вариантов</Label>
+            <Input
+              value={formData.variantGroupId || ''}
+              onChange={(e) => onChange('variantGroupId', e.target.value)}
+              placeholder="kitchen-lara-180"
+              className="text-sm"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Одинаковый для всех цветов
+            </p>
+          </div>
+          
+          <div>
+            <Label className="text-xs">Цвет этого варианта</Label>
+            <Input
+              value={formData.colorVariant || ''}
+              onChange={(e) => onChange('colorVariant', e.target.value)}
+              placeholder="Белый глянец"
+              className="text-sm"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Уникальный для товара
+            </p>
+          </div>
+        </div>
       </div>
 
       <div>

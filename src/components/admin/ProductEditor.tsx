@@ -26,7 +26,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     colors: '',
     inStock: true,
     supplierArticle: '',
-    stockQuantity: null as number | null
+    stockQuantity: null as number | null,
+    variantGroupId: '',
+    colorVariant: ''
   });
   const { toast } = useToast();
 
@@ -44,7 +46,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         colors: product.colors.join(', '),
         inStock: product.inStock,
         supplierArticle: product.supplierArticle || '',
-        stockQuantity: product.stockQuantity || null
+        stockQuantity: product.stockQuantity || null,
+        variantGroupId: product.variantGroupId || '',
+        colorVariant: product.colorVariant || ''
       });
     } else {
       setProductForm({
@@ -59,7 +63,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         colors: '',
         inStock: true,
         supplierArticle: '',
-        stockQuantity: null
+        stockQuantity: null,
+        variantGroupId: '',
+        colorVariant: ''
       });
     }
   }, [product]);
@@ -88,7 +94,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       colors: productForm.colors.split(',').map(color => color.trim()),
       inStock: productForm.inStock,
       supplierArticle: productForm.supplierArticle,
-      stockQuantity: productForm.stockQuantity
+      stockQuantity: productForm.stockQuantity,
+      variantGroupId: productForm.variantGroupId || undefined,
+      colorVariant: productForm.colorVariant || undefined
     };
 
     const updatedProducts = products.map(p => 
@@ -117,7 +125,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       colors: productForm.colors.split(',').map(color => color.trim()),
       inStock: productForm.inStock,
       supplierArticle: productForm.supplierArticle,
-      stockQuantity: productForm.stockQuantity
+      stockQuantity: productForm.stockQuantity,
+      variantGroupId: productForm.variantGroupId || undefined,
+      colorVariant: productForm.colorVariant || undefined
     };
 
     onProductUpdate([...products, newProduct]);

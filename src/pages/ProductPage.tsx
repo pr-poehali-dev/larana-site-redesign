@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { useProductData } from '@/hooks/useProductData';
 import { useProducts } from '@/contexts/ProductContext';
+import { useProductVariants } from '@/hooks/useProductVariants';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,6 +32,10 @@ const ProductPage = () => {
   const [user, setUser] = useState<any>(null);
   
   const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
+  const { variants, hasVariants, allAvailableColors } = useProductVariants(
+    product || {} as any,
+    allFurnitureSets
+  );
   
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
@@ -149,7 +154,42 @@ const ProductPage = () => {
                   </p>
                 </div>
 
-                {product.colors && product.colors.length > 1 && (
+                {hasVariants && allAvailableColors.length > 1 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Выберите цвет:</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {allAvailableColors.map((color) => {
+                        const variant = variants.find(v => v.colorVariant === color);
+                        const isCurrentColor = product.colorVariant === color;
+                        const isAvailable = variant?.inStock;
+                        
+                        return (
+                          <Button
+                            key={color}
+                            variant={isCurrentColor ? "default" : "outline"}
+                            onClick={() => {
+                              if (variant && variant.id !== product.id) {
+                                navigate(`/catalog/${slug}/${variant.id}`);
+                              }
+                            }}
+                            disabled={!isAvailable}
+                            className="min-w-[120px] relative"
+                          >
+                            {color}
+                            {!isAvailable && (
+                              <span className="ml-2 text-xs">(нет в наличии)</span>
+                            )}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Выбор цвета переключит на соответствующий товар с его ценой и артикулом
+                    </p>
+                  </div>
+                )}
+
+                {!hasVariants && product.colors && product.colors.length > 1 && (
                   <div>
                     <h3 className="font-semibold mb-3">Выберите цвет:</h3>
                     <div className="flex flex-wrap gap-2">

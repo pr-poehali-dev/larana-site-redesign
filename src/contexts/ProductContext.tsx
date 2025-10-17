@@ -14,6 +14,8 @@ interface Product {
   inStock: boolean;
   supplierArticle?: string;
   stockQuantity?: number | null;
+  variantGroupId?: string;
+  colorVariant?: string;
 }
 
 interface CartItem extends Product {
