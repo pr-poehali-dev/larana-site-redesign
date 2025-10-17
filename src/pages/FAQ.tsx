@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import CityAutocomplete from '@/components/CityAutocomplete';
 import Icon from '@/components/ui/icon';
 
 interface FAQItem {
@@ -49,8 +50,48 @@ const FAQ = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const formatPhoneNumber = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    
+    if (numbers.length === 0) return '';
+    
+    let formatted = '+7';
+    
+    if (numbers.length > 1) {
+      formatted += ' (' + numbers.substring(1, 4);
+    }
+    if (numbers.length >= 5) {
+      formatted += ') ' + numbers.substring(4, 7);
+    }
+    if (numbers.length >= 8) {
+      formatted += '-' + numbers.substring(7, 9);
+    }
+    if (numbers.length >= 10) {
+      formatted += '-' + numbers.substring(9, 11);
+    }
+    
+    return formatted;
+  };
+
+  const validatePhone = (value: string): boolean => {
+    const numbers = value.replace(/\D/g, '');
+    return numbers.length === 11;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhone(formatted);
+    
+    if (formatted.length > 0 && !validatePhone(formatted)) {
+      setPhoneError('Введите корректный номер телефона');
+    } else {
+      setPhoneError('');
+    }
+  };
 
   const toggleQuestion = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -59,10 +100,28 @@ const FAQ = () => {
   const handleDeliveryCalculation = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!city.trim() || !phone.trim()) {
+    if (!city.trim()) {
       toast({
-        title: "Заполните все поля",
-        description: "Укажите ваш город и номер телефона",
+        title: "Укажите город",
+        description: "Выберите город из выпадающего списка",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!phone.trim()) {
+      toast({
+        title: "Укажите телефон",
+        description: "Введите номер телефона для связи",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      toast({
+        title: "Некорректный номер телефона",
+        description: "Введите номер в формате +7 (999) 123-45-67",
         variant: "destructive"
       });
       return;
@@ -134,29 +193,37 @@ const FAQ = () => {
             
             <form onSubmit={handleDeliveryCalculation} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
+                <CityAutocomplete
+                  value={city}
+                  onChange={(value) => setCity(value)}
+                  label="Ваш город"
+                  placeholder="Например: Москва"
+                  required
+                />
                 <div>
                   <label className="text-sm font-medium mb-2 block">
-                    Ваш город
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="Например: Москва"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">
-                    Телефон для связи
+                    Телефон для связи <span className="text-destructive">*</span>
                   </label>
                   <Input
                     type="tel"
                     placeholder="+7 (999) 123-45-67"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full"
+                    onChange={handlePhoneChange}
+                    className={`w-full ${phoneError ? 'border-destructive' : ''}`}
+                    required
                   />
+                  {phoneError && (
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                      <Icon name="AlertCircle" size={12} />
+                      {phoneError}
+                    </p>
+                  )}
+                  {phone.length > 0 && !phoneError && validatePhone(phone) && (
+                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                      <Icon name="CheckCircle2" size={12} />
+                      Номер телефона корректен
+                    </p>
+                  )}
                 </div>
               </div>
               <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
