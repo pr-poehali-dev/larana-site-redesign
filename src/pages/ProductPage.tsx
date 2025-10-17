@@ -11,17 +11,25 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import CartDialog from '@/components/dialogs/CartDialog';
+import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
+import { useOrderLogic } from '@/hooks/useOrderLogic';
+import { useToast } from '@/hooks/use-toast';
 
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
   const { allFurnitureSets } = useProductData();
-  const { cartItems, handleAddToCart: addToCart, handleRemoveFromCart, handleUpdateQuantity } = useCartLogic();
+  const { cartItems, handleAddToCart: addToCart, handleRemoveFromCart, handleUpdateQuantity, clearCart } = useCartLogic();
+  const { toast } = useToast();
   
   const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
   const [selectedColor, setSelectedColor] = useState(product?.colors[0] || '');
   const [quantity, setQuantity] = useState(1);
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [user] = useState<any>(null);
+  
+  const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
   if (!product) {
     return <Navigate to="/404" replace />;
@@ -31,18 +39,27 @@ const ProductPage = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
-    setCartOpen(true);
+    toast({
+      title: "Товар добавлен в корзину",
+      description: `${product.title} × ${quantity}`,
+    });
   };
 
   const handleBuyNow = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
-    navigate('/');
+    setCheckoutOpen(true);
   };
 
   const handleCheckout = () => {
     setCartOpen(false);
+    setCheckoutOpen(true);
+  };
+
+  const handleConfirmOrder = async (orderData: any) => {
+    await confirmOrder(orderData);
+    setCheckoutOpen(false);
     navigate('/');
   };
 
@@ -239,6 +256,14 @@ const ProductPage = () => {
         onRemoveItem={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onCheckout={handleCheckout}
+      />
+
+      <CheckoutDialog
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        cartItems={cartItems}
+        onConfirm={handleConfirmOrder}
+        user={user}
       />
     </>
   );
