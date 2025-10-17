@@ -46,6 +46,15 @@ const Footer = () => {
               </li>
               <li>
                 <a 
+                  href="/?room=Шкафы#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/?room=Шкафы#catalog'); }}
+                  className="hover:opacity-100 cursor-pointer"
+                >
+                  Шкафы
+                </a>
+              </li>
+              <li>
+                <a 
                   href="/?room=Прихожая#catalog" 
                   onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/?room=Прихожая#catalog'); }}
                   className="hover:opacity-100 cursor-pointer"
