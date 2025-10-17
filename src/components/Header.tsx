@@ -38,6 +38,7 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
             <nav className="hidden md:flex gap-6">
               <a href="#catalog" className="text-sm hover:text-primary transition-colors">Каталог</a>
               <a href="#configurator" className="text-sm hover:text-primary transition-colors">Конфигуратор</a>
+              <a href="/faq" className="text-sm hover:text-primary transition-colors">FAQ</a>
               <a href="#blog" className="text-sm hover:text-primary transition-colors">Блог</a>
             </nav>
           </div>
