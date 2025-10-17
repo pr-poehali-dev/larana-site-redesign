@@ -41,9 +41,7 @@ const LocalBusinessInfo = () => {
                 <a 
                   href="tel:+73432904054" 
                   className="text-muted-foreground hover:text-primary transition-colors text-lg font-medium"
-                >
-                  +7 (343) 290-40-54
-                </a>
+                >+7 (343) 351-19-12</a>
                 <p className="text-sm text-muted-foreground mt-2">
                   Звоните с 9:00 до 18:00
                 </p>
