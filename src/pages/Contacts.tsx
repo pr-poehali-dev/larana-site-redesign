@@ -51,7 +51,25 @@ const Contacts = () => {
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/5bb39c34-5468-4f00-906c-c2bed52f18d9', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'contact_form',
+          name: name.trim(),
+          phone: phone.trim(),
+          message: message.trim(),
+          timestamp: new Date().toLocaleString('ru-RU')
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка отправки');
+      }
+
       toast({
         title: "Сообщение отправлено!",
         description: "Мы свяжемся с вами в ближайшее время"
@@ -60,8 +78,15 @@ const Contacts = () => {
       setName('');
       setPhone('');
       setMessage('');
+    } catch (error) {
+      toast({
+        title: "Ошибка отправки",
+        description: "Попробуйте позже или свяжитесь с нами по телефону",
+        variant: "destructive"
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
