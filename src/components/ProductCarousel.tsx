@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
+import { formatPrice } from '@/utils/formatPrice';
 
 interface Product {
   id: number;
@@ -70,7 +71,7 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                     </h3>
                     <p className="text-sm text-muted-foreground mb-3">{product.category}</p>
                     <div className="text-2xl font-bold text-foreground mb-3">
-                      {product.price}
+                      {formatPrice(product.price)}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1">

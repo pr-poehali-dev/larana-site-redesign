@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
+import { formatPrice } from '@/utils/formatPrice';
 import ProductEditor from './ProductEditor';
 import BulkPriceUpdate from './BulkPriceUpdate';
 import BulkProductImport from './BulkProductImport';
@@ -166,7 +167,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{product.title}</p>
                     <p className="text-xs text-muted-foreground">{product.category}</p>
-                    <p className="text-sm font-semibold mt-1">{product.price}</p>
+                    <p className="text-sm font-semibold mt-1">{formatPrice(product.price)}</p>
                     {product.supplierArticle && (
                       <p className="text-xs text-muted-foreground mt-1">
                         Арт: {product.supplierArticle}

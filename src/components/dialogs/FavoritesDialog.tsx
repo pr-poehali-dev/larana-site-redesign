@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { formatPrice } from '@/utils/formatPrice';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -160,7 +161,7 @@ const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: F
                       )}
                     </div>
                     <div className="mb-4">
-                      <div className="text-2xl font-bold text-foreground">{product.price}</div>
+                      <div className="text-2xl font-bold text-foreground">{formatPrice(product.price)}</div>
                     </div>
                     <Button 
                       className="w-full"

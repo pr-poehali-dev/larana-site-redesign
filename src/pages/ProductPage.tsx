@@ -1,5 +1,6 @@
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { formatPrice } from '@/utils/formatPrice';
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -147,7 +148,7 @@ const ProductPage = () => {
 
                 <div className="border-t border-b py-6">
                   <div className="text-5xl font-bold text-foreground mb-2">
-                    {product.price}
+                    {formatPrice(product.price)}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Цена за полный комплект

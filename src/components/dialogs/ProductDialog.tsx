@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import ImageViewer from '@/components/admin/ImageViewer';
+import { formatPrice } from '@/utils/formatPrice';
 
 interface FurnitureSet {
   id: number;
@@ -124,7 +125,7 @@ const ProductDialog = ({ selectedSet, onClose, onAddToCart }: ProductDialogProps
             <div className="flex items-center justify-between pt-4 border-t">
               <div>
                 <p className="text-sm text-muted-foreground">Цена комплекта</p>
-                <p className="text-3xl font-bold">{selectedSet?.price}</p>
+                <p className="text-3xl font-bold">{formatPrice(selectedSet?.price || '')}</p>
               </div>
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-foreground" onClick={() => {
                 if (selectedSet) {

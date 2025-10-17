@@ -4,6 +4,7 @@ import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { formatPrice } from '@/utils/formatPrice';
 
 interface FurnitureSet {
   id: number;
@@ -96,7 +97,7 @@ const CartDialog = ({
                       >
                         <Icon name="X" size={18} />
                       </Button>
-                      <p className="font-bold">{parseInt(item.price) * item.quantity} ₽</p>
+                      <p className="font-bold">{formatPrice(parseInt(item.price) * item.quantity)}</p>
                     </div>
                   </div>
                 ))}
@@ -108,7 +109,7 @@ const CartDialog = ({
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Товары ({cartItems.reduce((sum, item) => sum + item.quantity, 0)} шт.)</span>
-                <span>{total} ₽</span>
+                <span>{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Доставка</span>
@@ -117,7 +118,7 @@ const CartDialog = ({
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Итого:</span>
-                <span>{total} ₽</span>
+                <span>{formatPrice(total)}</span>
               </div>
             </div>
 

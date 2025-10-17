@@ -1,5 +1,6 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { formatPrice } from '@/utils/formatPrice';
 import { useState, useEffect, useMemo } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -380,7 +381,7 @@ const CategoryPage = () => {
                           <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product.title}</h3>
                           <p className="text-sm text-muted-foreground mb-4">{product.width} • {product.material}</p>
                           <div className="mb-4">
-                            <div className="text-3xl font-bold text-foreground">{product.price}</div>
+                            <div className="text-3xl font-bold text-foreground">{formatPrice(product.price)}</div>
                           </div>
                           <Button className="w-full" size="lg" onClick={(e) => {
                             e.preventDefault();

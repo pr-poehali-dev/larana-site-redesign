@@ -4,6 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { useEffect, useState } from 'react';
+import { formatPrice } from '@/utils/formatPrice';
 
 interface OrderHistoryDialogProps {
   open: boolean;
@@ -125,7 +126,7 @@ const OrderHistoryDialog = ({ open, onClose, user }: OrderHistoryDialogProps) =>
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold">{order.totalAmount.toLocaleString()} ₽</p>
+                      <p className="text-lg font-bold">{formatPrice(order.totalAmount)}</p>
                     </div>
                   </div>
 

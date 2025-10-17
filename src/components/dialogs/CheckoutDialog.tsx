@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { formatPrice } from '@/utils/formatPrice';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import PhoneInput from '@/components/PhoneInput';
@@ -311,7 +312,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
                 <div key={item.id} className="flex justify-between items-start gap-3 text-sm py-2 border-b border-border/50 last:border-0">
                   <div className="flex-1">
                     <p className="font-medium">{item.title}</p>
-                    <p className="text-muted-foreground text-xs">{item.price}</p>
+                    <p className="text-muted-foreground text-xs">{formatPrice(item.price)}</p>
                   </div>
                   
                   {onUpdateQuantity && onRemoveItem ? (
@@ -347,7 +348,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
                   )}
                   
                   <p className="font-semibold min-w-[80px] text-right">
-                    {(parseInt(item.price.replace(/\D/g, '')) * item.quantity).toLocaleString('ru-RU')} ₽
+                    {formatPrice(parseInt(item.price.replace(/\D/g, '')) * item.quantity)}
                   </p>
                 </div>
               ))}
@@ -357,7 +358,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
             
             <div className="flex justify-between items-center text-lg font-bold">
               <span>Итого:</span>
-              <span className="text-primary">{total.toLocaleString('ru-RU')} ₽</span>
+              <span className="text-primary">{formatPrice(total)}</span>
             </div>
           </div>
 
@@ -368,7 +369,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
             disabled={!isFormValid()}
           >
             <Icon name="ShoppingBag" size={20} className="mr-2" />
-            Подтвердить заказ на {total.toLocaleString('ru-RU')} ₽
+            Подтвердить заказ на {formatPrice(total)}
           </Button>
         </form>
       </DialogContent>
