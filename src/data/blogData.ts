@@ -154,7 +154,7 @@ export const blogArticles: BlogArticle[] = [
         title: 'Выбирайте диван в нашем каталоге',
         description: 'Все диваны в наличии на складе с быстрой доставкой по Екатеринбургу',
         buttonText: 'Смотреть каталог диванов',
-        link: '/catalog/divany'
+        link: '/catalog/gostinaya'
       }
     }
   },
@@ -259,7 +259,7 @@ export const blogArticles: BlogArticle[] = [
     title: 'Спальня в скандинавском стиле: 7 правил оформления',
     slug: 'spalnya-v-skandinavskom-stile',
     excerpt: 'Как создать уютную спальню в скандинавском стиле: мебель, цвета, текстиль и декор.',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/f6c52090-2b82-4b51-af64-5c4069010a78.jpg',
+    image: '',
     date: '2025-10-18',
     readTime: '7 мин',
     category: 'Стили интерьера',
@@ -415,7 +415,7 @@ export const blogArticles: BlogArticle[] = [
     title: 'Кровать с подъёмным механизмом: плюсы и минусы',
     slug: 'krovat-s-podemnym-mehanizmom',
     excerpt: 'Стоит ли покупать кровать с подъёмным механизмом? Разбираем преимущества, недостатки и виды механизмов.',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/bed-lift.jpg',
+    image: '',
     date: '2025-10-12',
     readTime: '5 мин',
     category: 'Советы',
@@ -520,7 +520,7 @@ export const blogArticles: BlogArticle[] = [
         title: 'Кровати с подъёмным механизмом в каталоге',
         description: 'Выбирайте из готовых моделей с быстрой доставкой по Екатеринбургу',
         buttonText: 'Смотреть кровати',
-        link: '/catalog/krovati'
+        link: '/catalog/spalnya'
       }
     }
   },
@@ -529,7 +529,7 @@ export const blogArticles: BlogArticle[] = [
     title: 'Как выбрать обеденный стол: размер, форма, материал',
     slug: 'kak-vybrat-obedennyj-stol',
     excerpt: 'Практическое руководство по выбору обеденного стола для кухни и гостиной: размеры, формы, материалы.',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/dining-table.jpg',
+    image: '',
     date: '2025-10-10',
     readTime: '6 мин',
     category: 'Советы',
@@ -642,7 +642,7 @@ export const blogArticles: BlogArticle[] = [
         title: 'Обеденные столы в нашем каталоге',
         description: 'Столы разных форм и размеров в наличии с доставкой за 1-2 дня',
         buttonText: 'Смотреть столы',
-        link: '/catalog/stoly'
+        link: '/catalog'
       }
     }
   },
@@ -651,7 +651,7 @@ export const blogArticles: BlogArticle[] = [
     title: 'Мягкий уголок для кухни: как выбрать и разместить',
     slug: 'myagkij-ugolok-dlya-kuhni',
     excerpt: 'Как выбрать кухонный уголок: размеры, материалы обивки, наличие ящиков и варианты размещения.',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/kitchen-corner.jpg',
+    image: '',
     date: '2025-10-08',
     readTime: '5 мин',
     category: 'Советы',
@@ -756,7 +756,7 @@ export const blogArticles: BlogArticle[] = [
         title: 'Кухонные уголки в нашем каталоге',
         description: 'Готовые уголки с ящиками и без в наличии на складе',
         buttonText: 'Смотреть кухонные уголки',
-        link: '/catalog/kuhonnye-ugolki'
+        link: '/catalog'
       }
     }
   }
