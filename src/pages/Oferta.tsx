@@ -27,7 +27,7 @@ export default function Oferta() {
                 <Button
                   onClick={() =>
                     window.open(
-                      'https://laranamebel.ru/assets/larana.market_oferta.pdf',
+                      'https://larana.market/assets/larana.market_oferta.pdf',
                       '_blank'
                     )
                   }
@@ -132,7 +132,7 @@ export default function Oferta() {
                 <Button
                   onClick={() =>
                     window.open(
-                      'https://laranamebel.ru/assets/larana.market_oferta.pdf',
+                      'https://larana.market/assets/larana.market_oferta.pdf',
                       '_blank'
                     )
                   }
