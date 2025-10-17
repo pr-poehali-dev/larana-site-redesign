@@ -61,7 +61,7 @@ const CategoryPage = () => {
   const mockProducts = useMemo(() => {
     if (!slug) return [];
     
-    return allFurnitureSets
+    let filtered = allFurnitureSets
       .filter(product => {
         if (!targetCategory) return false;
         return product.category === targetCategory;
@@ -75,7 +75,14 @@ const CategoryPage = () => {
         width: product.items[0] || '',
         material: product.colors[0] || ''
       }));
-  }, [allFurnitureSets, targetCategory, slug]);
+
+    filtered = filtered.filter(product => {
+      const price = parseInt(product.price.replace(/[^\d]/g, ''));
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+
+    return filtered;
+  }, [allFurnitureSets, targetCategory, slug, priceRange]);
 
   return (
     <>
@@ -159,7 +166,10 @@ const CategoryPage = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-lg">Фильтры</h3>
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedFilters({})}>
+                      <Button variant="ghost" size="sm" onClick={() => {
+                        setSelectedFilters({});
+                        setPriceRange([15000, 80000]);
+                      }}>
                         Сбросить
                       </Button>
                     </div>
@@ -247,32 +257,38 @@ const CategoryPage = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
                   {mockProducts.map((product) => (
-                    <Card key={product.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img
-                          src={product.image}
-                          alt={product.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        {product.inStock && (
-                          <Badge className="absolute top-4 left-4 bg-green-500 text-white">
-                            В наличии
-                          </Badge>
-                        )}
-                      </div>
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{product.title}</h3>
-                        <p className="text-sm text-muted-foreground mb-3">{product.width} • {product.material}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-2xl font-bold text-primary">{product.price}</span>
-                          <Button size="sm">
-                            <Icon name="ShoppingCart" size={16} className="mr-2" />
-                            Купить
-                          </Button>
+                    <a 
+                      key={product.id} 
+                      href={`/catalog/${slug}/${product.id}`}
+                      className="block"
+                    >
+                      <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                        <div className="relative aspect-[4/3] overflow-hidden">
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          {product.inStock && (
+                            <Badge className="absolute top-4 left-4 bg-green-500 text-white">
+                              В наличии
+                            </Badge>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{product.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-3">{product.width} • {product.material}</p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-2xl font-bold text-primary">{product.price}</span>
+                            <Button size="sm" onClick={(e) => e.preventDefault()}>
+                              <Icon name="ShoppingCart" size={16} className="mr-2" />
+                              Купить
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </a>
                   ))}
                 </div>
 
