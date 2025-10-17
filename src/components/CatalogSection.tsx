@@ -103,6 +103,7 @@ const CatalogSection = ({ furnitureSets, onSetClick, user }: CatalogSectionProps
                 <img 
                   src={set.image} 
                   alt={set.title}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <Badge className="absolute top-4 left-4 bg-white text-foreground">{set.category}</Badge>

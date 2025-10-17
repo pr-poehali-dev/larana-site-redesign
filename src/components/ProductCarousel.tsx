@@ -56,6 +56,7 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                   <img
                     src={product.image}
                     alt={product.title}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform group-hover:scale-110"
                   />
                   <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
