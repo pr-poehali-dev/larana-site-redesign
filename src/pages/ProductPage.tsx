@@ -1,41 +1,49 @@
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { useProductData } from '@/hooks/useProductData';
+import { useCartLogic } from '@/hooks/useCartLogic';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import { useToast } from '@/hooks/use-toast';
+import CartDialog from '@/components/dialogs/CartDialog';
 
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
+  const navigate = useNavigate();
   const { allFurnitureSets } = useProductData();
-  const { toast } = useToast();
+  const { cartItems, handleAddToCart: addToCart, handleRemoveFromCart, handleUpdateQuantity } = useCartLogic();
   
   const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
   const [selectedColor, setSelectedColor] = useState(product?.colors[0] || '');
   const [quantity, setQuantity] = useState(1);
+  const [cartOpen, setCartOpen] = useState(false);
 
   if (!product) {
     return <Navigate to="/404" replace />;
   }
 
   const handleAddToCart = () => {
-    toast({
-      title: "Товар добавлен в корзину",
-      description: `${product.title} (${selectedColor})`,
-    });
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
+    setCartOpen(true);
   };
 
   const handleBuyNow = () => {
-    toast({
-      title: "Оформление заказа",
-      description: "Перенаправляем на страницу оформления...",
-    });
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
+    navigate('/');
+  };
+
+  const handleCheckout = () => {
+    setCartOpen(false);
+    navigate('/');
   };
 
   return (
@@ -223,6 +231,15 @@ const ProductPage = () => {
         <Footer />
         <ScrollToTop />
       </div>
+
+      <CartDialog
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        cartItems={cartItems}
+        onRemoveItem={handleRemoveFromCart}
+        onUpdateQuantity={handleUpdateQuantity}
+        onCheckout={handleCheckout}
+      />
     </>
   );
 };
