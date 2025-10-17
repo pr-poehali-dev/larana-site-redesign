@@ -87,7 +87,16 @@ const ProductPage = () => {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">
-        <Header />
+        <Header 
+          cartItemsCount={cartItems.length}
+          onCartClick={() => setCartOpen(true)}
+          onAuthClick={() => {}}
+          user={user}
+          onLogout={() => {}}
+          onOrdersClick={() => {}}
+          onProfileClick={() => {}}
+          onFavoritesClick={() => {}}
+        />
         
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
