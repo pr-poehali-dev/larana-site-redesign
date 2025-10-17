@@ -146,7 +146,7 @@ const ProductPage = () => {
                 </div>
 
                 <div className="border-t border-b py-6">
-                  <div className="text-4xl font-bold text-primary mb-2">
+                  <div className="text-5xl font-bold text-foreground mb-2">
                     {product.price}
                   </div>
                   <p className="text-sm text-muted-foreground">

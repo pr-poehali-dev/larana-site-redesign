@@ -59,9 +59,6 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform group-hover:scale-110"
                   />
-                  <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                    {product.price}
-                  </div>
                 </div>
                 <div className="p-4 space-y-3">
                   <div>
@@ -71,7 +68,10 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                     >
                       {product.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">{product.category}</p>
+                    <p className="text-sm text-muted-foreground mb-3">{product.category}</p>
+                    <div className="text-2xl font-bold text-foreground mb-3">
+                      {product.price}
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {product.items.slice(0, 3).map((item, idx) => (

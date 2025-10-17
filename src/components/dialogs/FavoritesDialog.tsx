@@ -159,20 +159,19 @@ const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: F
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold">{product.price}</span>
-                      <Button 
-                        size="sm"
-                        className="bg-foreground hover:bg-foreground/90 text-background"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onProductClick(product);
-                          onClose();
-                        }}
-                      >
-                        Подробнее
-                      </Button>
+                    <div className="mb-4">
+                      <div className="text-2xl font-bold text-foreground">{product.price}</div>
                     </div>
+                    <Button 
+                      className="w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onProductClick(product);
+                        onClose();
+                      }}
+                    >
+                      Подробнее
+                    </Button>
                   </CardContent>
                 </Card>
               ))}

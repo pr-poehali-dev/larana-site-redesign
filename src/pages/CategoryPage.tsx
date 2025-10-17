@@ -377,23 +377,23 @@ const CategoryPage = () => {
                           )}
                         </div>
                         <CardContent className="p-4">
-                          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{product.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-3">{product.width} • {product.material}</p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-2xl font-bold text-primary">{product.price}</span>
-                            <Button size="sm" onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              const fullProduct = allFurnitureSets.find(p => p.id === product.id);
-                              if (fullProduct) {
-                                addToCart(fullProduct);
-                                setCheckoutOpen(true);
-                              }
-                            }}>
-                              <Icon name="ShoppingCart" size={16} className="mr-2" />
-                              Купить
-                            </Button>
+                          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-4">{product.width} • {product.material}</p>
+                          <div className="mb-4">
+                            <div className="text-3xl font-bold text-foreground">{product.price}</div>
                           </div>
+                          <Button className="w-full" size="lg" onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const fullProduct = allFurnitureSets.find(p => p.id === product.id);
+                            if (fullProduct) {
+                              addToCart(fullProduct);
+                              setCheckoutOpen(true);
+                            }
+                          }}>
+                            <Icon name="ShoppingCart" size={18} className="mr-2" />
+                            В корзину
+                          </Button>
                         </CardContent>
                       </Card>
                     </a>
