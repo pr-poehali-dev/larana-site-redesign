@@ -26,10 +26,12 @@ interface CheckoutDialogProps {
   onClose: () => void;
   cartItems: CartItem[];
   onConfirmOrder: (orderData: any) => void;
+  onUpdateQuantity?: (id: number, quantity: number) => void;
+  onRemoveItem?: (id: number) => void;
   user?: any;
 }
 
-const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: CheckoutDialogProps) => {
+const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuantity, onRemoveItem, user }: CheckoutDialogProps) => {
   const { playSound } = useCheckoutAudio();
   
   const {
@@ -297,12 +299,45 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, user }: Chec
             
             <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
               {cartItems.map((item) => (
-                <div key={item.id} className="flex justify-between items-center text-sm py-2 border-b border-border/50 last:border-0">
+                <div key={item.id} className="flex justify-between items-start gap-3 text-sm py-2 border-b border-border/50 last:border-0">
                   <div className="flex-1">
                     <p className="font-medium">{item.title}</p>
-                    <p className="text-muted-foreground text-xs">{item.quantity} шт × {item.price}</p>
+                    <p className="text-muted-foreground text-xs">{item.price}</p>
                   </div>
-                  <p className="font-semibold">
+                  
+                  {onUpdateQuantity && onRemoveItem ? (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                      >
+                        <Icon name="Minus" size={14} />
+                      </Button>
+                      <span className="w-8 text-center font-medium">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                      >
+                        <Icon name="Plus" size={14} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-destructive hover:text-destructive"
+                        onClick={() => onRemoveItem(item.id)}
+                      >
+                        <Icon name="Trash2" size={14} />
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-xs">{item.quantity} шт</p>
+                  )}
+                  
+                  <p className="font-semibold min-w-[80px] text-right">
                     {(parseInt(item.price.replace(/\D/g, '')) * item.quantity).toLocaleString('ru-RU')} ₽
                   </p>
                 </div>

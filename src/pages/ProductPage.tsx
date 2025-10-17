@@ -301,7 +301,9 @@ const ProductPage = () => {
         open={checkoutOpen}
         onClose={() => setCheckoutOpen(false)}
         cartItems={cartItems}
-        onConfirm={handleConfirmOrder}
+        onConfirmOrder={handleConfirmOrder}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
         user={user}
       />
 

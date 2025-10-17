@@ -449,10 +449,12 @@ const CategoryPage = () => {
         open={checkoutOpen}
         onClose={() => setCheckoutOpen(false)}
         cartItems={cartItems}
-        onConfirm={async (orderData) => {
+        onConfirmOrder={async (orderData) => {
           await confirmOrder(orderData);
           setCheckoutOpen(false);
         }}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
         user={user}
       />
 
