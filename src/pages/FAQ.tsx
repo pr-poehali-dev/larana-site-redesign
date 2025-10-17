@@ -58,6 +58,7 @@ const faqData: FAQItem[] = [
 
 const FAQ = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+  const [deliveryFormOpen, setDeliveryFormOpen] = useState(false);
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
   const [comment, setComment] = useState('');
@@ -269,11 +270,18 @@ const FAQ = () => {
           </p>
         </div>
 
-        <Card className="mb-8 bg-gradient-to-br from-primary/10 via-primary/5 to-background border-2 border-primary/30">
-          <CardContent className="p-8">
-            <div className="flex items-start gap-4 mb-6">
-              <Icon name="Calculator" size={32} className="text-primary flex-shrink-0" />
-              <div>
+        <Card className="mb-8 bg-gradient-to-br from-primary/10 via-primary/5 to-background border-2 border-primary/30 overflow-hidden">
+          <button
+            onClick={() => setDeliveryFormOpen(!deliveryFormOpen)}
+            className="w-full text-left p-8 hover:bg-primary/5 transition-colors"
+          >
+            <div className="flex items-start gap-4">
+              <Icon 
+                name={deliveryFormOpen ? "ChevronDown" : "ChevronRight"}
+                size={32}
+                className="text-primary flex-shrink-0 mt-1 transition-transform"
+              />
+              <div className="flex-1">
                 <h2 className="text-2xl font-bold mb-2">
                   Узнать стоимость доставки в ваш регион
                 </h2>
@@ -282,8 +290,11 @@ const FAQ = () => {
                 </p>
               </div>
             </div>
-            
-            <form onSubmit={handleDeliveryCalculation} className="space-y-4">
+          </button>
+          
+          {deliveryFormOpen && (
+            <CardContent className="px-8 pb-8 pt-0">
+              <form onSubmit={handleDeliveryCalculation} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <CityAutocomplete
                   value={city}
@@ -350,7 +361,8 @@ const FAQ = () => {
                 )}
               </Button>
             </form>
-          </CardContent>
+            </CardContent>
+          )}
         </Card>
 
         <div className="space-y-4">
