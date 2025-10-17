@@ -5,7 +5,8 @@ export const cities = {
     declension: {
       genitive: 'Екатеринбурга',
       prepositional: 'Екатеринбурге'
-    }
+    },
+    coords: { lat: 56.8389, lon: 60.6057 }
   },
   tyumen: {
     name: 'Тюмень',
@@ -13,7 +14,8 @@ export const cities = {
     declension: {
       genitive: 'Тюмени',
       prepositional: 'Тюмени'
-    }
+    },
+    coords: { lat: 57.1522, lon: 65.5272 }
   },
   chelyabinsk: {
     name: 'Челябинск',
@@ -21,7 +23,8 @@ export const cities = {
     declension: {
       genitive: 'Челябинска',
       prepositional: 'Челябинске'
-    }
+    },
+    coords: { lat: 55.1644, lon: 61.4368 }
   },
   surgut: {
     name: 'Сургут',
@@ -29,7 +32,8 @@ export const cities = {
     declension: {
       genitive: 'Сургута',
       prepositional: 'Сургуте'
-    }
+    },
+    coords: { lat: 61.2500, lon: 73.3963 }
   },
   nizhnevartovsk: {
     name: 'Нижневартовск',
@@ -37,7 +41,8 @@ export const cities = {
     declension: {
       genitive: 'Нижневартовска',
       prepositional: 'Нижневартовске'
-    }
+    },
+    coords: { lat: 60.9344, lon: 76.5531 }
   },
   'khanty-mansiysk': {
     name: 'Ханты-Мансийск',
@@ -45,7 +50,8 @@ export const cities = {
     declension: {
       genitive: 'Ханты-Мансийска',
       prepositional: 'Ханты-Мансийске'
-    }
+    },
+    coords: { lat: 61.0042, lon: 69.0019 }
   },
   noyabrsk: {
     name: 'Ноябрьск',
@@ -53,7 +59,8 @@ export const cities = {
     declension: {
       genitive: 'Ноябрьска',
       prepositional: 'Ноябрьске'
-    }
+    },
+    coords: { lat: 63.1988, lon: 75.4502 }
   },
   'novy-urengoy': {
     name: 'Новый Уренгой',
@@ -61,7 +68,8 @@ export const cities = {
     declension: {
       genitive: 'Нового Уренгоя',
       prepositional: 'Новом Уренгое'
-    }
+    },
+    coords: { lat: 66.0833, lon: 76.6333 }
   },
   salekhard: {
     name: 'Салехард',
@@ -69,7 +77,8 @@ export const cities = {
     declension: {
       genitive: 'Салехарда',
       prepositional: 'Салехарде'
-    }
+    },
+    coords: { lat: 66.5297, lon: 66.6138 }
   },
   nadym: {
     name: 'Надым',
@@ -77,7 +86,8 @@ export const cities = {
     declension: {
       genitive: 'Надыма',
       prepositional: 'Надыме'
-    }
+    },
+    coords: { lat: 65.5333, lon: 72.5167 }
   },
   'verkhnyaya-pyshma': {
     name: 'Верхняя Пышма',
@@ -85,7 +95,8 @@ export const cities = {
     declension: {
       genitive: 'Верхней Пышмы',
       prepositional: 'Верхней Пышме'
-    }
+    },
+    coords: { lat: 56.9667, lon: 60.5833 }
   },
   berezovsky: {
     name: 'Берёзовский',
@@ -93,7 +104,8 @@ export const cities = {
     declension: {
       genitive: 'Берёзовского',
       prepositional: 'Берёзовском'
-    }
+    },
+    coords: { lat: 56.9083, lon: 60.8017 }
   },
   sredneuralsk: {
     name: 'Среднеуральск',
@@ -101,7 +113,8 @@ export const cities = {
     declension: {
       genitive: 'Среднеуральска',
       prepositional: 'Среднеуральске'
-    }
+    },
+    coords: { lat: 56.9833, lon: 60.4667 }
   }
 };
 

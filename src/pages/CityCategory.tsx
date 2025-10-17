@@ -66,22 +66,76 @@ const CityCategory = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Product",
-            "name": `${categoryData.name} на заказ`,
-            "description": seo.description,
-            "brand": {
-              "@type": "Brand",
-              "name": "LARANA"
+            "@type": "LocalBusiness",
+            "name": "LARANA - мебельная компания",
+            "description": `Производство ${categoryData.nameGenitive} на заказ в ${cityData.declension.prepositional}. Бесплатный замер, доставка и сборка под ключ.`,
+            "image": "https://larana-mebel.ru/logo.png",
+            "priceRange": "от 15000 ₽",
+            "telephone": "+7 (343) 290-40-54",
+            "email": "info@larana-mebel.ru",
+            "url": `https://larana-mebel.ru/city/${city}/${category}`,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": cityData.name,
+              "addressRegion": cityData.region,
+              "addressCountry": "RU"
             },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": cityData.coords?.lat || 56.8389,
+              "longitude": cityData.coords?.lon || 60.6057
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "09:00",
+                "closes": "18:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "10:00",
+                "closes": "16:00"
+              }
+            ],
             "areaServed": {
               "@type": "City",
               "name": cityData.name
             },
-            "offers": {
-              "@type": "AggregateOffer",
-              "priceCurrency": "RUB",
-              "availability": "https://schema.org/InStock"
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": `${categoryData.name} на заказ`,
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": `${categoryData.name} на заказ`,
+                    "description": seo.description
+                  },
+                  "priceCurrency": "RUB",
+                  "availability": "https://schema.org/InStock",
+                  "seller": {
+                    "@type": "Organization",
+                    "name": "LARANA"
+                  }
+                }
+              ]
             }
+          })}
+        </script>
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": seo.breadcrumb.map((item, idx) => ({
+              "@type": "ListItem",
+              "position": idx + 1,
+              "name": item.name,
+              "item": `https://larana-mebel.ru${item.url}`
+            }))
           })}
         </script>
       </Helmet>
