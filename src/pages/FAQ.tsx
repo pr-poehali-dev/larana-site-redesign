@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import CityAutocomplete from '@/components/CityAutocomplete';
 import Icon from '@/components/ui/icon';
+import ScrollToTop from '@/components/ScrollToTop';
 
 interface FAQItem {
   question: string;
@@ -328,6 +329,8 @@ const FAQ = () => {
           </div>
         </div>
       </div>
+      
+      <ScrollToTop />
     </div>
   );
 };

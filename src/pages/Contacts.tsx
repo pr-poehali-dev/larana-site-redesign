@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
+import ScrollToTop from '@/components/ScrollToTop';
 
 const Contacts = () => {
   const [name, setName] = useState('');
@@ -263,6 +264,8 @@ const Contacts = () => {
           </div>
         </div>
       </div>
+      
+      <ScrollToTop />
     </div>
   );
 };

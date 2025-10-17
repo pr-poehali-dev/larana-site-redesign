@@ -13,6 +13,7 @@ import FAQSection from '@/components/FAQSection';
 import ProductCarousel from '@/components/ProductCarousel';
 import Footer from '@/components/Footer';
 import IndexDialogs from '@/components/IndexDialogs';
+import ScrollToTop from '@/components/ScrollToTop';
 import { useProductData } from '@/hooks/useProductData';
 import { useCartLogic } from '@/hooks/useCartLogic';
 import { useOrderLogic } from '@/hooks/useOrderLogic';
@@ -190,6 +191,8 @@ const Index = () => {
       <FAQSection />
       
       <Footer />
+      
+      <ScrollToTop />
 
       <IndexDialogs
         selectedSet={selectedSet}
