@@ -46,8 +46,11 @@ const CategoryPage = () => {
   };
 
   const categoryMapping: Record<string, string> = {
-    'shkafy-kupe': 'Шкафы',
-    'divany': 'Гостиная'
+    'gostinaya': 'Гостиные',
+    'spalnya': 'Спальни',
+    'kuhni': 'Кухни',
+    'shkafy': 'Шкафы',
+    'prihozhaya': 'Прихожие'
   };
 
   const targetCategory = categoryMapping[slug || ''];

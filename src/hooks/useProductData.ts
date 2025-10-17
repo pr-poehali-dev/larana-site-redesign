@@ -11,7 +11,7 @@ export const useProductData = () => {
     {
       id: 1,
       title: 'Спальня "Сканди Мини"',
-      category: 'Спальня',
+      category: 'Спальни',
       price: '38900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/857f001b-0b80-43af-a51b-f2a18a4ef240.jpg',
       items: ['Кровать 160', 'Шкаф 2Д', 'Тумбы'],
@@ -23,7 +23,7 @@ export const useProductData = () => {
     {
       id: 2,
       title: 'Спальня "Комфорт Люкс"',
-      category: 'Спальня',
+      category: 'Спальни',
       price: '57900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/790ac483-2de4-49e5-acd3-bb2f557ab85a.jpg',
       items: ['Кровать 180', 'Шкаф-купе', 'Комод', 'Зеркало'],
@@ -35,7 +35,7 @@ export const useProductData = () => {
     {
       id: 3,
       title: 'Кухня "Лара 180"',
-      category: 'Кухня',
+      category: 'Кухни',
       price: '25900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/4b4f05f3-22e9-4eac-8af3-69ffc361cde8.jpg',
       items: ['Фасады', 'Столешница', 'Фурнитура'],
@@ -47,7 +47,7 @@ export const useProductData = () => {
     {
       id: 4,
       title: 'Кухня "Милан 240"',
-      category: 'Кухня',
+      category: 'Кухни',
       price: '37900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/361eb671-ade4-4f67-9df1-de00cd20c61a.jpg',
       items: ['Фасады', 'Ручки', 'Фурнитура', 'Мойка'],
@@ -83,7 +83,7 @@ export const useProductData = () => {
     {
       id: 7,
       title: 'Диван-кровать "Токио"',
-      category: 'Гостиная',
+      category: 'Гостиные',
       price: '26900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
       items: ['Диван', 'Подушки', 'Ящик'],
@@ -95,7 +95,7 @@ export const useProductData = () => {
     {
       id: 8,
       title: 'Угловой диван-кровать "Неаполь"',
-      category: 'Гостиная',
+      category: 'Гостиные',
       price: '34900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/fb225bdc-f87d-4843-8021-0161f72938fa.jpg',
       items: ['Угловой диван', 'Подлокотники', 'Бельевой ящик'],
@@ -107,7 +107,7 @@ export const useProductData = () => {
     {
       id: 9,
       title: 'Прихожая "Мини L1"',
-      category: 'Прихожая',
+      category: 'Прихожие',
       price: '8900 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/b2671236-b685-4573-ac0e-0e2e4f68a820.jpg',
       items: ['Тумба', 'Вешалка', 'Зеркало'],
@@ -119,7 +119,7 @@ export const useProductData = () => {
     {
       id: 10,
       title: 'Прихожая "Сити Lux"',
-      category: 'Прихожая',
+      category: 'Прихожие',
       price: '15400 ₽',
       image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/f5366cbf-23dd-47aa-998c-006d9db97a2b.jpg',
       items: ['Шкаф', 'Обувница', 'Зеркало'],

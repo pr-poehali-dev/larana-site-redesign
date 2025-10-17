@@ -10,8 +10,8 @@ const catalogCategories = [
   {
     slug: 'gostinaya',
     title: 'Гостиные',
-    description: 'Стенки, витрины, тумбы под ТВ, диваны',
-    icon: 'Tv',
+    description: 'Диваны прямые и угловые с механизмами трансформации',
+    icon: 'Sofa',
     image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
     count: 2
   },
@@ -20,21 +20,21 @@ const catalogCategories = [
     title: 'Спальни',
     description: 'Кровати, комоды, тумбы для спальни',
     icon: 'Bed',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
-    count: 0
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/857f001b-0b80-43af-a51b-f2a18a4ef240.jpg',
+    count: 2
   },
   {
     slug: 'kuhni',
     title: 'Кухни',
     description: 'Модульные кухонные гарнитуры под любой размер',
     icon: 'ChefHat',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
-    count: 0
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/4b4f05f3-22e9-4eac-8af3-69ffc361cde8.jpg',
+    count: 2
   },
   {
     slug: 'shkafy',
     title: 'Шкафы',
-    description: 'Шкафы-купе и распашные шкафы',
+    description: 'Шкафы-купе с зеркальными и глухими фасадами',
     icon: 'Box',
     image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
     count: 2
@@ -44,8 +44,8 @@ const catalogCategories = [
     title: 'Прихожие',
     description: 'Компактные решения для коридора и прихожей',
     icon: 'DoorOpen',
-    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
-    count: 0
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/b2671236-b685-4573-ac0e-0e2e4f68a820.jpg',
+    count: 2
   }
 ];
 
