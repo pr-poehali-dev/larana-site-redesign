@@ -262,7 +262,7 @@ const ProfileSettingsDialog = ({ open, onClose, user }: ProfileSettingsDialogPro
                             <Label htmlFor="city">Город *</Label>
                             <Input
                               id="city"
-                              placeholder="Москва"
+                              placeholder="Екатеринбург"
                               value={newAddress.city}
                               onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                               required
