@@ -33,13 +33,41 @@ const Footer = () => {
           </div>
           <div>
             <h4 className="font-semibold mb-4">Контакты</h4>
-            <ul className="space-y-2 text-sm opacity-80">
-              <li>+7 (800) 123-45-67</li>
-              <li>info@larana.ru</li>
-              <li className="flex gap-4 pt-4">
-                <Icon name="Instagram" size={20} className="cursor-pointer hover:opacity-100" />
-                <Icon name="Facebook" size={20} className="cursor-pointer hover:opacity-100" />
-                <Icon name="Youtube" size={20} className="cursor-pointer hover:opacity-100" />
+            <ul className="space-y-3 text-sm opacity-80">
+              <li>
+                <a href="tel:+73433511912" className="hover:opacity-100 flex items-center gap-2">
+                  <Icon name="Phone" size={16} />
+                  +7 (343) 351-19-12
+                </a>
+              </li>
+              <li>
+                <a href="mailto:zakaz@larana.market" className="hover:opacity-100 flex items-center gap-2">
+                  <Icon name="Mail" size={16} />
+                  zakaz@larana.market
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <Icon name="MapPin" size={16} className="flex-shrink-0 mt-0.5" />
+                <span>г. Екатеринбург, ул. Крупносортщиков, 14, офис 102</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Icon name="Clock" size={16} className="flex-shrink-0 mt-0.5" />
+                <div>
+                  <div>Пн-Пт: 09:00–21:00</div>
+                  <div>Сб: 10:00–17:00</div>
+                  <div>Вс: выходной</div>
+                </div>
+              </li>
+              <li className="pt-2">
+                <a 
+                  href="https://vk.com/larana96" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:opacity-100 inline-flex items-center gap-2"
+                >
+                  <Icon name="Share2" size={16} />
+                  ВКонтакте
+                </a>
               </li>
             </ul>
           </div>
