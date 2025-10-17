@@ -24,15 +24,15 @@ interface CartItem {
 
 interface CheckoutDialogProps {
   open: boolean;
-  onClose: () => void;
-  cartItems: CartItem[];
-  onConfirmOrder: (orderData: any) => void;
+  onOpenChange: (open: boolean) => void;
+  items: CartItem[];
+  onConfirm: (orderData: any) => void;
   onUpdateQuantity?: (id: number, quantity: number) => void;
   onRemoveItem?: (id: number) => void;
   user?: any;
 }
 
-const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuantity, onRemoveItem, user }: CheckoutDialogProps) => {
+const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQuantity, onRemoveItem, user }: CheckoutDialogProps) => {
   const { playSound } = useCheckoutAudio();
   
   const {
@@ -47,7 +47,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
     isFormValid
   } = useCheckoutData(open, user);
 
-  const total = cartItems.reduce((sum, item) => {
+  const total = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
     return sum + (price * item.quantity);
   }, 0);
@@ -68,11 +68,11 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
     };
     localStorage.setItem('userData', JSON.stringify(savedUserData));
     playSound('success');
-    onConfirmOrder(formData);
+    onConfirm(formData);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl">Оформление заказа</DialogTitle>
@@ -308,7 +308,7 @@ const CheckoutDialog = ({ open, onClose, cartItems, onConfirmOrder, onUpdateQuan
             </h3>
             
             <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
-              {cartItems.map((item) => (
+              {items.map((item) => (
                 <div key={item.id} className="flex justify-between items-start gap-3 text-sm py-2 border-b border-border/50 last:border-0">
                   <div className="flex-1">
                     <p className="font-medium">{item.title}</p>

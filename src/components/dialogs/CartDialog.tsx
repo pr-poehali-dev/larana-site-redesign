@@ -23,8 +23,8 @@ interface CartItem extends FurnitureSet {
 
 interface CartDialogProps {
   open: boolean;
-  onClose: () => void;
-  cartItems: CartItem[];
+  onOpenChange: (open: boolean) => void;
+  items: CartItem[];
   onRemoveItem: (id: number) => void;
   onUpdateQuantity: (id: number, quantity: number) => void;
   onCheckout: () => void;
@@ -32,38 +32,38 @@ interface CartDialogProps {
 
 const CartDialog = ({ 
   open, 
-  onClose, 
-  cartItems, 
+  onOpenChange, 
+  items = [], 
   onRemoveItem, 
   onUpdateQuantity,
   onCheckout 
 }: CartDialogProps) => {
-  const total = cartItems.reduce((sum, item) => {
+  const total = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
     return sum + (price * item.quantity);
   }, 0);
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-2xl">Корзина покупок</DialogTitle>
           <DialogDescription>
-            {cartItems.length === 0 ? 'Ваша корзина пуста' : `Товаров в корзине: ${cartItems.length}`}
+            {items.length === 0 ? 'Ваша корзина пуста' : `Товаров в корзине: ${items.length}`}
           </DialogDescription>
         </DialogHeader>
 
-        {cartItems.length === 0 ? (
+        {items.length === 0 ? (
           <div className="text-center py-12">
             <Icon name="ShoppingCart" size={64} className="mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-4">Добавьте комплекты мебели в корзину</p>
-            <Button onClick={onClose}>Перейти к каталогу</Button>
+            <Button onClick={() => onOpenChange(false)}>Перейти к каталогу</Button>
           </div>
         ) : (
           <>
             <ScrollArea className="max-h-[400px] pr-4">
               <div className="space-y-4">
-                {cartItems.map((item) => (
+                {items.map((item) => (
                   <div key={item.id} className="flex gap-4 pb-4 border-b">
                     <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
                       <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
@@ -108,7 +108,7 @@ const CartDialog = ({
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Товары ({cartItems.reduce((sum, item) => sum + item.quantity, 0)} шт.)</span>
+                <span className="text-muted-foreground">Товары ({items.reduce((sum, item) => sum + item.quantity, 0)} шт.)</span>
                 <span>{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
