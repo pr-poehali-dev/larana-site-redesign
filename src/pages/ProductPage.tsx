@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import CartDialog from '@/components/dialogs/CartDialog';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
+import AuthDialog from '@/components/dialogs/AuthDialog';
 import { useOrderLogic } from '@/hooks/useOrderLogic';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,7 +27,8 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [user] = useState<any>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   
   const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
   
@@ -90,9 +92,9 @@ const ProductPage = () => {
         <Header 
           cartItemsCount={cartItems.length}
           onCartClick={() => setCartOpen(true)}
-          onAuthClick={() => {}}
+          onAuthClick={() => setAuthOpen(true)}
           user={user}
-          onLogout={() => {}}
+          onLogout={() => setUser(null)}
           onOrdersClick={() => {}}
           onProfileClick={() => {}}
           onFavoritesClick={() => {}}
@@ -301,6 +303,12 @@ const ProductPage = () => {
         cartItems={cartItems}
         onConfirm={handleConfirmOrder}
         user={user}
+      />
+
+      <AuthDialog
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onLogin={setUser}
       />
     </>
   );

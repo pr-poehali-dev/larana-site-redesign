@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { categories, categoryFilters } from '@/data/catalogData';
 import { useProductData } from '@/hooks/useProductData';
-import { useCartLogic } from '@/hooks/useCartLogic';
+import { useProducts } from '@/contexts/ProductContext';
 import { useOrderLogic } from '@/hooks/useOrderLogic';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,8 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
+import AuthDialog from '@/components/dialogs/AuthDialog';
+import CartDialog from '@/components/dialogs/CartDialog';
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -34,10 +36,12 @@ const CategoryPage = () => {
   const [priceRange, setPriceRange] = useState<number[]>(initialPriceRange);
   const [sortBy, setSortBy] = useState('popular');
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [user] = useState<any>(null);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   const { allFurnitureSets } = useProductData();
-  const { cartItems, handleAddToCart: addToCart, clearCart } = useCartLogic();
+  const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
   useEffect(() => {
@@ -212,7 +216,16 @@ const CategoryPage = () => {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">
-        <Header />
+        <Header 
+          cartItemsCount={cartItems.length}
+          onCartClick={() => setCartOpen(true)}
+          onAuthClick={() => setAuthOpen(true)}
+          user={user}
+          onLogout={() => setUser(null)}
+          onOrdersClick={() => {}}
+          onProfileClick={() => {}}
+          onFavoritesClick={() => {}}
+        />
         
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
@@ -420,12 +433,33 @@ const CategoryPage = () => {
         <ScrollToTop />
       </div>
 
+      <CartDialog
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        cartItems={cartItems}
+        onRemoveItem={removeFromCart}
+        onUpdateQuantity={updateQuantity}
+        onCheckout={() => {
+          setCartOpen(false);
+          setCheckoutOpen(true);
+        }}
+      />
+
       <CheckoutDialog
         open={checkoutOpen}
         onClose={() => setCheckoutOpen(false)}
         cartItems={cartItems}
-        onConfirm={handleConfirmOrder}
+        onConfirm={async (orderData) => {
+          await confirmOrder(orderData);
+          setCheckoutOpen(false);
+        }}
         user={user}
+      />
+
+      <AuthDialog
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onLogin={setUser}
       />
     </>
   );
