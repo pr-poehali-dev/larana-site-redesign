@@ -22,6 +22,54 @@ const catalogCategories = [
     icon: 'Sofa',
     image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
     count: 2
+  },
+  {
+    slug: 'kuhni',
+    title: 'Кухни',
+    description: 'Модульные кухонные гарнитуры под любой размер',
+    icon: 'ChefHat',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
+    count: 0
+  },
+  {
+    slug: 'spalnya',
+    title: 'Спальни',
+    description: 'Кровати, комоды, тумбы для спальни',
+    icon: 'Bed',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
+    count: 0
+  },
+  {
+    slug: 'prihozhaya',
+    title: 'Прихожие',
+    description: 'Компактные решения для коридора и прихожей',
+    icon: 'DoorOpen',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
+    count: 0
+  },
+  {
+    slug: 'detskaya',
+    title: 'Детские',
+    description: 'Мебель для детской комнаты',
+    icon: 'Baby',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
+    count: 0
+  },
+  {
+    slug: 'gostinaya',
+    title: 'Гостиные',
+    description: 'Стенки, витрины, тумбы под ТВ',
+    icon: 'Tv',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5f05fce3-e920-49ee-9348-2bf8a0c2704e.jpg',
+    count: 0
+  },
+  {
+    slug: 'kabinet',
+    title: 'Кабинеты',
+    description: 'Рабочие столы, кресла, стеллажи',
+    icon: 'Briefcase',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg',
+    count: 0
   }
 ];
 
@@ -50,7 +98,7 @@ const Catalog = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
                 {catalogCategories.map((category) => (
                   <Link 
                     key={category.slug} 
