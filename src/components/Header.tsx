@@ -110,23 +110,37 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-6">
                   {navLinks.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      onClick={(e) => {
-                        if (link.href.includes('#')) {
-                          e.preventDefault();
-                          handleSmoothNavigation(link.href);
-                        }
-                      }}
-                      className={`text-base py-2 px-3 rounded-md transition-colors ${
-                        isActive(link.href, link.exact)
-                          ? 'bg-primary text-primary-foreground font-medium'
-                          : 'text-foreground hover:bg-accent'
-                      }`}
-                    >
-                      {link.label}
-                    </a>
+                    <div key={link.href}>
+                      <a
+                        href={link.href}
+                        onClick={(e) => {
+                          if (link.href.includes('#')) {
+                            e.preventDefault();
+                            handleSmoothNavigation(link.href);
+                          }
+                        }}
+                        className={`text-base py-2 px-3 rounded-md transition-colors block ${
+                          isActive(link.href, link.exact)
+                            ? 'bg-primary text-primary-foreground font-medium'
+                            : 'text-foreground hover:bg-accent'
+                        }`}
+                      >
+                        {link.label}
+                      </a>
+                      {link.submenu && (
+                        <div className="ml-4 mt-2 space-y-2">
+                          {link.submenu.map((sublink) => (
+                            <a
+                              key={sublink.href}
+                              href={sublink.href}
+                              className="text-sm py-1 px-3 rounded-md transition-colors block text-muted-foreground hover:bg-accent hover:text-foreground"
+                            >
+                              {sublink.label}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </nav>
               </SheetContent>
