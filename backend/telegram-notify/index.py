@@ -57,6 +57,74 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     request_type = body_data.get('type', 'order')
     
+    if request_type == 'consultation':
+        name = body_data.get('name', 'Не указано')
+        phone = body_data.get('phone', 'Не указан')
+        room = body_data.get('room', 'Не указано')
+        comment = body_data.get('comment', '')
+        timestamp = body_data.get('timestamp', 'Не указано')
+        
+        room_names = {
+            'living': 'Гостиная',
+            'bedroom': 'Спальня',
+            'kitchen': 'Кухня',
+            'hallway': 'Прихожая',
+            'office': 'Кабинет'
+        }
+        
+        room_name = room_names.get(room, room)
+        
+        message = f"""🛋 <b>Запрос на консультацию</b>
+
+👤 <b>Имя:</b> {name}
+📱 <b>Телефон:</b> {phone}
+🏠 <b>Комната:</b> {room_name}
+🕐 <b>Время:</b> {timestamp}
+"""
+        
+        if comment:
+            message += f"\n💬 <b>Комментарий:</b>\n{comment}\n"
+        
+        message += "\n<i>Клиент запросил помощь с подбором мебели</i>"
+        
+        telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        data = {
+            'chat_id': chat_id,
+            'text': message,
+            'parse_mode': 'HTML'
+        }
+        
+        try:
+            req = urllib.request.Request(
+                telegram_url,
+                data=json.dumps(data).encode('utf-8'),
+                headers={'Content-Type': 'application/json'}
+            )
+            with urllib.request.urlopen(req) as response:
+                result = json.loads(response.read().decode('utf-8'))
+                print(f'[SUCCESS] Consultation request sent to Telegram')
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'success': True, 'result': result}),
+                    'isBase64Encoded': False
+                }
+        except Exception as e:
+            print(f'[ERROR] Failed to send Telegram notification: {str(e)}')
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': str(e)}),
+                'isBase64Encoded': False
+            }
+    
     if request_type == 'delivery_calculation':
         city = body_data.get('city', 'Не указан')
         phone = body_data.get('phone', 'Не указан')
