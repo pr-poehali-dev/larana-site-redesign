@@ -24,6 +24,54 @@ const Blog = () => {
         <meta name="description" content="Полезные статьи о выборе мебели, новинках каталога, советы по уходу за мебелью. Актуальная информация о товарах в наличии в Екатеринбурге." />
         <meta name="keywords" content="блог о мебели, выбор мебели советы, мебель в наличии, мебель екатеринбург" />
         <link rel="canonical" href="https://larana-mebel.ru/blog" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "Блог LARANA",
+            "description": "Полезные статьи о выборе мебели, новинках каталога, советы по уходу и обзоры товаров",
+            "url": "https://larana-mebel.ru/blog",
+            "publisher": {
+              "@type": "Organization",
+              "name": "LARANA",
+              "url": "https://larana-mebel.ru",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg"
+              }
+            },
+            "blogPost": blogArticles.map(article => ({
+              "@type": "BlogPosting",
+              "headline": article.title,
+              "url": `https://larana-mebel.ru/blog/${article.slug}`,
+              "image": article.image,
+              "datePublished": article.date,
+              "description": article.excerpt
+            }))
+          })}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Главная",
+                "item": "https://larana-mebel.ru"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Блог",
+                "item": "https://larana-mebel.ru/blog"
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">

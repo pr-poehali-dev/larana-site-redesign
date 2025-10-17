@@ -56,6 +56,44 @@ const Catalog = () => {
         <title>Каталог мебели в Екатеринбурге | LARANA</title>
         <meta name="description" content="Каталог мебели: шкафы-купе, диваны, кухни. Доставка по Екатеринбургу, гарантия 2 года." />
         <link rel="canonical" href="https://larana-mebel.ru/catalog" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Каталог мебели LARANA",
+            "description": "Каталог мебели: шкафы-купе, диваны, кухни, спальни, прихожие",
+            "url": "https://larana-mebel.ru/catalog",
+            "hasPart": catalogCategories.map(cat => ({
+              "@type": "ItemList",
+              "name": cat.title,
+              "description": cat.description,
+              "url": `https://larana-mebel.ru/catalog/${cat.slug}`,
+              "numberOfItems": cat.count
+            }))
+          })}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Главная",
+                "item": "https://larana-mebel.ru"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Каталог",
+                "item": "https://larana-mebel.ru/catalog"
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">

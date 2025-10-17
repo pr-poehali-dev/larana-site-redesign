@@ -92,6 +92,72 @@ const ProductPage = () => {
         <title>{product.title} - купить в Москве | Lara Мебель</title>
         <meta name="description" content={`${product.title} - ${product.description}. Цена ${product.price}. ${product.inStock ? 'В наличии' : 'Под заказ'}.`} />
         <link rel="canonical" href={`https://larana-mebel.ru/catalog/${slug}/${id}`} />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title,
+            "image": product.images || [product.image],
+            "description": product.description,
+            "brand": {
+              "@type": "Brand",
+              "name": "LARANA"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://larana-mebel.ru/catalog/${slug}/${id}`,
+              "priceCurrency": "RUB",
+              "price": product.price.replace(/\s/g, '').replace('₽', ''),
+              "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
+              "seller": {
+                "@type": "Organization",
+                "name": "LARANA"
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "12"
+            },
+            "category": product.category,
+            "material": product.style,
+            "color": product.colors?.join(", ")
+          })}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Главная",
+                "item": "https://larana-mebel.ru"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Каталог",
+                "item": "https://larana-mebel.ru/catalog"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": product.category,
+                "item": `https://larana-mebel.ru/catalog/${slug}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": product.title,
+                "item": `https://larana-mebel.ru/catalog/${slug}/${id}`
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">

@@ -45,21 +45,79 @@ const BlogArticle = () => {
             "@context": "https://schema.org",
             "@type": "BlogPosting",
             "headline": article.title,
-            "image": article.image,
+            "image": {
+              "@type": "ImageObject",
+              "url": article.image,
+              "width": 1200,
+              "height": 630
+            },
             "datePublished": article.date,
+            "dateModified": article.date,
             "author": {
               "@type": "Organization",
-              "name": "LARANA"
+              "name": "LARANA",
+              "url": "https://larana-mebel.ru"
             },
             "publisher": {
               "@type": "Organization",
               "name": "LARANA",
+              "url": "https://larana-mebel.ru",
               "logo": {
                 "@type": "ImageObject",
                 "url": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg"
               }
             },
-            "description": article.excerpt
+            "description": article.excerpt,
+            "articleBody": article.content.intro,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://larana-mebel.ru/blog/${article.slug}`
+            },
+            "keywords": article.tags.join(", ")
+          })}
+        </script>
+
+        {article.content.faq && article.content.faq.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": article.content.faq.map((faq) => ({
+                "@type": "Question",
+                "name": faq.question,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": faq.answer
+                }
+              }))
+            })}
+          </script>
+        )}
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Главная",
+                "item": "https://larana-mebel.ru"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Блог",
+                "item": "https://larana-mebel.ru/blog"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": article.title,
+                "item": `https://larana-mebel.ru/blog/${article.slug}`
+              }
+            ]
           })}
         </script>
       </Helmet>

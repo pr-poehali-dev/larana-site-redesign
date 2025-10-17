@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useToast } from '@/hooks/use-toast';
 import { smoothScrollToSection } from '@/utils/smoothScroll';
 import Header from '@/components/Header';
@@ -146,11 +147,74 @@ const Index = () => {
   }, [selectedRoom]);
 
   return (
-    <div className="min-h-screen">
-      <Header 
-        cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-        onCartClick={() => setCartOpen(true)}
-        onAuthClick={() => setAuthOpen(true)}
+    <>
+      <Helmet>
+        <title>LARANA - мебель в наличии в Екатеринбурге | Доставка за 1-2 дня</title>
+        <meta name="description" content="Мебель в наличии в Екатеринбурге: спальни, кухни, гостиные, шкафы-купе. Доставка за 1-2 дня. Гарантия 18 месяцев. Рассрочка 0%." />
+        <meta name="keywords" content="мебель екатеринбург, мебель в наличии, купить мебель, мебель с доставкой" />
+        <link rel="canonical" href="https://larana-mebel.ru" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FurnitureStore",
+            "name": "LARANA",
+            "description": "Магазин мебели в наличии с доставкой за 1-2 дня",
+            "url": "https://larana-mebel.ru",
+            "logo": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg",
+            "image": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg",
+            "telephone": "+7 (343) 123-45-67",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "ул. Примерная, д. 1",
+              "addressLocality": "Екатеринбург",
+              "addressRegion": "Свердловская область",
+              "postalCode": "620000",
+              "addressCountry": "RU"
+            },
+            "priceRange": "₽₽",
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "09:00",
+                "closes": "20:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Saturday", "Sunday"],
+                "opens": "10:00",
+                "closes": "19:00"
+              }
+            ],
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "127"
+            }
+          })}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "LARANA",
+            "url": "https://larana-mebel.ru",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://larana-mebel.ru/catalog?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
+      </Helmet>
+
+      <div className="min-h-screen">
+        <Header 
+          cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+          onCartClick={() => setCartOpen(true)}
+          onAuthClick={() => setAuthOpen(true)}
         user={user}
         onLogout={handleLogout}
         onOrdersClick={() => setOrdersOpen(true)}
@@ -243,7 +307,8 @@ const Index = () => {
         handleShowResults={handleShowResults}
         handleAuthSuccess={handleAuthSuccess}
       />
-    </div>
+      </div>
+    </>
   );
 };
 
