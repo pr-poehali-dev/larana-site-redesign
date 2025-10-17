@@ -273,6 +273,21 @@ const Contacts = () => {
                     title="Карта офиса и склада LARANA - г. Екатеринбург, ул. Крупносортщиков, 14, офис 102"
                   ></iframe>
                 </div>
+                <div className="p-4 border-t">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() =>
+                      window.open(
+                        'https://yandex.ru/maps/?rtext=~56.798422,60.624486',
+                        '_blank'
+                      )
+                    }
+                  >
+                    <Icon name="Navigation" className="mr-2" size={18} />
+                    Построить маршрут
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
