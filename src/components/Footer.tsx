@@ -67,8 +67,6 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Популярное</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li><a href="/catalog/shkafy-kupe" className="hover:opacity-100">Шкафы-купе</a></li>
-              <li><a href="/catalog/divany" className="hover:opacity-100">Диваны</a></li>
               <li><a href="/#catalog" className="hover:opacity-100">Все товары</a></li>
               <li><a href="/blog" className="hover:opacity-100">Блог</a></li>
               <li><a href="/faq" className="hover:opacity-100">Частые вопросы</a></li>
