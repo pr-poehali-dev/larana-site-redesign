@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { useProductData } from '@/hooks/useProductData';
-import { useCartLogic } from '@/hooks/useCartLogic';
+import { useProducts } from '@/contexts/ProductContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,7 +19,7 @@ const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
   const { allFurnitureSets } = useProductData();
-  const { cartItems, handleAddToCart: addToCart, handleRemoveFromCart, handleUpdateQuantity, clearCart } = useCartLogic();
+  const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { toast } = useToast();
   
   const [selectedColor, setSelectedColor] = useState('');
@@ -281,8 +281,8 @@ const ProductPage = () => {
         open={cartOpen}
         onClose={() => setCartOpen(false)}
         cartItems={cartItems}
-        onRemoveItem={handleRemoveFromCart}
-        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={removeFromCart}
+        onUpdateQuantity={updateQuantity}
         onCheckout={handleCheckout}
       />
 

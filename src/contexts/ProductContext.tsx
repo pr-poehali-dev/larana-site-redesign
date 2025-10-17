@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface Product {
   id: number;
@@ -16,9 +16,18 @@ interface Product {
   stockQuantity?: number | null;
 }
 
+interface CartItem extends Product {
+  quantity: number;
+}
+
 interface ProductContextType {
   allFurnitureSets: Product[];
   setAllFurnitureSets: (products: Product[]) => void;
+  cartItems: CartItem[];
+  addToCart: (product: Product) => void;
+  removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -148,9 +157,56 @@ const initialProducts: Product[] = [
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(initialProducts);
+  
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem('larana-cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('larana-cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (product: Product) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (id: number) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const updateQuantity = (id: number, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(id);
+      return;
+    }
+    setCartItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, quantity } : item))
+    );
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
   return (
-    <ProductContext.Provider value={{ allFurnitureSets, setAllFurnitureSets }}>
+    <ProductContext.Provider value={{ 
+      allFurnitureSets, 
+      setAllFurnitureSets,
+      cartItems,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart
+    }}>
       {children}
     </ProductContext.Provider>
   );
