@@ -113,25 +113,22 @@ export default function Oferta() {
 
               <h2 className="text-2xl font-semibold mt-8 mb-4">8. Реквизиты продавца</h2>
               <p className="mb-2">
-                <strong>Наименование:</strong> ИП Казанцев Александр Витальевич
+                <strong>Наименование организации:</strong> ИП Чернавская Ксения Евгеньевна
               </p>
               <p className="mb-2">
-                <strong>ИНН:</strong> 665811471307
+                <strong>ИНН:</strong> 667601758357
               </p>
               <p className="mb-2">
-                <strong>ОГРНИП:</strong> 323665800144085
+                <strong>ОГРНИП:</strong> 321665800034346
               </p>
               <p className="mb-2">
-                <strong>Адрес:</strong> г. Екатеринбург, ул. Крупносортщиков, 14, офис 102
-              </p>
-              <p className="mb-2">
-                <strong>Email:</strong> zakaz@larana.market
+                <strong>Фактический адрес:</strong> 620141, г. Екатеринбург, ул. Крупносортщиков, 14, оф. 102
               </p>
               <p className="mb-2">
                 <strong>Телефон:</strong> +7 (343) 351-19-12
               </p>
               <p className="mb-6">
-                <strong>Режим работы:</strong> Пн-Пт 09:00–21:00, Сб 10:00–17:00, Вс выходной
+                <strong>E-mail:</strong> zakaz@larana.market
               </p>
 
               <div className="bg-muted/50 p-6 rounded-lg mt-8">
