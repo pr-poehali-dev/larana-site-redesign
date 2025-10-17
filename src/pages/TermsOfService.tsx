@@ -17,7 +17,7 @@ export default function TermsOfService() {
             <div className="prose prose-slate max-w-none text-sm md:text-base">
               <p className="mb-6">
                 Настоящее Соглашение определяет условия использования Пользователями материалов и сервисов 
-                сайта www.larana.market (далее — «Сайт»).
+                сайта laranamebel.ru (далее — «Сайт»).
               </p>
 
               <h2 className="text-xl md:text-2xl font-semibold mt-8 mb-4">1. Общие условия</h2>
