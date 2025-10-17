@@ -23,8 +23,8 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: 'Что входит в стоимость товара?',
-    answer: 'Все цены на сайте указаны по принципу "Всё включено" для жителей Екатеринбурга и городов-спутников. В стоимость входит: сам товар, доставка до двери и профессиональная сборка. Вы сразу видите финальную цену готового решения "Под ключ" — никаких скрытых платежей!'
+    question: 'Все ли товары в наличии на складе?',
+    answer: 'Да, все товары, представленные на сайте, есть в наличии на нашем складе в Екатеринбурге и готовы к отгрузке. Мы торгуем только готовой мебелью в наличии — заказную мебель не изготавливаем.'
   },
   {
     question: 'Как работает доставка в другие регионы?',
@@ -35,8 +35,8 @@ const faqData: FAQItem[] = [
     answer: 'Бесплатная доставка и сборка действует для Екатеринбурга и городов-спутников: Верхняя Пышма, Среднеуральск, Арамиль, Берёзовский и других населенных пунктов в радиусе 30 км от Екатеринбурга.'
   },
   {
-    question: 'Сколько времени занимает доставка?',
-    answer: 'По Екатеринбургу и городам-спутникам доставка осуществляется в течение 1-3 рабочих дней с момента оформления заказа. Точное время доставки согласовывается с вами нашим менеджером.'
+    question: 'Как быстро можно получить товар?',
+    answer: 'Так как вся мебель уже есть на складе, доставка по Екатеринбургу и городам-спутникам осуществляется за 1-2 дня с момента оформления заказа. Точное время согласовывается с вами нашим менеджером.'
   },
   {
     question: 'Можно ли отказаться от сборки?',
@@ -200,13 +200,7 @@ const FAQ = () => {
               >
                 Каталог
               </a>
-              <a 
-                href="/#configurator" 
-                onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#configurator'); }}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-              >
-                Конфигуратор
-              </a>
+
               <a href="/faq" className="text-sm font-medium text-primary border-b-2 border-primary transition-colors">FAQ</a>
               <a href="/contacts" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Контакты</a>
             </nav>
@@ -234,13 +228,7 @@ const FAQ = () => {
                   >
                     Каталог
                   </a>
-                  <a
-                    href="/#configurator"
-                    onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#configurator'); }}
-                    className="text-base py-2 px-3 rounded-md transition-colors text-foreground hover:bg-accent cursor-pointer"
-                  >
-                    Конфигуратор
-                  </a>
+
                   <a
                     href="/faq"
                     className="text-base py-2 px-3 rounded-md transition-colors bg-primary text-primary-foreground font-medium"

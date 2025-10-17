@@ -15,8 +15,8 @@ const BenefitsSection = () => {
     },
     {
       icon: 'Truck',
-      title: 'Быстро — 3-7 дней',
-      description: 'От заказа до готового интерьера'
+      title: 'Быстро — 1-2 дня',
+      description: 'Всё в наличии на складе'
     },
     {
       icon: 'Wrench',
