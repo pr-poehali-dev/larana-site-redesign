@@ -131,7 +131,18 @@ const Index = () => {
         }, 500);
       }
     }
-  }, [allFurnitureSets, toast, setSelectedRoom]);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (selectedRoom && selectedRoom !== 'all') {
+      params.set('room', selectedRoom);
+    } else {
+      params.delete('room');
+    }
+    const newUrl = params.toString() ? `?${params.toString()}` : '/';
+    window.history.replaceState({}, '', newUrl);
+  }, [selectedRoom]);
 
   return (
     <div className="min-h-screen">
