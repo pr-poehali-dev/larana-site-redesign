@@ -6,6 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import ScrollToTop from '@/components/ScrollToTop';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { handleSmoothNavigation } from '@/utils/smoothScroll';
 
 const Contacts = () => {
   const [name, setName] = useState('');
@@ -104,14 +112,69 @@ const Contacts = () => {
             </a>
             <nav className="hidden md:flex gap-6">
               <a href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Главная</a>
-              <a href="/#catalog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Каталог</a>
-              <a href="/#configurator" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Конфигуратор</a>
+              <a 
+                href="/#catalog" 
+                onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+              >
+                Каталог
+              </a>
+              <a 
+                href="/#configurator" 
+                onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#configurator'); }}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+              >
+                Конфигуратор
+              </a>
               <a href="/faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">FAQ</a>
               <a href="/contacts" className="text-sm font-medium text-primary border-b-2 border-primary transition-colors">Контакты</a>
             </nav>
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => window.location.href = '/'}>
-              <Icon name="Home" size={24} />
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle>Меню</SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-4 mt-6">
+                  <a
+                    href="/"
+                    className="text-base py-2 px-3 rounded-md transition-colors text-foreground hover:bg-accent"
+                  >
+                    Главная
+                  </a>
+                  <a
+                    href="/#catalog"
+                    onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                    className="text-base py-2 px-3 rounded-md transition-colors text-foreground hover:bg-accent cursor-pointer"
+                  >
+                    Каталог
+                  </a>
+                  <a
+                    href="/#configurator"
+                    onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#configurator'); }}
+                    className="text-base py-2 px-3 rounded-md transition-colors text-foreground hover:bg-accent cursor-pointer"
+                  >
+                    Конфигуратор
+                  </a>
+                  <a
+                    href="/faq"
+                    className="text-base py-2 px-3 rounded-md transition-colors text-foreground hover:bg-accent"
+                  >
+                    FAQ
+                  </a>
+                  <a
+                    href="/contacts"
+                    className="text-base py-2 px-3 rounded-md transition-colors bg-primary text-primary-foreground font-medium"
+                  >
+                    Контакты
+                  </a>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
