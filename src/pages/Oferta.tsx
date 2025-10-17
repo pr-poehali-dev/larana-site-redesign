@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,8 +7,13 @@ import Icon from '@/components/ui/icon';
 
 export default function Oferta() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
-      <Header />
+    <>
+      <Helmet>
+        <title>Оферта | LARANA</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
+        <Header />
       
       <main className="flex-grow container mx-auto px-4 py-8 md:py-16">
         <Card className="max-w-4xl mx-auto">
@@ -160,5 +166,6 @@ export default function Oferta() {
 
       <Footer />
     </div>
+    </>
   );
 }

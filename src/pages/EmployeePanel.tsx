@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useToast } from '@/hooks/use-toast';
 import { LoginForm } from './employee-panel/LoginForm';
 import { PanelHeader } from './employee-panel/PanelHeader';
@@ -226,14 +227,20 @@ const EmployeePanel = () => {
 
   if (!isAuthenticated) {
     return (
-      <LoginForm
-        loading={loading}
-        onLogin={handleLogin}
-        loginData={loginData}
-        onLoginDataChange={setLoginData}
-        employeeId={employeeId}
-        onEmployeeIdChange={setEmployeeId}
-      />
+      <>
+        <Helmet>
+          <title>Панель сотрудника | LARANA</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <LoginForm
+          loading={loading}
+          onLogin={handleLogin}
+          loginData={loginData}
+          onLoginDataChange={setLoginData}
+          employeeId={employeeId}
+          onEmployeeIdChange={setEmployeeId}
+        />
+      </>
     );
   }
 
@@ -242,7 +249,12 @@ const EmployeePanel = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Helmet>
+        <title>Панель сотрудника | LARANA</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen bg-background">
       <PanelHeader
         employee={employee}
         loading={loading}
@@ -292,6 +304,7 @@ const EmployeePanel = () => {
         />
       </main>
     </div>
+    </>
   );
 };
 
