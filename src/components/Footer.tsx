@@ -16,19 +16,19 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Каталог</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li><a href="#" className="hover:opacity-100">Гостиные</a></li>
-              <li><a href="#" className="hover:opacity-100">Спальни</a></li>
-              <li><a href="#" className="hover:opacity-100">Кухни</a></li>
-              <li><a href="#" className="hover:opacity-100">Прихожие</a></li>
+              <li><a href="/#catalog" className="hover:opacity-100">Гостиные</a></li>
+              <li><a href="/#catalog" className="hover:opacity-100">Спальни</a></li>
+              <li><a href="/#catalog" className="hover:opacity-100">Кухни</a></li>
+              <li><a href="/#catalog" className="hover:opacity-100">Прихожие</a></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Компания</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li><a href="#" className="hover:opacity-100">О нас</a></li>
-              <li><a href="#" className="hover:opacity-100">Доставка</a></li>
-              <li><a href="#" className="hover:opacity-100">Гарантия</a></li>
-              <li><a href="#" className="hover:opacity-100">Контакты</a></li>
+              <li><a href="/" className="hover:opacity-100">О нас</a></li>
+              <li><a href="/faq" className="hover:opacity-100">FAQ</a></li>
+              <li><a href="/#configurator" className="hover:opacity-100">Конфигуратор</a></li>
+              <li><a href="/contacts" className="hover:opacity-100">Контакты</a></li>
             </ul>
           </div>
           <div>

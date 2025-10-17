@@ -28,7 +28,7 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <a href="#" className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-3">
               <img 
                 src="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" 
                 alt="LARANA" 
@@ -36,10 +36,10 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
               />
             </a>
             <nav className="hidden md:flex gap-6">
-              <a href="#catalog" className="text-sm hover:text-primary transition-colors">Каталог</a>
-              <a href="#configurator" className="text-sm hover:text-primary transition-colors">Конфигуратор</a>
+              <a href="/#catalog" className="text-sm hover:text-primary transition-colors">Каталог</a>
+              <a href="/#configurator" className="text-sm hover:text-primary transition-colors">Конфигуратор</a>
               <a href="/faq" className="text-sm hover:text-primary transition-colors">FAQ</a>
-              <a href="#blog" className="text-sm hover:text-primary transition-colors">Блог</a>
+              <a href="/contacts" className="text-sm hover:text-primary transition-colors">Контакты</a>
             </nav>
           </div>
           <div className="flex items-center gap-4">
