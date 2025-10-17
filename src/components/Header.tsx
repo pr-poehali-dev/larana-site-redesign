@@ -128,13 +128,18 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
                         {link.label}
                       </a>
                       {link.submenu && (
-                        <div className="ml-4 mt-2 space-y-2">
+                        <div className="ml-4 mt-2 space-y-1 border-l-2 border-primary/20 pl-3">
                           {link.submenu.map((sublink) => (
                             <a
                               key={sublink.href}
                               href={sublink.href}
-                              className="text-sm py-1 px-3 rounded-md transition-colors block text-muted-foreground hover:bg-accent hover:text-foreground"
+                              className={`text-sm py-2 px-3 rounded-md transition-colors flex items-center gap-2 ${
+                                currentPath === sublink.href
+                                  ? 'bg-primary/10 text-primary font-medium'
+                                  : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                              }`}
                             >
+                              <Icon name="ChevronRight" size={14} />
                               {sublink.label}
                             </a>
                           ))}
