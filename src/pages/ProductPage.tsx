@@ -1,6 +1,5 @@
-import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { formatPrice } from '@/utils/formatPrice';
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -8,15 +7,16 @@ import ScrollToTop from '@/components/ScrollToTop';
 import { useProductData } from '@/hooks/useProductData';
 import { useProducts } from '@/contexts/ProductContext';
 import { useProductVariants } from '@/hooks/useProductVariants';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import Icon from '@/components/ui/icon';
 import CartDialog from '@/components/dialogs/CartDialog';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
 import AuthDialog from '@/components/dialogs/AuthDialog';
 import { useOrderLogic } from '@/hooks/useOrderLogic';
 import { useToast } from '@/hooks/use-toast';
+import ProductBreadcrumb from '@/components/product/ProductBreadcrumb';
+import ProductGallery from '@/components/product/ProductGallery';
+import ProductInfo from '@/components/product/ProductInfo';
+import ProductDescription from '@/components/product/ProductDescription';
+import ProductReviews from '@/components/product/ProductReviews';
 
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
@@ -108,401 +108,71 @@ const ProductPage = () => {
         
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
-            <nav className="mb-6 text-sm text-muted-foreground">
-              <ol className="flex items-center gap-2">
-                <li><Link to="/" className="hover:text-foreground">Главная</Link></li>
-                <li><Icon name="ChevronRight" size={14} /></li>
-                <li><Link to="/catalog" className="hover:text-foreground">Каталог</Link></li>
-                <li><Icon name="ChevronRight" size={14} /></li>
-                <li><Link to={`/catalog/${slug}`} className="hover:text-foreground">{product.category}</Link></li>
-                <li><Icon name="ChevronRight" size={14} /></li>
-                <li className="text-foreground">{product.title}</li>
-              </ol>
-            </nav>
+            <ProductBreadcrumb 
+              slug={slug || ''}
+              category={product.category}
+              title={product.title}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-              <div>
-                <div className="aspect-square rounded-lg overflow-hidden bg-secondary/20 mb-4">
-                  <img 
-                    src={product.image} 
-                    alt={product.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+              <ProductGallery 
+                image={product.image}
+                title={product.title}
+              />
 
-              <div className="space-y-6">
-                <div>
-                  <h1 className="text-4xl font-bold mb-4">{product.title}</h1>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Icon 
-                            key={star} 
-                            name="Star" 
-                            size={18} 
-                            className="fill-yellow-400 text-yellow-400"
-                          />
-                        ))}
-                      </div>
-                      <span className="font-semibold">4.8</span>
-                      <a href="#reviews" className="text-sm text-muted-foreground hover:text-primary">
-                        (24 отзыва)
-                      </a>
-                    </div>
-                    {product.inStock ? (
-                      <Badge className="bg-green-500 text-white">
-                        <Icon name="Check" size={16} className="mr-1" />
-                        В наличии
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline">
-                        Под заказ
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div className="border-t border-b py-6">
-                  <div className="text-5xl font-bold text-foreground mb-2">
-                    {formatPrice(product.price)}
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Цена за полный комплект
-                  </p>
-                </div>
-
-                {hasVariants && allAvailableColors.length > 1 && (
-                  <div>
-                    <h3 className="font-semibold mb-3">Выберите цвет:</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {allAvailableColors.map((color) => {
-                        const variant = variants.find(v => v.colorVariant === color);
-                        const isCurrentColor = product.colorVariant === color;
-                        const isAvailable = variant?.inStock;
-                        
-                        return (
-                          <Button
-                            key={color}
-                            variant={isCurrentColor ? "default" : "outline"}
-                            onClick={() => {
-                              if (variant && variant.id !== product.id) {
-                                navigate(`/catalog/${slug}/${variant.id}`);
-                              }
-                            }}
-                            disabled={!isAvailable}
-                            className="min-w-[120px] relative"
-                          >
-                            {color}
-                            {!isAvailable && (
-                              <span className="ml-2 text-xs">(нет в наличии)</span>
-                            )}
-                          </Button>
-                        );
-                      })}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Выбор цвета переключит на соответствующий товар с его ценой и артикулом
-                    </p>
-                  </div>
-                )}
-
-                {!hasVariants && product.colors && product.colors.length > 1 && (
-                  <div>
-                    <h3 className="font-semibold mb-3">Выберите цвет:</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {product.colors.map((color) => (
-                        <Button
-                          key={color}
-                          variant={selectedColor === color ? "default" : "outline"}
-                          onClick={() => setSelectedColor(color)}
-                          className="min-w-[120px]"
-                        >
-                          {color}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {product.colors && product.colors.length === 1 && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Цвет:</h3>
-                    <p className="text-muted-foreground">{product.colors[0]}</p>
-                  </div>
-                )}
-
-                <div>
-                  <h3 className="font-semibold mb-3">Количество:</h3>
-                  <div className="flex items-center gap-3">
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >
-                      <Icon name="Minus" size={16} />
-                    </Button>
-                    <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      <Icon name="Plus" size={16} />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button size="lg" className="flex-1" onClick={handleBuyNow}>
-                    Купить сейчас
-                  </Button>
-                  <Button size="lg" variant="outline" className="flex-1" onClick={handleAddToCart}>
-                    <Icon name="ShoppingCart" size={20} className="mr-2" />
-                    В корзину
-                  </Button>
-                </div>
-
-                <Card>
-                  <CardContent className="p-6 space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Icon name="Truck" size={24} className="text-primary flex-shrink-0" />
-                      <div>
-                        <h4 className="font-semibold mb-1">Бесплатная доставка</h4>
-                        <p className="text-sm text-muted-foreground">По Екатеринбургу, Верхняя Пышма, Среднеуральск</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Icon name="Wrench" size={24} className="text-primary flex-shrink-0" />
-                      <div>
-                        <h4 className="font-semibold mb-1">Сборка под ключ</h4>
-                        <p className="text-sm text-muted-foreground">Профессиональная сборка за 1 день</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Icon name="Shield" size={24} className="text-primary flex-shrink-0" />
-                      <div>
-                        <h4 className="font-semibold mb-1">Гарантия 2 года</h4>
-                        <p className="text-sm text-muted-foreground">На всю мебель и фурнитуру</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <ProductInfo 
+                product={product}
+                variants={variants}
+                hasVariants={hasVariants}
+                allAvailableColors={allAvailableColors}
+                selectedColor={selectedColor}
+                quantity={quantity}
+                slug={slug || ''}
+                onColorChange={setSelectedColor}
+                onQuantityChange={setQuantity}
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
+              />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-              <Card className="lg:col-span-2">
-                <CardContent className="p-6">
-                  <h2 className="text-2xl font-bold mb-4">Описание</h2>
-                  <p className="text-muted-foreground mb-6">{product.description}</p>
-                  
-                  <h3 className="font-semibold text-lg mb-3">Состав комплекта:</h3>
-                  <ul className="space-y-2">
-                    {product.items.map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <Icon name="Check" size={16} className="text-primary" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+            <ProductDescription 
+              description={product.description}
+              items={product.items}
+              category={product.category}
+              style={product.style}
+              colors={product.colors}
+              inStock={product.inStock}
+            />
 
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-lg mb-4">Характеристики</h3>
-                  <dl className="space-y-3">
-                    <div>
-                      <dt className="text-sm text-muted-foreground">Категория</dt>
-                      <dd className="font-semibold">{product.category}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm text-muted-foreground">Стиль</dt>
-                      <dd className="font-semibold">{product.style}</dd>
-                    </div>
-                    {product.colors && product.colors.length > 0 && (
-                      <div>
-                        <dt className="text-sm text-muted-foreground">
-                          {product.colors.length > 1 ? 'Доступные цвета' : 'Цвет'}
-                        </dt>
-                        <dd className="font-semibold">{product.colors.join(', ')}</dd>
-                      </div>
-                    )}
-                    <div>
-                      <dt className="text-sm text-muted-foreground">Наличие</dt>
-                      <dd className="font-semibold">
-                        {product.inStock ? 'В наличии' : 'Под заказ (7-14 дней)'}
-                      </dd>
-                    </div>
-                  </dl>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div id="reviews" className="mb-12">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">Отзывы покупателей</h2>
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Icon 
-                            key={star} 
-                            name="Star" 
-                            size={20} 
-                            className="fill-yellow-400 text-yellow-400"
-                          />
-                        ))}
-                      </div>
-                      <span className="text-lg font-semibold">4.8</span>
-                      <span className="text-muted-foreground">(24 отзыва)</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="border-b pb-6">
-                      <div className="flex items-start gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <span className="font-semibold text-primary">ЕС</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">Елена Смирнова</span>
-                            <span className="text-sm text-muted-foreground">2 недели назад</span>
-                          </div>
-                          <div className="flex mb-2">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Icon 
-                                key={star} 
-                                name="Star" 
-                                size={16} 
-                                className="fill-yellow-400 text-yellow-400"
-                              />
-                            ))}
-                          </div>
-                          <p className="text-muted-foreground mb-2">
-                            Отличный комплект! Качество мебели превзошло ожидания. Доставка точно в срок, сборщики приехали на следующий день. Всё собрали аккуратно за 3 часа. Очень довольны покупкой!
-                          </p>
-                          <div className="flex items-center gap-4 text-sm">
-                            <button className="flex items-center gap-1 text-muted-foreground hover:text-primary">
-                              <Icon name="ThumbsUp" size={14} />
-                              <span>12</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="border-b pb-6">
-                      <div className="flex items-start gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <span className="font-semibold text-primary">АП</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">Андрей Петров</span>
-                            <span className="text-sm text-muted-foreground">1 месяц назад</span>
-                          </div>
-                          <div className="flex mb-2">
-                            {[1, 2, 3, 4].map((star) => (
-                              <Icon 
-                                key={star} 
-                                name="Star" 
-                                size={16} 
-                                className="fill-yellow-400 text-yellow-400"
-                              />
-                            ))}
-                            <Icon name="Star" size={16} className="text-gray-300" />
-                          </div>
-                          <p className="text-muted-foreground mb-2">
-                            Хорошее соотношение цены и качества. Мебель добротная, выглядит современно. Единственный минус - пришлось немного подождать доставку (на 2 дня позже обещанного срока). В остальном всё отлично.
-                          </p>
-                          <div className="flex items-center gap-4 text-sm">
-                            <button className="flex items-center gap-1 text-muted-foreground hover:text-primary">
-                              <Icon name="ThumbsUp" size={14} />
-                              <span>8</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="border-b pb-6">
-                      <div className="flex items-start gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <span className="font-semibold text-primary">МК</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">Мария Козлова</span>
-                            <span className="text-sm text-muted-foreground">3 месяца назад</span>
-                          </div>
-                          <div className="flex mb-2">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Icon 
-                                key={star} 
-                                name="Star" 
-                                size={16} 
-                                className="fill-yellow-400 text-yellow-400"
-                              />
-                            ))}
-                          </div>
-                          <p className="text-muted-foreground mb-2">
-                            Заказывали для новой квартиры. Всё пришло в идеальном состоянии, упаковка надёжная. Менеджеры на связи всё время, предупредили о доставке заранее. Рекомендую этот магазин!
-                          </p>
-                          <div className="flex items-center gap-4 text-sm">
-                            <button className="flex items-center gap-1 text-muted-foreground hover:text-primary">
-                              <Icon name="ThumbsUp" size={14} />
-                              <span>15</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6">
-                    <Button variant="outline" className="w-full">
-                      Показать все отзывы (24)
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <ProductReviews />
           </div>
         </main>
 
         <Footer />
         <ScrollToTop />
+
+        <CartDialog
+          open={cartOpen}
+          onOpenChange={setCartOpen}
+          items={cartItems}
+          onRemoveItem={removeFromCart}
+          onUpdateQuantity={updateQuantity}
+          onCheckout={handleCheckout}
+        />
+
+        <CheckoutDialog
+          open={checkoutOpen}
+          onOpenChange={setCheckoutOpen}
+          items={cartItems}
+          onConfirm={handleConfirmOrder}
+        />
+
+        <AuthDialog
+          open={authOpen}
+          onOpenChange={setAuthOpen}
+          onSuccess={setUser}
+        />
       </div>
-
-      <CartDialog
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        cartItems={cartItems}
-        onRemoveItem={removeFromCart}
-        onUpdateQuantity={updateQuantity}
-        onCheckout={handleCheckout}
-      />
-
-      <CheckoutDialog
-        open={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        cartItems={cartItems}
-        onConfirmOrder={handleConfirmOrder}
-        onUpdateQuantity={updateQuantity}
-        onRemoveItem={removeFromCart}
-        user={user}
-      />
-
-      <AuthDialog
-        open={authOpen}
-        onClose={() => setAuthOpen(false)}
-        onLogin={setUser}
-      />
     </>
   );
 };
