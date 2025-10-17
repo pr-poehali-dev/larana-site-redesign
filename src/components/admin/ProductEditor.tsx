@@ -33,17 +33,17 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
   const { toast } = useToast();
 
   useEffect(() => {
-    if (product.id) {
+    if (product.title) {
       setProductForm({
         title: product.title,
         category: product.category,
         price: product.price,
         image: product.image,
         images: product.images || [product.image],
-        items: product.items.join(', '),
+        items: Array.isArray(product.items) ? product.items.join(', ') : product.items || '',
         style: product.style,
         description: product.description,
-        colors: product.colors.join(', '),
+        colors: Array.isArray(product.colors) ? product.colors.join(', ') : product.colors || '',
         inStock: product.inStock,
         supplierArticle: product.supplierArticle || '',
         stockQuantity: product.stockQuantity || null,
