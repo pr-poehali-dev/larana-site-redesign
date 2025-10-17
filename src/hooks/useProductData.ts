@@ -132,8 +132,8 @@ export const useProductData = () => {
 
   const furnitureSets = allFurnitureSets
     .filter(set => {
-      if (selectedRoom && set.category !== selectedRoom) return false;
-      if (selectedStyle && set.style !== selectedStyle) return false;
+      if (selectedRoom && selectedRoom !== 'all' && set.category !== selectedRoom) return false;
+      if (selectedStyle && selectedStyle !== 'all' && set.style !== selectedStyle) return false;
       if (budget[0] && parseInt(set.price) > budget[0]) return false;
       if (inStockOnly && !set.inStock) return false;
       return true;
