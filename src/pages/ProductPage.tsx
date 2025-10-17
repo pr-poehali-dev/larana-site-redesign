@@ -134,16 +134,34 @@ const ProductPage = () => {
               <div className="space-y-6">
                 <div>
                   <h1 className="text-4xl font-bold mb-4">{product.title}</h1>
-                  {product.inStock ? (
-                    <Badge className="bg-green-500 text-white mb-4">
-                      <Icon name="Check" size={16} className="mr-1" />
-                      В наличии
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="mb-4">
-                      Под заказ
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Icon 
+                            key={star} 
+                            name="Star" 
+                            size={18} 
+                            className="fill-yellow-400 text-yellow-400"
+                          />
+                        ))}
+                      </div>
+                      <span className="font-semibold">4.8</span>
+                      <a href="#reviews" className="text-sm text-muted-foreground hover:text-primary">
+                        (24 отзыва)
+                      </a>
+                    </div>
+                    {product.inStock ? (
+                      <Badge className="bg-green-500 text-white">
+                        <Icon name="Check" size={16} className="mr-1" />
+                        В наличии
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">
+                        Под заказ
+                      </Badge>
+                    )}
+                  </div>
                 </div>
 
                 <div className="border-t border-b py-6">
@@ -319,6 +337,138 @@ const ProductPage = () => {
                       </dd>
                     </div>
                   </dl>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div id="reviews" className="mb-12">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">Отзывы покупателей</h2>
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Icon 
+                            key={star} 
+                            name="Star" 
+                            size={20} 
+                            className="fill-yellow-400 text-yellow-400"
+                          />
+                        ))}
+                      </div>
+                      <span className="text-lg font-semibold">4.8</span>
+                      <span className="text-muted-foreground">(24 отзыва)</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="border-b pb-6">
+                      <div className="flex items-start gap-4 mb-3">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="font-semibold text-primary">ЕС</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold">Елена Смирнова</span>
+                            <span className="text-sm text-muted-foreground">2 недели назад</span>
+                          </div>
+                          <div className="flex mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Icon 
+                                key={star} 
+                                name="Star" 
+                                size={16} 
+                                className="fill-yellow-400 text-yellow-400"
+                              />
+                            ))}
+                          </div>
+                          <p className="text-muted-foreground mb-2">
+                            Отличный комплект! Качество мебели превзошло ожидания. Доставка точно в срок, сборщики приехали на следующий день. Всё собрали аккуратно за 3 часа. Очень довольны покупкой!
+                          </p>
+                          <div className="flex items-center gap-4 text-sm">
+                            <button className="flex items-center gap-1 text-muted-foreground hover:text-primary">
+                              <Icon name="ThumbsUp" size={14} />
+                              <span>12</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-b pb-6">
+                      <div className="flex items-start gap-4 mb-3">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="font-semibold text-primary">АП</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold">Андрей Петров</span>
+                            <span className="text-sm text-muted-foreground">1 месяц назад</span>
+                          </div>
+                          <div className="flex mb-2">
+                            {[1, 2, 3, 4].map((star) => (
+                              <Icon 
+                                key={star} 
+                                name="Star" 
+                                size={16} 
+                                className="fill-yellow-400 text-yellow-400"
+                              />
+                            ))}
+                            <Icon name="Star" size={16} className="text-gray-300" />
+                          </div>
+                          <p className="text-muted-foreground mb-2">
+                            Хорошее соотношение цены и качества. Мебель добротная, выглядит современно. Единственный минус - пришлось немного подождать доставку (на 2 дня позже обещанного срока). В остальном всё отлично.
+                          </p>
+                          <div className="flex items-center gap-4 text-sm">
+                            <button className="flex items-center gap-1 text-muted-foreground hover:text-primary">
+                              <Icon name="ThumbsUp" size={14} />
+                              <span>8</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-b pb-6">
+                      <div className="flex items-start gap-4 mb-3">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="font-semibold text-primary">МК</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold">Мария Козлова</span>
+                            <span className="text-sm text-muted-foreground">3 месяца назад</span>
+                          </div>
+                          <div className="flex mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Icon 
+                                key={star} 
+                                name="Star" 
+                                size={16} 
+                                className="fill-yellow-400 text-yellow-400"
+                              />
+                            ))}
+                          </div>
+                          <p className="text-muted-foreground mb-2">
+                            Заказывали для новой квартиры. Всё пришло в идеальном состоянии, упаковка надёжная. Менеджеры на связи всё время, предупредили о доставке заранее. Рекомендую этот магазин!
+                          </p>
+                          <div className="flex items-center gap-4 text-sm">
+                            <button className="flex items-center gap-1 text-muted-foreground hover:text-primary">
+                              <Icon name="ThumbsUp" size={14} />
+                              <span>15</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <Button variant="outline" className="w-full">
+                      Показать все отзывы (24)
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
