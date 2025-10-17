@@ -54,6 +54,61 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     body_data = json.loads(event.get('body', '{}'))
+    
+    request_type = body_data.get('type', 'order')
+    
+    if request_type == 'delivery_calculation':
+        city = body_data.get('city', 'Не указан')
+        phone = body_data.get('phone', 'Не указан')
+        timestamp = body_data.get('timestamp', 'Не указано')
+        
+        message = f"""📊 <b>Запрос расчета доставки</b>
+
+🏙 <b>Город:</b> {city}
+📱 <b>Телефон:</b> {phone}
+🕐 <b>Время:</b> {timestamp}
+
+<i>Клиент запросил расчет стоимости доставки в другой регион</i>
+"""
+        
+        telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        data = {
+            'chat_id': chat_id,
+            'text': message,
+            'parse_mode': 'HTML'
+        }
+        
+        try:
+            req = urllib.request.Request(
+                telegram_url,
+                data=json.dumps(data).encode('utf-8'),
+                headers={'Content-Type': 'application/json'}
+            )
+            with urllib.request.urlopen(req) as response:
+                result = json.loads(response.read().decode('utf-8'))
+                print(f'[SUCCESS] Delivery calculation request sent to Telegram')
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'success': True, 'result': result}),
+                    'isBase64Encoded': False
+                }
+        except Exception as e:
+            print(f'[ERROR] Failed to send Telegram notification: {str(e)}')
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': str(e)}),
+                'isBase64Encoded': False
+            }
+    
     order = body_data.get('order', {})
     
     delivery_type_map = {

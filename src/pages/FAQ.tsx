@@ -49,13 +49,14 @@ const FAQ = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const toggleQuestion = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
-  const handleDeliveryCalculation = (e: React.FormEvent) => {
+  const handleDeliveryCalculation = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!city.trim() || !phone.trim()) {
@@ -67,13 +68,42 @@ const FAQ = () => {
       return;
     }
 
-    toast({
-      title: "Заявка отправлена!",
-      description: "Мы свяжемся с вами в ближайшее время для расчета стоимости доставки"
-    });
+    setIsSubmitting(true);
 
-    setCity('');
-    setPhone('');
+    try {
+      const response = await fetch('https://functions.poehali.dev/5bb39c34-5468-4f00-906c-c2bed52f18d9', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'delivery_calculation',
+          city: city.trim(),
+          phone: phone.trim(),
+          timestamp: new Date().toLocaleString('ru-RU')
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка отправки');
+      }
+
+      toast({
+        title: "Заявка отправлена!",
+        description: "Мы свяжемся с вами в ближайшее время для расчета стоимости доставки"
+      });
+
+      setCity('');
+      setPhone('');
+    } catch (error) {
+      toast({
+        title: "Ошибка отправки",
+        description: "Попробуйте позже или свяжитесь с нами по телефону",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -129,9 +159,18 @@ const FAQ = () => {
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full md:w-auto">
-                <Icon name="Send" size={18} className="mr-2" />
-                Рассчитать стоимость доставки
+              <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                    Отправка...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="Send" size={18} className="mr-2" />
+                    Рассчитать стоимость доставки
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
