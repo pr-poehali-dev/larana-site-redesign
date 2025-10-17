@@ -16,6 +16,7 @@ import TermsOfService from "./pages/TermsOfService";
 import Oferta from "./pages/Oferta";
 import Catalog from "./pages/Catalog";
 import CategoryPage from "./pages/CategoryPage";
+import ProductPage from "./pages/ProductPage";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 import NotFound from "./pages/NotFound";
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/oferta" element={<Oferta />} />
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/catalog/:slug" element={<CategoryPage />} />
+            <Route path="/catalog/:slug/:id" element={<ProductPage />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
