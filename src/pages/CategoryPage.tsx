@@ -24,14 +24,19 @@ const CategoryPage = () => {
   const categoryData = slug ? categories[slug] : null;
   const filters = slug ? categoryFilters[slug] || [] : [];
   
+  const priceFilter = filters.find(f => f.id === 'price' && f.type === 'range');
+  const initialPriceRange = priceFilter ? [priceFilter.min || 15000, priceFilter.max || 80000] : [15000, 80000];
+  
   const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
-  const [priceRange, setPriceRange] = useState<number[]>([15000, 80000]);
+  const [priceRange, setPriceRange] = useState<number[]>(initialPriceRange);
   const [sortBy, setSortBy] = useState('popular');
 
   const { allFurnitureSets } = useProductData();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setPriceRange(initialPriceRange);
+    setSelectedFilters({});
   }, [slug]);
 
   if (!categoryData) {
@@ -73,16 +78,61 @@ const CategoryPage = () => {
         image: product.image,
         inStock: product.inStock,
         width: product.items[0] || '',
-        material: product.colors[0] || ''
+        material: product.colors[0] || '',
+        style: product.style
       }));
 
     filtered = filtered.filter(product => {
       const price = parseInt(product.price.replace(/[^\d]/g, ''));
-      return price >= priceRange[0] && price <= priceRange[1];
+      if (price < priceRange[0] || price > priceRange[1]) {
+        return false;
+      }
+
+      if (selectedFilters.inStock?.includes('true') && !product.inStock) {
+        return false;
+      }
+
+      for (const [filterId, values] of Object.entries(selectedFilters)) {
+        if (filterId === 'inStock' || !values || (Array.isArray(values) && values.length === 0)) {
+          continue;
+        }
+
+        if (filterId === 'style' && Array.isArray(values)) {
+          const styleMatch = values.some((v: string) => 
+            product.style?.toLowerCase().includes(v.toLowerCase())
+          );
+          if (!styleMatch) return false;
+        }
+
+        if (filterId === 'color' && Array.isArray(values)) {
+          const colorMatch = values.some((v: string) => 
+            product.material?.toLowerCase().includes(v.toLowerCase())
+          );
+          if (!colorMatch) return false;
+        }
+      }
+
+      return true;
     });
 
+    if (sortBy === 'price-asc') {
+      filtered.sort((a, b) => {
+        const priceA = parseInt(a.price.replace(/[^\d]/g, ''));
+        const priceB = parseInt(b.price.replace(/[^\d]/g, ''));
+        return priceA - priceB;
+      });
+    } else if (sortBy === 'price-desc') {
+      filtered.sort((a, b) => {
+        const priceA = parseInt(a.price.replace(/[^\d]/g, ''));
+        const priceB = parseInt(b.price.replace(/[^\d]/g, ''));
+        return priceB - priceA;
+      });
+    } else if (sortBy === 'new') {
+      filtered.sort((a, b) => b.id - a.id);
+    }
+
     return filtered;
-  }, [allFurnitureSets, targetCategory, slug, priceRange]);
+  }, [allFurnitureSets, targetCategory, slug, priceRange, selectedFilters, sortBy]);
 
   return (
     <>
@@ -174,7 +224,7 @@ const CategoryPage = () => {
                           e.preventDefault();
                           e.stopPropagation();
                           setSelectedFilters({});
-                          setPriceRange([15000, 80000]);
+                          setPriceRange(initialPriceRange);
                         }}
                       >
                         Сбросить

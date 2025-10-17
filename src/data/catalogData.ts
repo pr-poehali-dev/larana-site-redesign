@@ -376,5 +376,187 @@ export const categoryFilters: Record<string, FilterOption[]> = {
         { value: 'true', label: 'Только в наличии' }
       ]
     }
+  ],
+  'spalnya': [
+    {
+      id: 'price',
+      name: 'Цена',
+      type: 'range',
+      min: 20000,
+      max: 100000,
+      unit: '₽'
+    },
+    {
+      id: 'bed-size',
+      name: 'Размер кровати',
+      type: 'checkbox',
+      options: [
+        { value: '140', label: '140×200 см' },
+        { value: '160', label: '160×200 см' },
+        { value: '180', label: '180×200 см' }
+      ]
+    },
+    {
+      id: 'style',
+      name: 'Стиль',
+      type: 'checkbox',
+      options: [
+        { value: 'modern', label: 'Современный' },
+        { value: 'classic', label: 'Классика' },
+        { value: 'scandi', label: 'Скандинавский' },
+        { value: 'loft', label: 'Лофт' }
+      ]
+    },
+    {
+      id: 'color',
+      name: 'Цвет',
+      type: 'checkbox',
+      options: [
+        { value: 'white', label: 'Белый' },
+        { value: 'wenge', label: 'Венге' },
+        { value: 'oak', label: 'Дуб' },
+        { value: 'grey', label: 'Серый' }
+      ]
+    },
+    {
+      id: 'storage',
+      name: 'Система хранения',
+      type: 'checkbox',
+      options: [
+        { value: 'wardrobe', label: 'Шкаф' },
+        { value: 'dresser', label: 'Комод' },
+        { value: 'nightstand', label: 'Тумбы' }
+      ]
+    },
+    {
+      id: 'inStock',
+      name: 'В наличии',
+      type: 'checkbox',
+      options: [
+        { value: 'true', label: 'Только в наличии' }
+      ]
+    }
+  ],
+  'kuhni': [
+    {
+      id: 'price',
+      name: 'Цена',
+      type: 'range',
+      min: 15000,
+      max: 120000,
+      unit: '₽'
+    },
+    {
+      id: 'length',
+      name: 'Длина',
+      type: 'checkbox',
+      options: [
+        { value: '180', label: '180 см' },
+        { value: '240', label: '240 см' },
+        { value: '280', label: '280 см' },
+        { value: '300+', label: 'От 300 см' }
+      ]
+    },
+    {
+      id: 'layout',
+      name: 'Планировка',
+      type: 'checkbox',
+      options: [
+        { value: 'straight', label: 'Прямая' },
+        { value: 'l-shaped', label: 'Угловая' },
+        { value: 'u-shaped', label: 'П-образная' }
+      ]
+    },
+    {
+      id: 'facade',
+      name: 'Фасад',
+      type: 'checkbox',
+      options: [
+        { value: 'mdf', label: 'МДФ' },
+        { value: 'ldsp', label: 'ЛДСП' },
+        { value: 'plastic', label: 'Пластик' },
+        { value: 'glass', label: 'Стекло' }
+      ]
+    },
+    {
+      id: 'color',
+      name: 'Цвет',
+      type: 'checkbox',
+      options: [
+        { value: 'white', label: 'Белый' },
+        { value: 'grey', label: 'Серый' },
+        { value: 'beige', label: 'Бежевый' },
+        { value: 'dark', label: 'Тёмный' }
+      ]
+    },
+    {
+      id: 'inStock',
+      name: 'В наличии',
+      type: 'checkbox',
+      options: [
+        { value: 'true', label: 'Только в наличии' }
+      ]
+    }
+  ],
+  'prihozhaya': [
+    {
+      id: 'price',
+      name: 'Цена',
+      type: 'range',
+      min: 12000,
+      max: 60000,
+      unit: '₽'
+    },
+    {
+      id: 'width',
+      name: 'Ширина',
+      type: 'checkbox',
+      options: [
+        { value: '100-140', label: '100-140 см' },
+        { value: '140-180', label: '140-180 см' },
+        { value: '180-220', label: '180-220 см' },
+        { value: '220+', label: 'От 220 см' }
+      ]
+    },
+    {
+      id: 'components',
+      name: 'Комплектация',
+      type: 'checkbox',
+      options: [
+        { value: 'wardrobe', label: 'Шкаф' },
+        { value: 'mirror', label: 'Зеркало' },
+        { value: 'hanger', label: 'Вешалка' },
+        { value: 'shoe-cabinet', label: 'Обувница' }
+      ]
+    },
+    {
+      id: 'style',
+      name: 'Стиль',
+      type: 'checkbox',
+      options: [
+        { value: 'modern', label: 'Современный' },
+        { value: 'classic', label: 'Классика' },
+        { value: 'scandi', label: 'Скандинавский' }
+      ]
+    },
+    {
+      id: 'color',
+      name: 'Цвет',
+      type: 'checkbox',
+      options: [
+        { value: 'white', label: 'Белый' },
+        { value: 'wenge', label: 'Венге' },
+        { value: 'oak', label: 'Дуб' },
+        { value: 'grey', label: 'Серый' }
+      ]
+    },
+    {
+      id: 'inStock',
+      name: 'В наличии',
+      type: 'checkbox',
+      options: [
+        { value: 'true', label: 'Только в наличии' }
+      ]
+    }
   ]
 };
