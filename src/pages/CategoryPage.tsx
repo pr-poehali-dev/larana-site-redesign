@@ -22,7 +22,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const categoryData = slug ? categories[slug] : null;
-  const filters = slug ? categoryFilters[slug] : [];
+  const filters = slug ? categoryFilters[slug] || [] : [];
   
   const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
   const [priceRange, setPriceRange] = useState<number[]>([15000, 80000]);
@@ -35,6 +35,9 @@ const CategoryPage = () => {
   }, [slug]);
 
   if (!categoryData) {
+    console.error('❌ Category not found');
+    console.log('Available categories:', Object.keys(categories));
+    console.log('Requested slug:', slug);
     return <Navigate to="/404" replace />;
   }
 
@@ -56,10 +59,13 @@ const CategoryPage = () => {
   const targetCategory = categoryMapping[slug || ''];
 
   const mockProducts = useMemo(() => {
-    if (!targetCategory) return [];
+    if (!slug) return [];
     
     return allFurnitureSets
-      .filter(product => product.category === targetCategory)
+      .filter(product => {
+        if (!targetCategory) return false;
+        return product.category === targetCategory;
+      })
       .map(product => ({
         id: product.id,
         title: product.title,
@@ -69,7 +75,7 @@ const CategoryPage = () => {
         width: product.items[0] || '',
         material: product.colors[0] || ''
       }));
-  }, [allFurnitureSets, targetCategory]);
+  }, [allFurnitureSets, targetCategory, slug]);
 
   return (
     <>
