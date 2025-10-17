@@ -143,7 +143,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
       colors: '',
       inStock: true,
       supplierArticle: '',
-      stockQuantity: null
+      stockQuantity: null,
+      variantGroupId: '',
+      colorVariant: ''
     });
     toast({
       title: "Товар добавлен",
@@ -162,13 +164,34 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     }
   };
 
+  const isCopy = product.id === null && productForm.title.includes('(копия)');
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">
-          {product.id ? 'Редактировать товар' : 'Новый товар'}
+          {product.id ? 'Редактировать товар' : isCopy ? '📋 Создание копии товара' : 'Новый товар'}
         </h3>
       </div>
+
+      {isCopy && (
+        <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 p-3 rounded-lg text-sm">
+          <p className="font-semibold mb-2 flex items-center gap-2 text-green-900 dark:text-green-100">
+            <Icon name="Copy" size={16} />
+            Копия товара создана!
+          </p>
+          <p className="text-xs text-green-800 dark:text-green-200 mb-2">
+            Для создания цветового варианта:
+          </p>
+          <ul className="text-xs space-y-1 ml-4 text-green-800 dark:text-green-200">
+            <li>1. Измените название (уберите "(копия)")</li>
+            <li>2. Укажите новый артикул поставщика</li>
+            <li>3. Обновите цвет варианта (например: "Серый матовый")</li>
+            <li>4. Загрузите фото нового цвета</li>
+            <li>5. Скорректируйте цену и остатки</li>
+          </ul>
+        </div>
+      )}
 
       <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg text-sm">
         <p className="font-semibold mb-1 flex items-center gap-2">

@@ -37,6 +37,28 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkStock(false);
   };
 
+  const duplicateProduct = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const maxId = Math.max(...products.map(p => p.id), 0);
+    const duplicatedProduct = {
+      ...product,
+      id: null,
+      title: `${product.title} (копия)`,
+      supplierArticle: product.supplierArticle ? `${product.supplierArticle}-COPY` : ''
+    };
+    
+    setEditingProduct(duplicatedProduct);
+    setShowBulkUpdate(false);
+    setShowBulkImport(false);
+    setShowBulkStock(false);
+    
+    toast({
+      title: "Создана копия товара",
+      description: "Отредактируйте параметры и сохраните"
+    });
+  };
+
   const openBulkUpdate = () => {
     setEditingProduct(null);
     setShowBulkUpdate(true);
@@ -70,7 +92,9 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
       'В наличии': p.inStock ? 'да' : 'нет',
       'Количество на складе': p.stockQuantity !== null ? p.stockQuantity : '',
       'Состав комплекта': p.items?.join(';') || '',
-      'Цвета': p.colors?.join(';') || ''
+      'Цвета': p.colors?.join(';') || '',
+      'ID группы вариантов': p.variantGroupId || '',
+      'Цвет варианта': p.colorVariant || ''
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -153,8 +177,22 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                         Склад: {product.stockQuantity} шт
                       </p>
                     )}
+                    {product.variantGroupId && (
+                      <p className="text-xs text-blue-600 mt-1">
+                        🎨 {product.colorVariant || 'Вариант'}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col items-end gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 px-2"
+                      onClick={(e) => duplicateProduct(product, e)}
+                      title="Создать копию"
+                    >
+                      <Icon name="Copy" size={14} />
+                    </Button>
                     <Badge variant={product.inStock ? 'default' : 'secondary'}>
                       {product.inStock ? 'В наличии' : 'Нет'}
                     </Badge>
