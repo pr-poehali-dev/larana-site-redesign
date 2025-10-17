@@ -14,6 +14,7 @@ import Contacts from "./pages/Contacts";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Oferta from "./pages/Oferta";
+import Catalog from "./pages/Catalog";
 import CategoryPage from "./pages/CategoryPage";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
@@ -38,9 +39,10 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/oferta" element={<Oferta />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/catalog/:slug" element={<CategoryPage />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
-            <Route path="/catalog/:slug" element={<CategoryPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
