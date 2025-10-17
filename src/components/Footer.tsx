@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-foreground text-background py-12">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <img 
               src="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" 
@@ -62,6 +62,16 @@ const Footer = () => {
                   Прихожие
                 </a>
               </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-4">Мебель на заказ</h4>
+            <ul className="space-y-2 text-sm opacity-80">
+              <li><a href="/city/ekaterinburg/kitchen" className="hover:opacity-100">Кухни на заказ Екатеринбург</a></li>
+              <li><a href="/city/ekaterinburg/wardrobe" className="hover:opacity-100">Шкафы-купе Екатеринбург</a></li>
+              <li><a href="/city/tyumen/kitchen" className="hover:opacity-100">Кухни на заказ Тюмень</a></li>
+              <li><a href="/city/chelyabinsk/kitchen" className="hover:opacity-100">Кухни на заказ Челябинск</a></li>
+              <li><a href="/city/surgut/kitchen" className="hover:opacity-100">Кухни на заказ Сургут</a></li>
             </ul>
           </div>
           <div>
