@@ -124,12 +124,22 @@ const FavoritesDialog = ({ open, onClose, user, allProducts, onProductClick }: F
                     onClose();
                   }}
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <img 
-                      src={product.image} 
-                      alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                  <div className="relative aspect-[4/3] overflow-hidden bg-secondary/20">
+                    {product.image ? (
+                      <img 
+                        src={product.image} 
+                        alt={product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Icon name="Image" size={48} className="text-muted-foreground/30" />
+                      </div>
+                    )}
                     <Badge className="absolute top-2 left-2 bg-white text-foreground text-xs">
                       {product.category}
                     </Badge>

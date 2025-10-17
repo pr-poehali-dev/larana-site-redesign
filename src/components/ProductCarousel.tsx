@@ -51,15 +51,25 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
             <Card className="h-full hover:shadow-xl transition-shadow cursor-pointer group">
               <CardContent className="p-0">
                 <div 
-                  className="relative aspect-[4/3] overflow-hidden rounded-t-lg"
+                  className="relative aspect-[4/3] overflow-hidden rounded-t-lg bg-secondary/20"
                   onClick={() => onProductClick(product)}
                 >
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                  />
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Icon name="Image" size={64} className="text-muted-foreground/30" />
+                    </div>
+                  )}
                 </div>
                 <div className="p-4 space-y-3">
                   <div>
