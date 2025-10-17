@@ -265,12 +265,12 @@ const Contacts = () => {
               <CardContent className="p-0">
                 <div className="relative w-full h-[400px]">
                   <iframe
-                    src="https://yandex.ru/map-widget/v1/?um=constructor%3A8e9a575f-fd1c-4d40-821a-4154a78e1d00&amp;source=constructor"
+                    src="https://yandex.ru/map-widget/v1/?um=constructor%3Adc6fa943aab55af6a7b9e8bc53b17e98605bbf5deacc8fc6d8f56dcd28b3cae9&amp;source=constructor"
                     width="100%"
                     height="400"
                     frameBorder="0"
                     className="w-full h-full"
-                    title="Карта офиса LARANA"
+                    title="Карта офиса и склада LARANA - г. Екатеринбург, ул. Крупносортщиков, 14, офис 102"
                   ></iframe>
                 </div>
               </CardContent>
