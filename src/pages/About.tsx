@@ -46,7 +46,7 @@ const About = () => {
         <title>О компании LARANA — мебель в наличии в Екатеринбурге</title>
         <meta name="description" content="LARANA — магазин готовой мебели в Екатеринбурге. Большой ассортимент в наличии на складе, быстрая доставка за 1-2 дня, сборка и гарантия." />
         <meta name="keywords" content="о компании larana, мебель в наличии екатеринбург, склад мебели" />
-        <link rel="canonical" href="https://larana-mebel.ru/about" />
+        <link rel="canonical" href="https://laranamebel.ru/about" />
         
         <script type="application/ld+json">
           {JSON.stringify({
@@ -54,7 +54,7 @@ const About = () => {
             "@type": "Organization",
             "name": "LARANA",
             "description": "Магазин готовой мебели в Екатеринбурге. Все товары в наличии на складе.",
-            "url": "https://larana-mebel.ru",
+            "url": "https://laranamebel.ru",
             "logo": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg",
             "address": {
               "@type": "PostalAddress",

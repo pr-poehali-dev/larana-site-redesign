@@ -38,7 +38,7 @@ const BlogArticle = () => {
         <meta property="og:description" content={article.seo.description} />
         <meta property="og:image" content={article.image} />
         <meta property="og:type" content="article" />
-        <link rel="canonical" href={`https://larana-mebel.ru/blog/${article.slug}`} />
+        <link rel="canonical" href={`https://laranamebel.ru/blog/${article.slug}`} />
         
         <script type="application/ld+json">
           {JSON.stringify({
@@ -56,12 +56,12 @@ const BlogArticle = () => {
             "author": {
               "@type": "Organization",
               "name": "LARANA",
-              "url": "https://larana-mebel.ru"
+              "url": "https://laranamebel.ru"
             },
             "publisher": {
               "@type": "Organization",
               "name": "LARANA",
-              "url": "https://larana-mebel.ru",
+              "url": "https://laranamebel.ru",
               "logo": {
                 "@type": "ImageObject",
                 "url": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg"
@@ -71,7 +71,7 @@ const BlogArticle = () => {
             "articleBody": article.content.intro,
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": `https://larana-mebel.ru/blog/${article.slug}`
+              "@id": `https://laranamebel.ru/blog/${article.slug}`
             },
             "keywords": article.tags.join(", ")
           })}
@@ -103,19 +103,19 @@ const BlogArticle = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Главная",
-                "item": "https://larana-mebel.ru"
+                "item": "https://laranamebel.ru"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Блог",
-                "item": "https://larana-mebel.ru/blog"
+                "item": "https://laranamebel.ru/blog"
               },
               {
                 "@type": "ListItem",
                 "position": 3,
                 "name": article.title,
-                "item": `https://larana-mebel.ru/blog/${article.slug}`
+                "item": `https://laranamebel.ru/blog/${article.slug}`
               }
             ]
           })}

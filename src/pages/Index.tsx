@@ -152,7 +152,7 @@ const Index = () => {
         <title>LARANA - мебель в наличии в Екатеринбурге | Доставка за 1-2 дня</title>
         <meta name="description" content="Мебель в наличии в Екатеринбурге: спальни, кухни, гостиные, шкафы-купе. Доставка за 1-2 дня. Гарантия 18 месяцев. Рассрочка 0%." />
         <meta name="keywords" content="мебель екатеринбург, мебель в наличии, купить мебель, мебель с доставкой" />
-        <link rel="canonical" href="https://larana-mebel.ru" />
+        <link rel="canonical" href="https://laranamebel.ru" />
         
         <script type="application/ld+json">
           {JSON.stringify({
@@ -160,7 +160,7 @@ const Index = () => {
             "@type": "FurnitureStore",
             "name": "LARANA",
             "description": "Магазин мебели в наличии с доставкой за 1-2 дня",
-            "url": "https://larana-mebel.ru",
+            "url": "https://laranamebel.ru",
             "logo": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg",
             "image": "https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg",
             "telephone": "+7 (343) 123-45-67",
@@ -200,10 +200,10 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "LARANA",
-            "url": "https://larana-mebel.ru",
+            "url": "https://laranamebel.ru",
             "potentialAction": {
               "@type": "SearchAction",
-              "target": "https://larana-mebel.ru/catalog?q={search_term_string}",
+              "target": "https://laranamebel.ru/catalog?q={search_term_string}",
               "query-input": "required name=search_term_string"
             }
           })}

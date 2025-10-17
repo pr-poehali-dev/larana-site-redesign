@@ -4,7 +4,7 @@ Disallow: /admin
 Disallow: /employee
 Disallow: /api/
 
-Sitemap: https://larana-mebel.ru/sitemap.xml
+Sitemap: https://laranamebel.ru/sitemap.xml
 
 # Yandex
 User-agent: Yandex

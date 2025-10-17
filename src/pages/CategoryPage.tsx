@@ -175,12 +175,12 @@ const CategoryPage = () => {
         <title>{categoryData.title}</title>
         <meta name="description" content={categoryData.metaDescription} />
         <meta name="keywords" content={[...categoryData.primaryKeywords, ...categoryData.secondaryKeywords].join(', ')} />
-        <link rel="canonical" href={`https://larana-mebel.ru/catalog/${slug}`} />
+        <link rel="canonical" href={`https://laranamebel.ru/catalog/${slug}`} />
         
         <meta property="og:title" content={categoryData.ogTitle || categoryData.title} />
         <meta property="og:description" content={categoryData.ogDescription || categoryData.metaDescription} />
         <meta property="og:type" content={categoryData.ogType || 'website'} />
-        <meta property="og:url" content={`https://larana-mebel.ru/catalog/${slug}`} />
+        <meta property="og:url" content={`https://laranamebel.ru/catalog/${slug}`} />
         <meta property="og:image" content="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" />
         
         <script type="application/ld+json">
@@ -191,7 +191,7 @@ const CategoryPage = () => {
               "@type": "ListItem",
               "position": idx + 1,
               "name": item.name,
-              "item": `https://larana-mebel.ru${item.url}`
+              "item": `https://laranamebel.ru${item.url}`
             }))
           })}
         </script>
