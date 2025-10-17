@@ -1,4 +1,5 @@
 import Icon from '@/components/ui/icon';
+import { handleSmoothNavigation } from '@/utils/smoothScroll';
 
 const Footer = () => {
   return (
@@ -16,10 +17,42 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Каталог</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li><a href="/#catalog" className="hover:opacity-100">Гостиные</a></li>
-              <li><a href="/#catalog" className="hover:opacity-100">Спальни</a></li>
-              <li><a href="/#catalog" className="hover:opacity-100">Кухни</a></li>
-              <li><a href="/#catalog" className="hover:opacity-100">Прихожие</a></li>
+              <li>
+                <a 
+                  href="/#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  className="hover:opacity-100 cursor-pointer"
+                >
+                  Гостиные
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  className="hover:opacity-100 cursor-pointer"
+                >
+                  Спальни
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  className="hover:opacity-100 cursor-pointer"
+                >
+                  Кухни
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/#catalog" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#catalog'); }}
+                  className="hover:opacity-100 cursor-pointer"
+                >
+                  Прихожие
+                </a>
+              </li>
             </ul>
           </div>
           <div>
@@ -27,7 +60,15 @@ const Footer = () => {
             <ul className="space-y-2 text-sm opacity-80">
               <li><a href="/" className="hover:opacity-100">О нас</a></li>
               <li><a href="/faq" className="hover:opacity-100">FAQ</a></li>
-              <li><a href="/#configurator" className="hover:opacity-100">Конфигуратор</a></li>
+              <li>
+                <a 
+                  href="/#configurator" 
+                  onClick={(e) => { e.preventDefault(); handleSmoothNavigation('/#configurator'); }}
+                  className="hover:opacity-100 cursor-pointer"
+                >
+                  Конфигуратор
+                </a>
+              </li>
               <li><a href="/contacts" className="hover:opacity-100">Контакты</a></li>
             </ul>
           </div>

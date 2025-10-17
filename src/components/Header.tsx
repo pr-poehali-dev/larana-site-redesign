@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { useLocation } from 'react-router-dom';
+import { handleSmoothNavigation } from '@/utils/smoothScroll';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,6 +67,12 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
                 <a
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => {
+                    if (link.href.includes('#')) {
+                      e.preventDefault();
+                      handleSmoothNavigation(link.href);
+                    }
+                  }}
                   className={`text-sm transition-colors font-medium ${
                     isActive(link.href, link.exact)
                       ? 'text-primary border-b-2 border-primary'
@@ -93,6 +100,12 @@ const Header = ({ cartItemsCount, onCartClick, onAuthClick, user, onLogout, onOr
                     <a
                       key={link.href}
                       href={link.href}
+                      onClick={(e) => {
+                        if (link.href.includes('#')) {
+                          e.preventDefault();
+                          handleSmoothNavigation(link.href);
+                        }
+                      }}
                       className={`text-base py-2 px-3 rounded-md transition-colors ${
                         isActive(link.href, link.exact)
                           ? 'bg-primary text-primary-foreground font-medium'

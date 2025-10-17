@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { smoothScrollToSection } from '@/utils/smoothScroll';
 
 interface HeroSectionProps {
   onConfiguratorOpen: () => void;
@@ -18,7 +19,7 @@ const HeroSection = ({ onConfiguratorOpen, onHelpOpen }: HeroSectionProps) => {
             Дом начинается с мебели. Мебель — с LARANA
           </p>
           <div className="flex flex-wrap gap-4 animate-scale-in">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-foreground" onClick={onConfiguratorOpen}>
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-foreground" onClick={() => smoothScrollToSection('configurator')}>
               <Icon name="Package" size={20} className="mr-2" />
               Выбрать комплект
             </Button>

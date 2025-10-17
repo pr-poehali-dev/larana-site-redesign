@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { smoothScrollToSection } from '@/utils/smoothScroll';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import BenefitsSection from '@/components/BenefitsSection';
@@ -81,7 +82,7 @@ const Index = () => {
 
   const handleShowResults = () => {
     setConfiguratorOpen(false);
-    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+    smoothScrollToSection('catalog');
   };
 
   const handleAuthSuccess = (userData: any) => {
@@ -117,7 +118,7 @@ const Index = () => {
         });
         
         setTimeout(() => {
-          document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+          smoothScrollToSection('catalog');
         }, 500);
       }
     }
