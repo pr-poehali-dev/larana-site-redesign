@@ -11,6 +11,7 @@ import OrdersTab from '@/components/admin/OrdersTab';
 import ProductsTab from '@/components/admin/ProductsTab';
 import EmployeesTab from '@/components/admin/EmployeesTab';
 import StatisticsTab from '@/components/admin/StatisticsTab';
+import OzonImportTab from '@/components/admin/OzonImportTab';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -347,7 +348,7 @@ const Admin = () => {
       <main className="container mx-auto px-4 py-8">
 
         <Tabs defaultValue="statistics" className="space-y-4">
-          <TabsList className="grid w-full max-w-2xl grid-cols-4">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5">
             <TabsTrigger value="statistics" className="flex items-center gap-2">
               <Icon name="BarChart3" size={16} />
               Статистика
@@ -359,6 +360,10 @@ const Admin = () => {
             <TabsTrigger value="products" className="flex items-center gap-2">
               <Icon name="Package" size={16} />
               Товары
+            </TabsTrigger>
+            <TabsTrigger value="ozon" className="flex items-center gap-2">
+              <Icon name="Download" size={16} />
+              Ozon
             </TabsTrigger>
             <TabsTrigger value="employees" className="flex items-center gap-2">
               <Icon name="Users" size={16} />
@@ -399,6 +404,10 @@ const Admin = () => {
                 />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="ozon" className="space-y-4">
+            <OzonImportTab />
           </TabsContent>
 
           <TabsContent value="employees" className="space-y-4">
