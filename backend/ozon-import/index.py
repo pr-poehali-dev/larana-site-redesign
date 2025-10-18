@@ -70,6 +70,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         try:
             with urllib.request.urlopen(req, timeout=30) as response:
                 result = json.loads(response.read().decode('utf-8'))
+                print(f'Ozon v3 list: {json.dumps(result, ensure_ascii=False)[:500]}')
                 return {
                     'statusCode': 200,
                     'headers': {
