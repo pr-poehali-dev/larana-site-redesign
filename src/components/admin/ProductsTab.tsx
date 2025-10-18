@@ -146,26 +146,26 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 </Button>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <Button size="sm" variant="outline" onClick={openBulkImport} className="text-xs md:text-sm">
-                <Icon name="Upload" size={14} className="mr-1 md:mr-2" />
+            <div className="grid grid-cols-3 gap-2 max-w-[50%]">
+              <Button size="sm" variant="outline" onClick={openBulkImport} className="text-[10px] px-1">
+                <Icon name="Upload" size={12} className="mr-1" />
                 Импорт
               </Button>
-              <Button size="sm" variant="outline" onClick={openBulkUpdate} className="text-xs md:text-sm">
-                <Icon name="DollarSign" size={14} className="mr-1 md:mr-2" />
+              <Button size="sm" variant="outline" onClick={openBulkUpdate} className="text-[10px] px-1">
+                <Icon name="DollarSign" size={12} className="mr-1" />
                 Цены
               </Button>
-              <Button size="sm" variant="outline" onClick={openBulkStock} className="text-xs md:text-sm">
-                <Icon name="Package" size={14} className="mr-1 md:mr-2" />
+              <Button size="sm" variant="outline" onClick={openBulkStock} className="text-[10px] px-1">
+                <Icon name="Package" size={12} className="mr-1" />
                 Остатки
               </Button>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 max-w-[50%]">
               <Button 
                 size="sm" 
                 variant={stockFilter === 'all' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('all')}
-                className="text-[10px] md:text-xs px-2"
+                className="text-[10px] px-1"
               >
                 Все ({products.length})
               </Button>
@@ -173,7 +173,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 size="sm" 
                 variant={stockFilter === 'in' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('in')}
-                className="text-[10px] md:text-xs px-2"
+                className="text-[10px] px-1"
               >
                 Налич. ({products.filter(p => p.inStock).length})
               </Button>
@@ -181,7 +181,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 size="sm" 
                 variant={stockFilter === 'out' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('out')}
-                className="text-[10px] md:text-xs px-2"
+                className="text-[10px] px-1"
               >
                 Нет ({products.filter(p => !p.inStock).length})
               </Button>
@@ -189,7 +189,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 size="sm" 
                 variant={stockFilter === 'zero' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('zero')}
-                className="text-[10px] md:text-xs px-2"
+                className="text-[10px] px-1"
               >
                 Ост.0 ({products.filter(p => p.stockQuantity === 0 || p.stockQuantity === null).length})
               </Button>
