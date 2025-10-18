@@ -3,13 +3,29 @@ import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
-import { sverdlovskRegionRates, deliveryInfo } from '@/data/deliveryRates';
+import { sverdlovskRegionRates, cottageSettlementsEkb, chelyabinskRegionRates, deliveryInfo } from '@/data/deliveryRates';
 
 const Delivery = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('sverdlovsk');
 
-  const filteredRates = sverdlovskRegionRates.filter(rate =>
+  const allRates = [...sverdlovskRegionRates, ...cottageSettlementsEkb, ...chelyabinskRegionRates];
+
+  const filteredSverdlovsk = sverdlovskRegionRates.filter(rate =>
+    rate.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCottages = cottageSettlementsEkb.filter(rate =>
+    rate.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredChelyabinsk = chelyabinskRegionRates.filter(rate =>
+    rate.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredAll = allRates.filter(rate =>
     rate.city.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -19,11 +35,54 @@ const Delivery = () => {
     );
   };
 
+  const renderTable = (rates: typeof sverdlovskRegionRates) => (
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-3 px-4 font-semibold">Населенный пункт</th>
+            <th className="text-left py-3 px-4 font-semibold">Расстояние</th>
+            <th className="text-right py-3 px-4 font-semibold">Стоимость</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rates.length > 0 ? (
+            rates.map((rate, index) => (
+              <tr key={index} className="border-b hover:bg-muted/50 transition-colors">
+                <td className="py-3 px-4">
+                  <div className="flex items-center gap-2">
+                    {rate.city}
+                    {isFreeZone(rate.city) && (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        Бесплатно
+                      </Badge>
+                    )}
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-muted-foreground">{rate.distance}</td>
+                <td className="py-3 px-4 text-right font-semibold">
+                  {rate.price.toLocaleString('ru-RU')} ₽
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="py-8 text-center text-muted-foreground">
+                <Icon name="Search" className="mx-auto mb-2" size={32} />
+                <p>Населенный пункт не найден</p>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <>
       <Helmet>
         <title>Доставка и тарифы | LARANA</title>
-        <meta name="description" content="Стоимость доставки мебели по Свердловской области. Бесплатная сборка и доставка для Екатеринбурга, Среднеуральска и Верхней Пышмы." />
+        <meta name="description" content="Стоимость доставки мебели по Свердловской и Челябинской области. Бесплатная сборка и доставка для Екатеринбурга, Среднеуральска и Верхней Пышмы." />
       </Helmet>
 
       <div className="min-h-screen bg-background py-12">
@@ -32,7 +91,7 @@ const Delivery = () => {
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold">Доставка мебели</h1>
               <p className="text-xl text-muted-foreground">
-                Свердловская область
+                Свердловская и Челябинская области
               </p>
             </div>
 
@@ -95,16 +154,16 @@ const Delivery = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Тарифы доставки по городам</CardTitle>
+                <CardTitle>Тарифы доставки</CardTitle>
                 <CardDescription>
-                  Найдите свой город в списке ниже
+                  Выберите регион и найдите свой населенный пункт
                 </CardDescription>
                 <div className="mt-4">
                   <div className="relative">
                     <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
                     <Input
                       type="text"
-                      placeholder="Поиск по городу..."
+                      placeholder="Поиск по названию..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"
@@ -113,46 +172,53 @@ const Delivery = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-3 px-4 font-semibold">Город</th>
-                        <th className="text-left py-3 px-4 font-semibold">Расстояние</th>
-                        <th className="text-right py-3 px-4 font-semibold">Стоимость</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredRates.length > 0 ? (
-                        filteredRates.map((rate, index) => (
-                          <tr key={index} className="border-b hover:bg-muted/50 transition-colors">
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-2">
-                                {rate.city}
-                                {isFreeZone(rate.city) && (
-                                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                    Бесплатно
-                                  </Badge>
-                                )}
-                              </div>
-                            </td>
-                            <td className="py-3 px-4 text-muted-foreground">{rate.distance}</td>
-                            <td className="py-3 px-4 text-right font-semibold">
-                              {rate.price.toLocaleString('ru-RU')} ₽
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={3} className="py-8 text-center text-muted-foreground">
-                            <Icon name="Search" className="mx-auto mb-2" size={32} />
-                            <p>Город не найден</p>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="sverdlovsk">
+                      <span className="hidden sm:inline">Свердловская обл.</span>
+                      <span className="sm:hidden">Свердл.</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="cottages">
+                      <span className="hidden sm:inline">Коттеджные посёлки</span>
+                      <span className="sm:hidden">КП</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="chelyabinsk">
+                      <span className="hidden sm:inline">Челябинская обл.</span>
+                      <span className="sm:hidden">Челяб.</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="all">
+                      Все
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="sverdlovsk" className="mt-4">
+                    {renderTable(filteredSverdlovsk)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Найдено населенных пунктов: {filteredSverdlovsk.length}
+                    </p>
+                  </TabsContent>
+
+                  <TabsContent value="cottages" className="mt-4">
+                    {renderTable(filteredCottages)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Найдено коттеджных посёлков: {filteredCottages.length}
+                    </p>
+                  </TabsContent>
+
+                  <TabsContent value="chelyabinsk" className="mt-4">
+                    {renderTable(filteredChelyabinsk)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Найдено населенных пунктов: {filteredChelyabinsk.length}
+                    </p>
+                  </TabsContent>
+
+                  <TabsContent value="all" className="mt-4">
+                    {renderTable(filteredAll)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Всего населенных пунктов: {filteredAll.length}
+                    </p>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
 
