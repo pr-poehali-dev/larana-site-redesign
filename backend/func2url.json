@@ -1,4 +1,5 @@
 {
+  "product-enrichment": "https://functions.poehali.dev/9e968bf2-53c2-4e1d-9936-eed292d30feb",
   "upload-image": "https://functions.poehali.dev/872aa2f7-0278-44a5-8930-98a76886a184",
   "ozon-import": "https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00",
   "send-email": "https://functions.poehali.dev/655e638f-76f8-464e-bafc-f29f0e5f9db4",

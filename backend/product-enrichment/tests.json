@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Автозаполнение по артикулу",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "supplierArticle": "KH-001",
+        "title": "Кухня Лара"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "description": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Ошибка без данных",
+      "method": "POST",
+      "path": "/",
+      "body": {},
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

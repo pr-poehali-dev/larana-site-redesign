@@ -30,6 +30,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     variantGroupId: '',
     colorVariant: ''
   });
+  const [isEnriching, setIsEnriching] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -178,6 +179,56 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     }
   };
 
+  const enrichProductDescription = async () => {
+    if (!productForm.supplierArticle && !productForm.title) {
+      toast({
+        title: "Ошибка",
+        description: "Укажите артикул поставщика или название товара",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsEnriching(true);
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/9e968bf2-53c2-4e1d-9936-eed292d30feb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          supplierArticle: productForm.supplierArticle,
+          title: productForm.title
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при получении данных');
+      }
+
+      const data = await response.json();
+      
+      setProductForm(prev => ({
+        ...prev,
+        description: data.description || prev.description
+      }));
+
+      toast({
+        title: "Готово!",
+        description: "Описание товара обновлено"
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось загрузить описание товара",
+        variant: "destructive"
+      });
+    } finally {
+      setIsEnriching(false);
+    }
+  };
+
   const isCopy = product.id === null && productForm.title.includes('(копия)');
 
   return (
@@ -219,6 +270,39 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
           <li>• <strong>Состав</strong> — фильтр по размерам/ширине (указывайте размеры в см)</li>
           <li>• <strong>В наличии</strong> — фильтр "Только в наличии"</li>
         </ul>
+      </div>
+
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 p-3 rounded-lg border border-purple-200 dark:border-purple-800">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-sm flex items-center gap-2">
+              <Icon name="Sparkles" size={16} />
+              Автозаполнение описания
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Создам продающее описание на основе артикула
+            </p>
+          </div>
+          <Button
+            size="sm"
+            onClick={enrichProductDescription}
+            disabled={isEnriching || (!productForm.supplierArticle && !productForm.title)}
+            variant="outline"
+            className="bg-white dark:bg-gray-900"
+          >
+            {isEnriching ? (
+              <>
+                <Icon name="Loader2" size={16} className="mr-2 animate-spin" />
+                Заполняю...
+              </>
+            ) : (
+              <>
+                <Icon name="Wand2" size={16} className="mr-2" />
+                Заполнить
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-3">
