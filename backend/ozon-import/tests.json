@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "Get product list",
+      "method": "GET",
+      "path": "/?limit=10",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "result": {}
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get product details",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "product_ids": [123456789]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "result": {}
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
