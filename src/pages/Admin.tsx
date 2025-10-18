@@ -53,14 +53,25 @@ const Admin = () => {
             };
           }
           
+          // Очищаем ссылки на изображения от символа ₽ и других валют
+          const cleanImageUrl = (url: string) => {
+            if (!url) return url;
+            // Удаляем символ валюты и всё что после него
+            return url.replace(/[₽₸₴€$£¥].*$/, '').trim();
+          };
+          
+          const cleanedImage = cleanImageUrl(fixed.image || '');
+          const cleanedImages = (fixed.images || []).map(cleanImageUrl);
+          
           // Добавляем обязательные поля для каталога
           return {
             ...fixed,
+            image: cleanedImage,
+            images: cleanedImages.length > 0 ? cleanedImages : [cleanedImage],
             items: fixed.items || [],
             style: fixed.style || 'Современный',
             description: fixed.description || fixed.title || '',
-            colors: fixed.colors || ['Базовый'],
-            images: fixed.images || [fixed.image]
+            colors: fixed.colors || ['Базовый']
           };
         });
         
