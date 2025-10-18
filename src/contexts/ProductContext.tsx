@@ -24,6 +24,7 @@ interface CartItem extends Product {
 
 interface ProductContextType {
   allFurnitureSets: Product[];
+  availableProducts: Product[];
   setAllFurnitureSets: (products: Product[]) => void;
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
@@ -259,9 +260,13 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     setCartItems([]);
   };
 
+  // Фильтруем только товары в наличии для отображения на сайте
+  const availableProducts = allFurnitureSets.filter(product => product.inStock !== false);
+
   return (
     <ProductContext.Provider value={{ 
       allFurnitureSets, 
+      availableProducts,
       setAllFurnitureSets,
       cartItems,
       addToCart,

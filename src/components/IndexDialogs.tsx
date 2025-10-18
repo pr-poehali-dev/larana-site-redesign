@@ -39,7 +39,7 @@ interface IndexDialogsProps {
   resultsCount: number;
   cartItems: any[];
   user: any;
-  allFurnitureSets: any[];
+  availableProducts: any[];
   setAllFurnitureSets: (sets: any[]) => void;
   handleAddToCart: (set: any) => void;
   handleRemoveFromCart: (id: number) => void;
@@ -81,7 +81,7 @@ const IndexDialogs = ({
   resultsCount,
   cartItems,
   user,
-  allFurnitureSets,
+  availableProducts,
   setAllFurnitureSets,
   handleAddToCart,
   handleRemoveFromCart,
@@ -160,14 +160,14 @@ const IndexDialogs = ({
         open={favoritesOpen}
         onClose={() => setFavoritesOpen(false)}
         user={user}
-        allProducts={allFurnitureSets}
+        allProducts={availableProducts}
         onProductClick={setSelectedSet}
       />
 
       <AdminDialog
         open={adminOpen}
         onClose={() => setAdminOpen(false)}
-        products={allFurnitureSets}
+        products={availableProducts}
         onProductUpdate={setAllFurnitureSets}
       />
     </>

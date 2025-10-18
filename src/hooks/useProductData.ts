@@ -8,9 +8,9 @@ export const useProductData = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('default');
 
-  const { allFurnitureSets, setAllFurnitureSets } = useProducts();
+  const { availableProducts, setAllFurnitureSets } = useProducts();
 
-  const furnitureSets = allFurnitureSets
+  const furnitureSets = availableProducts
     .filter(set => {
       if (selectedRoom && selectedRoom !== 'all' && set.category !== selectedRoom) return false;
       if (selectedStyle && selectedStyle !== 'all' && set.style !== selectedStyle) return false;
@@ -42,7 +42,7 @@ export const useProductData = () => {
     setInStockOnly,
     sortBy,
     setSortBy,
-    allFurnitureSets,
+    availableProducts,
     setAllFurnitureSets,
     furnitureSets
   };

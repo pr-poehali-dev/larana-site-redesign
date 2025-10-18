@@ -21,7 +21,7 @@ import ProductReviews from '@/components/product/ProductReviews';
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
-  const { allFurnitureSets } = useProductData();
+  const { availableProducts } = useProductData();
   const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { toast } = useToast();
   
@@ -32,10 +32,10 @@ const ProductPage = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   
-  const product = allFurnitureSets.find(p => p.id === parseInt(id || '0'));
+  const product = availableProducts.find(p => p.id === parseInt(id || '0'));
   const { variants, hasVariants, allAvailableColors } = useProductVariants(
     product || {} as any,
-    allFurnitureSets
+    availableProducts
   );
   
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);

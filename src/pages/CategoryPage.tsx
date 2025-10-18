@@ -41,7 +41,7 @@ const CategoryPage = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  const { allFurnitureSets } = useProductData();
+  const { availableProducts } = useProductData();
   const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
@@ -83,7 +83,7 @@ const CategoryPage = () => {
   const mockProducts = useMemo(() => {
     if (!slug) return [];
     
-    let filtered = allFurnitureSets
+    let filtered = availableProducts
       .filter(product => {
         if (!targetCategory) return false;
         return product.category === targetCategory;

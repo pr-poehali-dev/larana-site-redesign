@@ -45,7 +45,7 @@ const Index = () => {
     setInStockOnly,
     sortBy,
     setSortBy,
-    allFurnitureSets,
+    availableProducts,
     setAllFurnitureSets,
     furnitureSets
   } = useProductData();
