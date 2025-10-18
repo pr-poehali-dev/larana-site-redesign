@@ -57,7 +57,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             request_data['last_id'] = last_id
         
         req = urllib.request.Request(
-            'https://api-seller.ozon.ru/v2/product/list',
+            'https://api-seller.ozon.ru/v3/product/list',
             data=json.dumps(request_data).encode('utf-8'),
             headers={
                 'Client-Id': client_id,
@@ -124,7 +124,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             request_data['offer_id'] = offer_ids
         
         req = urllib.request.Request(
-            'https://api-seller.ozon.ru/v2/product/info/list',
+            'https://api-seller.ozon.ru/v3/product/info/list',
             data=json.dumps(request_data).encode('utf-8'),
             headers={
                 'Client-Id': client_id,
