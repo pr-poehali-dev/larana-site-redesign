@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
+import { useProducts } from '@/contexts/ProductContext';
 
 interface Stats {
   totalOrders: number;
@@ -21,6 +22,7 @@ interface Stats {
 }
 
 const StatisticsTab = () => {
+  const { allFurnitureSets } = useProducts();
   const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
     totalOrdersSum: 0,
@@ -42,7 +44,7 @@ const StatisticsTab = () => {
 
   useEffect(() => {
     fetchStatistics();
-  }, []);
+  }, [allFurnitureSets]);
 
   const fetchStatistics = async () => {
     setLoading(true);
@@ -83,7 +85,7 @@ const StatisticsTab = () => {
           cancelledOrdersSum,
           totalRevenue: completedOrdersSum,
           averageOrderValue,
-          totalProducts: 10
+          totalProducts: allFurnitureSets.length
         });
       }
     } catch (error) {
