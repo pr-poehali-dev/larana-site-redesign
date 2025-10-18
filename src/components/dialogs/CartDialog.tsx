@@ -125,7 +125,10 @@ const CartDialog = ({
             <Button 
               size="lg" 
               className="w-full bg-primary hover:bg-primary/90 text-foreground"
-              onClick={onCheckout}
+              onClick={() => {
+                onCheckout();
+                onOpenChange(false);
+              }}
             >
               <Icon name="CreditCard" size={20} className="mr-2" />
               Оформить заказ
