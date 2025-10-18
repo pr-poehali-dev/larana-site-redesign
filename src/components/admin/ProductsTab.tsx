@@ -167,7 +167,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 size="sm" 
                 variant={stockFilter === 'all' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('all')}
-                className="text-[10px] md:text-xs"
+                className="text-[10px] md:text-xs px-2"
               >
                 Все ({products.length})
               </Button>
@@ -175,15 +175,15 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 size="sm" 
                 variant={stockFilter === 'in' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('in')}
-                className="text-[10px] md:text-xs"
+                className="text-[10px] md:text-xs px-2"
               >
-                В наличии ({products.filter(p => p.inStock).length})
+                Налич. ({products.filter(p => p.inStock).length})
               </Button>
               <Button 
                 size="sm" 
                 variant={stockFilter === 'out' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('out')}
-                className="text-[10px] md:text-xs"
+                className="text-[10px] md:text-xs px-2"
               >
                 Нет ({products.filter(p => !p.inStock).length})
               </Button>
@@ -191,9 +191,9 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 size="sm" 
                 variant={stockFilter === 'zero' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('zero')}
-                className="text-[10px] md:text-xs"
+                className="text-[10px] md:text-xs px-2"
               >
-                Остаток 0 ({products.filter(p => p.stockQuantity === 0 || p.stockQuantity === null).length})
+                Ост.0 ({products.filter(p => p.stockQuantity === 0 || p.stockQuantity === null).length})
               </Button>
             </div>
           </div>
