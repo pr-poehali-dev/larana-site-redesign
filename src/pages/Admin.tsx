@@ -37,6 +37,31 @@ const Admin = () => {
       try {
         const loadedProducts = JSON.parse(savedProducts);
         
+        // Список товаров для удаления
+        const productsToDelete = [
+          'Товар Ц0075141',
+          'Товар Ц0064232',
+          'Товар KM-0216.0144',
+          'Товар Ц0064230',
+          'Товар Ц0074620',
+          'Товар Ц0064235',
+          'Товар TM-001.2.2172',
+          'Товар Ц0064220',
+          'Товар PR-0018.0739',
+          'Товар PR-0018.0144',
+          'Товар Ц0064217',
+          'Товар LMN-02.1797',
+          'Товар Ц0084847',
+          'Товар Ц0075132'
+        ];
+        
+        // Удаляем указанные товары
+        const filteredProducts = loadedProducts.filter((product: any) => 
+          !productsToDelete.includes(product.title)
+        );
+        
+        console.log(`🗑️ Удалено товаров: ${loadedProducts.length - filteredProducts.length}`);
+        
         // Нормализация категорий к единственному числу
         const normalizeCategory = (category: string) => {
           const categoryMap: Record<string, string> = {
@@ -49,7 +74,7 @@ const Admin = () => {
         };
         
         // Исправляем товары импортированные с Ozon (у них есть supplierArticle)
-        const fixedProducts = loadedProducts.map((product: any) => {
+        const fixedProducts = filteredProducts.map((product: any) => {
           let fixed = product;
           
           if (product.supplierArticle && product.price && product.price.startsWith('http')) {
