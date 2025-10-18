@@ -22,7 +22,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [showBulkStock, setShowBulkStock] = useState(false);
-  const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out' | 'zero'>('all');
+  const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out'>('all');
   const { toast } = useToast();
 
   const startEditProduct = (product: any) => {
@@ -124,9 +124,6 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     if (stockFilter === 'out') {
       return !product.inStock;
     }
-    if (stockFilter === 'zero') {
-      return product.stockQuantity === 0 || product.stockQuantity === null;
-    }
     return true;
   });
 
@@ -160,7 +157,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 Остатки
               </Button>
             </div>
-            <div className="grid grid-cols-2 gap-2 max-w-[50%]">
+            <div className="grid grid-cols-3 gap-2 max-w-[50%]">
               <Button 
                 size="sm" 
                 variant={stockFilter === 'all' ? 'default' : 'outline'}
@@ -184,14 +181,6 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 className="text-[10px] px-1"
               >
                 Нет ({products.filter(p => !p.inStock).length})
-              </Button>
-              <Button 
-                size="sm" 
-                variant={stockFilter === 'zero' ? 'default' : 'outline'}
-                onClick={() => setStockFilter('zero')}
-                className="text-[10px] px-1"
-              >
-                Ост.0 ({products.filter(p => p.stockQuantity === 0 || p.stockQuantity === null).length})
               </Button>
             </div>
           </div>
