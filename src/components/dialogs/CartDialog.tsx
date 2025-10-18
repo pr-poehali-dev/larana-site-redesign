@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { formatPrice } from '@/utils/formatPrice';
 import { smoothScrollToSection } from '@/utils/smoothScroll';
+import { useNavigate } from 'react-router-dom';
 
 interface FurnitureSet {
   id: number;
@@ -39,6 +40,8 @@ const CartDialog = ({
   onUpdateQuantity,
   onCheckout 
 }: CartDialogProps) => {
+  const navigate = useNavigate();
+  
   const total = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
     return sum + (price * item.quantity);
@@ -60,7 +63,8 @@ const CartDialog = ({
             <p className="text-muted-foreground mb-4">Добавьте комплекты мебели в корзину</p>
             <Button onClick={() => {
               onOpenChange(false);
-              setTimeout(() => smoothScrollToSection('catalog'), 100);
+              navigate('/');
+              setTimeout(() => smoothScrollToSection('catalog'), 300);
             }}>
               Перейти к каталогу
             </Button>
