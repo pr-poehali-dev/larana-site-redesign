@@ -107,16 +107,8 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal>
-      <DialogContent 
-        className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6"
-        onInteractOutside={(e) => {
-          onOpenChange(false);
-        }}
-        onEscapeKeyDown={(e) => {
-          onOpenChange(false);
-        }}
-      >
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl">Оформление заказа</DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
@@ -370,63 +362,66 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
               Ваш заказ
             </h3>
             
-            <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
               {items.map((item) => (
-                <div key={item.id} className="flex justify-between items-start gap-3 text-sm py-2 border-b border-border/50 last:border-0">
-                  <div className="flex-1">
-                    <p className="font-medium">{item.title}</p>
-                    <p className="text-muted-foreground text-xs">{formatPrice(item.price)}</p>
+                <div key={item.id} className="flex flex-col gap-2 text-sm py-3 border-b border-border/50 last:border-0">
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="flex-1">
+                      <p className="font-medium">{item.title}</p>
+                      <p className="text-muted-foreground text-xs">{formatPrice(item.price)} × {item.quantity} шт</p>
+                    </div>
+                    <p className="font-bold text-base">
+                      {formatPrice(parseInt(item.price.replace(/\D/g, '')) * item.quantity)}
+                    </p>
                   </div>
                   
-                  {onUpdateQuantity && onRemoveItem ? (
+                  {onUpdateQuantity && onRemoveItem && (
                     <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 border rounded-md">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onUpdateQuantity(item.id, Math.max(1, item.quantity - 1));
+                          }}
+                        >
+                          <Icon name="Minus" size={16} />
+                        </Button>
+                        <span className="px-3 font-medium min-w-[40px] text-center">{item.quantity}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onUpdateQuantity(item.id, item.quantity + 1);
+                          }}
+                        >
+                          <Icon name="Plus" size={16} />
+                        </Button>
+                      </div>
                       <Button
                         type="button"
                         variant="outline"
-                        size="icon"
-                        className="h-7 w-7"
+                        size="sm"
+                        className="h-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                         onClick={(e) => {
                           e.preventDefault();
-                          onUpdateQuantity(item.id, Math.max(1, item.quantity - 1));
-                        }}
-                      >
-                        <Icon name="Minus" size={14} />
-                      </Button>
-                      <span className="w-8 text-center font-medium">{item.quantity}</span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onUpdateQuantity(item.id, item.quantity + 1);
-                        }}
-                      >
-                        <Icon name="Plus" size={14} />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={(e) => {
-                          e.preventDefault();
+                          e.stopPropagation();
                           onRemoveItem(item.id);
                         }}
                       >
-                        <Icon name="Trash2" size={14} />
+                        <Icon name="Trash2" size={16} className="mr-1" />
+                        Удалить
                       </Button>
                     </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-xs">{item.quantity} шт</span>
-                    </div>
                   )}
-                  
-                  <p className="font-semibold min-w-[80px] text-right">
-                    {formatPrice(parseInt(item.price.replace(/\D/g, '')) * item.quantity)}
-                  </p>
                 </div>
               ))}
             </div>
