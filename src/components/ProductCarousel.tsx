@@ -62,7 +62,8 @@ const ProductCarousel = ({ products, onProductClick, onAddToCart }: ProductCarou
                       className="w-full h-full object-cover transition-transform group-hover:scale-110"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
+                        target.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800';
+                        target.onerror = null;
                       }}
                     />
                   ) : (

@@ -55,7 +55,12 @@ const ProductDialog = ({ selectedSet, onClose, onAddToCart }: ProductDialogProps
                   <img 
                     src={productImages[0]} 
                     alt={selectedSet?.title} 
-                    className="w-full h-full object-cover transition-transform group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800';
+                      target.onerror = null;
+                    }}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <div className="bg-white/90 rounded-full p-3">
@@ -76,6 +81,11 @@ const ProductDialog = ({ selectedSet, onClose, onAddToCart }: ProductDialogProps
                           src={image} 
                           alt={`${selectedSet?.title} - фото ${idx + 2}`}
                           className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800';
+                            target.onerror = null;
+                          }}
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                           <Icon name="Maximize2" size={20} className="text-white" />
@@ -91,6 +101,11 @@ const ProductDialog = ({ selectedSet, onClose, onAddToCart }: ProductDialogProps
                           src={productImages[5]} 
                           alt={`${selectedSet?.title} - еще фото`}
                           className="w-full h-full object-cover opacity-50"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800';
+                            target.onerror = null;
+                          }}
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-white text-lg font-semibold">

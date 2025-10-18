@@ -106,6 +106,11 @@ const CatalogSection = ({ furnitureSets, onSetClick, user }: CatalogSectionProps
                   alt={set.title}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800';
+                    target.onerror = null;
+                  }}
                 />
                 <Badge className="absolute top-4 left-4 bg-white text-foreground">{set.category}</Badge>
                 {user && (

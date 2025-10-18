@@ -76,7 +76,16 @@ const CartDialog = ({
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4 pb-4 border-b">
                     <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                      <img 
+                        src={item.image} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400';
+                          target.onerror = null;
+                        }}
+                      />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-semibold mb-1">{item.title}</h4>

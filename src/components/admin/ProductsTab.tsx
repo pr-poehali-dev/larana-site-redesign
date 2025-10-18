@@ -22,7 +22,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [showBulkStock, setShowBulkStock] = useState(false);
-  const [stockFilter, setStockFilter] = useState<'all' | 'out' | 'zero'>('all');
+  const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out' | 'zero'>('all');
   const { toast } = useToast();
 
   const startEditProduct = (product: any) => {
@@ -118,6 +118,9 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   };
 
   const filteredProducts = products.filter(product => {
+    if (stockFilter === 'in') {
+      return product.inStock;
+    }
     if (stockFilter === 'out') {
       return !product.inStock;
     }
@@ -159,28 +162,36 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 Остатки
               </Button>
             </div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <Button 
                 size="sm" 
                 variant={stockFilter === 'all' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('all')}
-                className="flex-1 text-xs"
+                className="text-[10px] md:text-xs"
               >
                 Все ({products.length})
               </Button>
               <Button 
                 size="sm" 
+                variant={stockFilter === 'in' ? 'default' : 'outline'}
+                onClick={() => setStockFilter('in')}
+                className="text-[10px] md:text-xs"
+              >
+                В наличии ({products.filter(p => p.inStock).length})
+              </Button>
+              <Button 
+                size="sm" 
                 variant={stockFilter === 'out' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('out')}
-                className="flex-1 text-xs"
+                className="text-[10px] md:text-xs"
               >
-                Нет в наличии ({products.filter(p => !p.inStock).length})
+                Нет ({products.filter(p => !p.inStock).length})
               </Button>
               <Button 
                 size="sm" 
                 variant={stockFilter === 'zero' ? 'default' : 'outline'}
                 onClick={() => setStockFilter('zero')}
-                className="flex-1 text-xs"
+                className="text-[10px] md:text-xs"
               >
                 Остаток 0 ({products.filter(p => p.stockQuantity === 0 || p.stockQuantity === null).length})
               </Button>
@@ -200,6 +211,10 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                     src={product.image} 
                     alt={product.title}
                     className="w-12 h-12 md:w-16 md:h-16 object-cover rounded flex-shrink-0"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400';
+                    }}
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-xs md:text-sm truncate">{product.title}</p>
