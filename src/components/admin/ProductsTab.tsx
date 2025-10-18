@@ -129,18 +129,18 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-      <ScrollArea className="h-[500px] xl:h-[600px] pr-2 md:pr-4">
-        <div className="space-y-2">
+      <ScrollArea className="h-[500px] xl:h-[600px] pr-4">
+        <div className="space-y-2 pr-2">
           <div className="space-y-2 mb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <h3 className="font-semibold text-sm md:text-base">Список товаров</h3>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={exportProducts} className="text-xs gap-1">
-                  <Icon name="Download" size={14} />
+              <div className="flex gap-2 flex-shrink-0">
+                <Button size="sm" variant="outline" onClick={exportProducts} className="gap-1 whitespace-nowrap">
+                  <Icon name="Download" size={16} />
                   Экспорт
                 </Button>
-                <Button size="sm" onClick={startNewProduct} className="text-xs gap-1">
-                  <Icon name="Plus" size={14} />
+                <Button size="sm" onClick={startNewProduct} className="gap-1 whitespace-nowrap">
+                  <Icon name="Plus" size={16} />
                   Добавить
                 </Button>
               </div>
