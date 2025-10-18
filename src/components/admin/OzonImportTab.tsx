@@ -23,6 +23,7 @@ interface OzonProduct {
   attributes?: any[];
   color?: string;
   modelName?: string;
+  ozonCategory?: string;
 }
 
 interface OzonImportTabProps {
@@ -132,20 +133,34 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           url: img.default || img.url || ''
         })) || [];
         
-        // Извлекаем цвет как единое значение (не массив)
-        const colorAttr = item.attributes?.find((attr: any) => 
-          attr.attribute_name?.toLowerCase().includes('цвет') || 
-          attr.attribute_id === 85
+        // "Название цвета" из Ozon → "Цвет" в нашей карточке
+        const colorNameAttr = item.attributes?.find((attr: any) => 
+          attr.attribute_name?.toLowerCase().includes('название цвета') ||
+          attr.attribute_id === 10096
         );
-        const colorValue = colorAttr?.values?.[0]?.value || '';
+        const colorName = colorNameAttr?.values?.[0]?.value || '';
         
-        // Извлекаем "Название модели" для группировки вариантов
+        // "Название модели" из Ozon → "ID группы вариантов"
         const modelNameAttr = item.attributes?.find((attr: any) => 
           attr.attribute_name?.toLowerCase().includes('название модели') ||
           attr.attribute_name?.toLowerCase().includes('модель') ||
           attr.attribute_id === 9048
         );
         const modelName = modelNameAttr?.values?.[0]?.value || '';
+        
+        // "Аннотация" из Ozon → "Описание" в нашей карточке
+        const annotationAttr = item.attributes?.find((attr: any) => 
+          attr.attribute_name?.toLowerCase().includes('аннотация') ||
+          attr.attribute_id === 4191
+        );
+        const annotation = annotationAttr?.values?.[0]?.value || item.description || item.rich_text || '';
+        
+        // "Категория и тип" из Ozon → "Категория" в нашей карточке
+        const categoryAttr = item.attributes?.find((attr: any) => 
+          attr.attribute_name?.toLowerCase().includes('тип') ||
+          attr.attribute_id === 8229
+        );
+        const ozonCategory = categoryAttr?.values?.[0]?.value || '';
         
         // Правильно извлекаем цену (НЕ изображение!)
         const price = item.marketing_price || item.price || item.old_price || '0';
@@ -160,10 +175,11 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           visible: item.visible || item.status?.state === 'processed',
           images: images,
           stocks: item.stocks || { present: 0, reserved: 0 },
-          description: item.description || item.rich_text || '',
+          description: annotation,
           attributes: item.attributes || [],
-          color: colorValue,
-          modelName: modelName
+          color: colorName,
+          modelName: modelName,
+          ozonCategory: ozonCategory
         };
       });
       
@@ -203,7 +219,29 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     }
   };
 
-  const mapOzonCategory = (productName: string, attributes?: any[]): string => {
+  const mapOzonCategory = (ozonCategory: string, productName: string): string => {
+    // Сначала проверяем категорию из Ozon "Категория и тип"
+    if (ozonCategory) {
+      const categoryLower = ozonCategory.toLowerCase();
+      
+      if (categoryLower.includes('диван') || categoryLower.includes('кресло') || categoryLower.includes('пуф')) {
+        return 'Гостиная';
+      }
+      if (categoryLower.includes('кровать') || categoryLower.includes('матрас')) {
+        return 'Спальня';
+      }
+      if (categoryLower.includes('стол') || categoryLower.includes('стул') || categoryLower.includes('табурет')) {
+        return 'Кухня';
+      }
+      if (categoryLower.includes('шкаф') || categoryLower.includes('комод') || categoryLower.includes('тумба')) {
+        return 'Прихожая';
+      }
+      if (categoryLower.includes('детск')) {
+        return 'Детская';
+      }
+    }
+    
+    // Если категория не определена, пробуем по названию товара
     const nameLower = productName.toLowerCase();
     
     if (nameLower.includes('диван') || nameLower.includes('кресло') || nameLower.includes('пуф')) {
@@ -227,12 +265,12 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
 
   const convertOzonToProduct = (ozonProduct: OzonProduct): any => {
     const maxId = catalogProducts.length > 0 ? Math.max(...catalogProducts.map(p => p.id)) : 0;
-    const category = mapOzonCategory(ozonProduct.name, ozonProduct.attributes);
+    const category = mapOzonCategory(ozonProduct.ozonCategory || '', ozonProduct.name);
     
     // Все изображения товара
     const allImages = ozonProduct.images?.map(img => img.url).filter(url => url) || [];
     
-    // Цвет как единое значение (не массив вариаций)
+    // "Название цвета" → "Цвет"
     const singleColor = ozonProduct.color || '';
     
     // ID группы вариантов из "Название модели" Ozon
@@ -249,7 +287,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       category: category,
       price: `${priceValue} ₽`,
       style: 'Современный',
-      description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.${singleColor ? ` Цвет: ${singleColor}.` : ''}`,
+      description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.`,
       image: allImages[0] || '',
       supplierArticle: ozonProduct.offer_id,
       inStock: (ozonProduct.stocks?.present ?? 0) > 0,
