@@ -223,15 +223,19 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     }
 
     onProductsUpdate(newProducts);
+    
+    console.log('Импортировано товаров:', imported);
+    console.log('Обновлённый каталог:', newProducts);
 
     toast({
-      title: "Импорт завершён",
-      description: `Импортировано ${imported} товаров в каталог`,
+      title: "✅ Импорт завершён",
+      description: `Импортировано ${imported} товаров в каталог. Перейдите на вкладку "Товары" для просмотра.`,
     });
 
     setLoading(false);
     setImportProgress(0);
     setSelectedProducts(new Set());
+    setProducts([]);
   };
 
   return (
