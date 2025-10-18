@@ -107,8 +107,16 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+    <Dialog open={open} onOpenChange={onOpenChange} modal>
+      <DialogContent 
+        className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6"
+        onInteractOutside={(e) => {
+          onOpenChange(false);
+        }}
+        onEscapeKeyDown={(e) => {
+          onOpenChange(false);
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl">Оформление заказа</DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
