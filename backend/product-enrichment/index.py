@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Any
+from typing import Dict, Any, List
 import urllib.request
 import urllib.parse
 import re
@@ -26,9 +26,8 @@ def search_product_info(query: str) -> str:
             snippets = re.findall(r'<div class="OrganicTextContentSpan"[^>]*>(.*?)</div>', html, re.DOTALL)
             
             if snippets:
-                info = ' '.join(snippets[:3])
+                info = ' '.join(snippets[:5])
                 info = re.sub(r'<[^>]+>', '', info)
-                info = info[:500]
                 return info
             
     except Exception as e:
@@ -36,7 +35,89 @@ def search_product_info(query: str) -> str:
     
     return ''
 
-def generate_description(title: str, supplier_article: str, search_info: str) -> str:
+def extract_dimensions(text: str) -> List[str]:
+    '''
+    Извлечение размеров из текста
+    '''
+    dimensions = []
+    
+    patterns = [
+        r'(\d+)\s*(?:x|х|×)\s*(\d+)\s*(?:x|х|×)\s*(\d+)\s*(?:см|cm)',
+        r'(\d+)\s*(?:x|х|×)\s*(\d+)\s*(?:см|cm)',
+        r'ширина\s*[:\-]?\s*(\d+)\s*(?:см|cm)',
+        r'глубина\s*[:\-]?\s*(\d+)\s*(?:см|cm)',
+        r'высота\s*[:\-]?\s*(\d+)\s*(?:см|cm)',
+        r'размер\s*[:\-]?\s*(\d+)\s*(?:см|cm)',
+    ]
+    
+    for pattern in patterns:
+        matches = re.findall(pattern, text.lower())
+        for match in matches:
+            if isinstance(match, tuple):
+                dim = ' x '.join([str(m) for m in match if m]) + ' см'
+                if dim not in dimensions:
+                    dimensions.append(dim)
+            else:
+                dim = f'{match} см'
+                if dim not in dimensions:
+                    dimensions.append(dim)
+    
+    return dimensions[:3]
+
+def extract_materials(text: str) -> List[str]:
+    '''
+    Извлечение материалов из текста
+    '''
+    materials_keywords = {
+        'ЛДСП': ['лдсп', 'ламинированная'],
+        'МДФ': ['мдф'],
+        'Массив дерева': ['массив', 'дерев'],
+        'Металл': ['металл'],
+        'Стекло': ['стекло', 'стеклянн'],
+        'Пластик': ['пластик'],
+        'Ткань': ['ткань', 'текстиль'],
+        'Кожа': ['кожа', 'кожаный'],
+        'Экокожа': ['экокожа'],
+    }
+    
+    found_materials = []
+    text_lower = text.lower()
+    
+    for material, keywords in materials_keywords.items():
+        if any(keyword in text_lower for keyword in keywords):
+            found_materials.append(material)
+    
+    return found_materials[:3]
+
+def extract_colors(text: str) -> List[str]:
+    '''
+    Извлечение цветов из текста
+    '''
+    colors_keywords = {
+        'Белый': ['белый', 'белая', 'белое'],
+        'Черный': ['черный', 'черная', 'черное'],
+        'Серый': ['серый', 'серая', 'серое'],
+        'Венге': ['венге'],
+        'Дуб': ['дуб'],
+        'Орех': ['орех'],
+        'Бежевый': ['беж'],
+        'Коричневый': ['коричнев'],
+        'Синий': ['синий', 'синяя'],
+        'Зеленый': ['зелен'],
+        'Красный': ['красн'],
+        'Желтый': ['желт'],
+    }
+    
+    found_colors = []
+    text_lower = text.lower()
+    
+    for color, keywords in colors_keywords.items():
+        if any(keyword in text_lower for keyword in keywords):
+            found_colors.append(color)
+    
+    return found_colors[:4]
+
+def generate_description(title: str, supplier_article: str, search_info: str, dimensions: List[str], materials: List[str]) -> str:
     '''
     Генерация продающего описания на основе найденной информации
     '''
@@ -62,14 +143,23 @@ def generate_description(title: str, supplier_article: str, search_info: str) ->
     
     benefits_text = '\n'.join([f'• {benefit}' for benefit in base_benefits[:6]])
     
-    article_line = f'\nАртикул поставщика: {supplier_article}' if supplier_article else ''
+    characteristics = []
+    if supplier_article:
+        characteristics.append(f'Артикул: {supplier_article}')
+    if materials:
+        characteristics.append(f'Материал: {", ".join(materials)}')
+    if dimensions:
+        characteristics.append(f'Размеры: {", ".join(dimensions)}')
+    
+    characteristics_text = '\n'.join(characteristics) if characteristics else 'Уточняйте у менеджера'
     
     description = f'''🎯 **{title}** — стильное и функциональное решение для вашего интерьера!
 
 ✨ **Преимущества:**
 {benefits_text}
 
-📦 **Характеристики:**{article_line}
+📦 **Характеристики:**
+{characteristics_text}
 
 🎁 Идеально подходит для создания уютной и стильной атмосферы в вашем доме!
 
@@ -133,11 +223,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     search_info = search_product_info(search_query)
     
-    description = generate_description(title, supplier_article, search_info)
+    dimensions = extract_dimensions(search_info)
+    materials = extract_materials(search_info)
+    colors = extract_colors(search_info)
+    
+    description = generate_description(title, supplier_article, search_info, dimensions, materials)
     
     enriched_data = {
         'description': description,
-        'searchInfo': search_info[:200] if search_info else 'Информация не найдена'
+        'dimensions': dimensions,
+        'materials': materials,
+        'colors': colors,
+        'items': dimensions if dimensions else [],
+        'searchInfo': search_info[:300] if search_info else 'Информация не найдена'
     }
     
     return {

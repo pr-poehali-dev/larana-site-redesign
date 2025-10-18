@@ -209,14 +209,32 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
 
       const data = await response.json();
       
-      setProductForm(prev => ({
-        ...prev,
-        description: data.description || prev.description
-      }));
+      setProductForm(prev => {
+        const updates: any = {
+          description: data.description || prev.description
+        };
+        
+        if (data.colors && data.colors.length > 0) {
+          updates.colors = data.colors.join(', ');
+        }
+        
+        if (data.items && data.items.length > 0) {
+          updates.items = data.items.join(', ');
+        }
+        
+        return {
+          ...prev,
+          ...updates
+        };
+      });
+
+      const updatedFields = ['описание'];
+      if (data.colors && data.colors.length > 0) updatedFields.push('цвета');
+      if (data.items && data.items.length > 0) updatedFields.push('размеры');
 
       toast({
         title: "Готово!",
-        description: "Описание товара обновлено"
+        description: `Обновлено: ${updatedFields.join(', ')}`
       });
     } catch (error) {
       toast({
