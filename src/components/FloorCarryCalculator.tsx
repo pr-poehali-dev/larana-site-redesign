@@ -12,10 +12,19 @@ import { formatPrice } from '@/utils/formatPrice';
 interface FloorCarryCalculatorProps {
   onCarryCalculated?: (carryPrice: number, details?: any) => void;
   compact?: boolean;
+  productCategory?: string;
 }
 
-const FloorCarryCalculator = ({ onCarryCalculated, compact = false }: FloorCarryCalculatorProps) => {
-  const [category, setCategory] = useState<FurnitureCategory>('soft');
+const FloorCarryCalculator = ({ onCarryCalculated, compact = false, productCategory }: FloorCarryCalculatorProps) => {
+  const detectCategory = (cat?: string): FurnitureCategory => {
+    if (!cat) return 'soft';
+    const lower = cat.toLowerCase();
+    if (lower.includes('кухн')) return 'kitchen';
+    if (lower.includes('шкаф') || lower.includes('прихож') || lower.includes('гардероб')) return 'wardrobe';
+    return 'soft';
+  };
+
+  const [category, setCategory] = useState<FurnitureCategory>(detectCategory(productCategory));
   const [floor, setFloor] = useState<number>(1);
   const [hasElevator, setHasElevator] = useState<boolean>(true);
   const [countertopLength, setCountertopLength] = useState<number>(0);
@@ -56,12 +65,9 @@ const FloorCarryCalculator = ({ onCarryCalculated, compact = false }: FloorCarry
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="bed">Кровать</SelectItem>
               <SelectItem value="soft">Мягкая мебель</SelectItem>
-              <SelectItem value="corner-sofa">Угловой диван</SelectItem>
+              <SelectItem value="wardrobe">Корпусная мебель (шкафы)</SelectItem>
               <SelectItem value="kitchen">Кухня</SelectItem>
-              <SelectItem value="countertop">Столешница</SelectItem>
-              <SelectItem value="mixed">Смешанный заказ</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -98,19 +104,7 @@ const FloorCarryCalculator = ({ onCarryCalculated, compact = false }: FloorCarry
           </div>
         </div>
 
-        {category === 'countertop' && (
-          <div className="space-y-2">
-            <Label htmlFor="countertop-length">Длина столешницы (мм)</Label>
-            <Input
-              id="countertop-length"
-              type="number"
-              min="0"
-              placeholder="2400"
-              value={countertopLength || ''}
-              onChange={(e) => handleCountertopLengthChange(parseInt(e.target.value) || 0)}
-            />
-          </div>
-        )}
+
 
         {calculation.totalPrice > 0 && (
           <div className="bg-muted/50 rounded-lg p-3 space-y-2">
@@ -144,40 +138,22 @@ const FloorCarryCalculator = ({ onCarryCalculated, compact = false }: FloorCarry
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="bed">
-                <div className="flex items-center gap-2">
-                  <Icon name="Bed" size={16} />
-                  Интерьерные кровати
-                </div>
-              </SelectItem>
               <SelectItem value="soft">
                 <div className="flex items-center gap-2">
                   <Icon name="Sofa" size={16} />
                   Мягкая мебель
                 </div>
               </SelectItem>
-              <SelectItem value="corner-sofa">
+              <SelectItem value="wardrobe">
                 <div className="flex items-center gap-2">
-                  <Icon name="Sofa" size={16} />
-                  Угловой диван
+                  <Icon name="Cabinet" size={16} />
+                  Корпусная мебель (шкафы)
                 </div>
               </SelectItem>
               <SelectItem value="kitchen">
                 <div className="flex items-center gap-2">
                   <Icon name="CookingPot" size={16} />
                   Кухня
-                </div>
-              </SelectItem>
-              <SelectItem value="countertop">
-                <div className="flex items-center gap-2">
-                  <Icon name="RectangleHorizontal" size={16} />
-                  Столешница
-                </div>
-              </SelectItem>
-              <SelectItem value="mixed">
-                <div className="flex items-center gap-2">
-                  <Icon name="Package" size={16} />
-                  Смешанный заказ
                 </div>
               </SelectItem>
             </SelectContent>
@@ -264,9 +240,9 @@ const FloorCarryCalculator = ({ onCarryCalculated, compact = false }: FloorCarry
 
         <div className="bg-muted/30 rounded-lg p-3 text-xs text-muted-foreground space-y-1">
           <p className="font-medium">Важно:</p>
+          <p>• Базовая стоимость: 1 000 ₽ (1 этаж или с лифтом)</p>
+          <p>• Каждый дополнительный этаж без лифта: +200 ₽</p>
           <p>• Для частного дома: +300 ₽ за каждый этаж</p>
-          <p>• При смешанном заказе: расчёт по категории + 300 ₽ за каждое изделие</p>
-          <p>• Для столешниц от 2800 мм — индивидуальный расчёт</p>
         </div>
       </CardContent>
     </Card>

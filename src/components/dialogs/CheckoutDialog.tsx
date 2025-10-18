@@ -215,6 +215,7 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
                 <FloorCarryCalculator
                   onCarryCalculated={handleCarryCalculated}
                   compact
+                  productCategory={items[0]?.category}
                 />
               </div>
 

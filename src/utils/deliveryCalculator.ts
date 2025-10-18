@@ -25,12 +25,9 @@ export interface FloorCarryCalculation {
 }
 
 export type FurnitureCategory = 
-  | 'bed'           // Интерьерные кровати
   | 'soft'          // Мягкая мебель
-  | 'corner-sofa'   // Угловые диваны
-  | 'kitchen'       // Кухня
-  | 'countertop'    // Столешницы
-  | 'mixed';        // Смешанный заказ
+  | 'wardrobe'      // Корпусная мебель (шкафы)
+  | 'kitchen';      // Кухня
 
 const allRates = [
   ...sverdlovskRegionRates,
@@ -126,107 +123,18 @@ export const calculateFloorCarry = (
     };
   }
 
-  let basePrice = 0;
+  const basePrice = 1000;
   let totalPrice = 0;
   let details = '';
 
-  switch (category) {
-    case 'bed':
-      if (hasElevator) {
-        basePrice = 800;
-        totalPrice = 800;
-        details = 'С лифтом: 800 ₽';
-      } else {
-        if (floor === 1) {
-          basePrice = 800;
-          totalPrice = 800;
-          details = '1 этаж: 800 ₽';
-        } else if (floor === 2) {
-          basePrice = 1000;
-          totalPrice = 1000;
-          details = '2 этаж без лифта: 1 000 ₽';
-        } else if (floor === 3) {
-          basePrice = 1200;
-          totalPrice = 1200;
-          details = '3 этаж без лифта: 1 200 ₽';
-        } else if (floor === 4) {
-          basePrice = 1400;
-          totalPrice = 1400;
-          details = '4 этаж без лифта: 1 400 ₽';
-        } else if (floor >= 5) {
-          basePrice = 1600;
-          totalPrice = 1600;
-          details = '5+ этаж без лифта: 1 600 ₽';
-        }
-      }
-      break;
-
-    case 'soft':
-      basePrice = 1000;
-      if (hasElevator || floor === 1) {
-        totalPrice = 1000;
-        details = hasElevator ? 'С лифтом: 1 000 ₽' : '1 этаж: 1 000 ₽';
-      } else {
-        const additionalFloors = floor - 1;
-        totalPrice = 1000 + (additionalFloors * 200);
-        details = `1 этаж (1 000 ₽) + ${additionalFloors} эт. × 200 ₽ = ${totalPrice.toLocaleString('ru-RU')} ₽`;
-      }
-      break;
-
-    case 'corner-sofa':
-      basePrice = 1000;
-      if (hasElevator || floor === 1) {
-        totalPrice = 1300;
-        details = `Угловой диван ${hasElevator ? 'с лифтом' : '1 этаж'}: 1 000 ₽ + 300 ₽ = 1 300 ₽`;
-      } else {
-        const additionalFloors = floor - 1;
-        totalPrice = 1000 + (additionalFloors * 200) + 300;
-        details = `1 000 ₽ + ${additionalFloors} эт. × 200 ₽ + угловой (300 ₽) = ${totalPrice.toLocaleString('ru-RU')} ₽`;
-      }
-      break;
-
-    case 'kitchen':
-      basePrice = 1000;
-      if (hasElevator || floor === 1) {
-        totalPrice = 1000;
-        details = hasElevator ? 'С лифтом: 1 000 ₽' : '1 этаж: 1 000 ₽';
-      } else {
-        const additionalFloors = floor - 1;
-        totalPrice = 1000 + (additionalFloors * 200);
-        details = `1 этаж (1 000 ₽) + ${additionalFloors} эт. × 200 ₽ = ${totalPrice.toLocaleString('ru-RU')} ₽`;
-      }
-      break;
-
-    case 'countertop':
-      if (!countertopLength || countertopLength <= 2300) {
-        totalPrice = 1000;
-        details = 'До 2 300 мм: 1 000 ₽';
-      } else if (countertopLength <= 2800) {
-        if (hasElevator || floor === 1) {
-          totalPrice = 1000;
-          details = 'От 2 300 мм: как кухня (1 000 ₽)';
-        } else {
-          const additionalFloors = floor - 1;
-          totalPrice = 1000 + (additionalFloors * 200);
-          details = `От 2 300 мм: как кухня (1 000 ₽ + ${additionalFloors} эт. × 200 ₽) = ${totalPrice.toLocaleString('ru-RU')} ₽`;
-        }
-      } else {
-        totalPrice = 0;
-        details = 'От 2 800 мм: требуется индивидуальный расчёт';
-      }
-      break;
-
-    case 'mixed':
-      basePrice = 1000;
-      if (hasElevator || floor === 1) {
-        totalPrice = 1300;
-        details = 'Смешанный заказ: 1 000 ₽ + 300 ₽ за каждое изделие';
-      } else {
-        const additionalFloors = floor - 1;
-        totalPrice = 1000 + (additionalFloors * 200) + 300;
-        details = `Смешанный: 1 000 ₽ + ${additionalFloors} эт. × 200 ₽ + 300 ₽ за изделие`;
-      }
-      break;
+  // Все категории: базовая цена 1000₽
+  if (hasElevator || floor === 1) {
+    totalPrice = 1000;
+    details = hasElevator ? 'С лифтом: 1 000 ₽' : '1 этаж: 1 000 ₽';
+  } else {
+    const additionalFloors = floor - 1;
+    totalPrice = 1000 + (additionalFloors * 200);
+    details = `1 этаж (1 000 ₽) + ${additionalFloors} эт. × 200 ₽ = ${totalPrice.toLocaleString('ru-RU')} ₽`;
   }
 
   return {
@@ -239,12 +147,9 @@ export const calculateFloorCarry = (
 
 const getCategoryName = (category: FurnitureCategory): string => {
   const names: Record<FurnitureCategory, string> = {
-    'bed': 'Интерьерные кровати',
     'soft': 'Мягкая мебель',
-    'corner-sofa': 'Угловой диван',
-    'kitchen': 'Кухня',
-    'countertop': 'Столешница',
-    'mixed': 'Смешанный заказ'
+    'wardrobe': 'Корпусная мебель (шкафы)',
+    'kitchen': 'Кухня'
   };
   return names[category];
 };
