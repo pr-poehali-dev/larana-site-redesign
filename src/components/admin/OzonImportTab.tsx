@@ -106,14 +106,20 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
 
         const convertedProduct = convertOzonToProduct(ozonProduct, newProducts);
         convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
-        convertedProduct.image = uploadedImages[0] || '';
-        convertedProduct.images = uploadedImages.length > 0 ? uploadedImages : [''];
+        
+        // Изображения уже установлены в convertOzonToProduct, но мы их обновили
+        if (uploadedImages.length > 0) {
+          convertedProduct.image = uploadedImages[0];
+          convertedProduct.images = uploadedImages;
+        }
+        // Если uploadedImages пустой, оставляем как есть из convertOzonToProduct
         
         console.log('📸 Изображения товара:', {
           title: convertedProduct.title,
           mainImage: convertedProduct.image,
           allImages: convertedProduct.images,
-          imageCount: uploadedImages.length
+          imageCount: convertedProduct.images?.length || 0,
+          hasMainImage: !!convertedProduct.image
         });
         
         newProducts.push(convertedProduct);

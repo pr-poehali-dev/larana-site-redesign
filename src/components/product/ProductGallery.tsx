@@ -26,6 +26,8 @@ const ProductGallery = ({ image, title }: ProductGalleryProps) => {
               src={image} 
               alt={title}
               className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+              loading="eager"
               onLoad={() => {
                 console.log('✅ Изображение загружено:', image);
                 setImageLoading(false);
