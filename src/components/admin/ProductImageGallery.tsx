@@ -11,13 +11,10 @@ interface ProductImageGalleryProps {
   images: string[];
   mainImage: string;
   onImagesChange: (images: string[], mainImage: string) => void;
-  productTitle?: string;
-  productCategory?: string;
 }
 
-const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, productCategory }: ProductImageGalleryProps) => {
+const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImageGalleryProps) => {
   const [uploading, setUploading] = useState(false);
-  const [generating, setGenerating] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
@@ -168,96 +165,33 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
     });
   };
 
-  const generateImage = async () => {
-    if (!productTitle) {
-      toast({
-        title: "Ошибка",
-        description: "Укажите название товара для генерации изображения",
-        variant: "destructive"
-      });
-      return;
-    }
 
-    setGenerating(true);
-
-    try {
-      const prompt = `${productTitle}, профессиональная фотография товара, белый фон, студийное освещение, высокая детализация, 4k`;
-
-      const response = await fetch('https://functions.poehali.dev/74acd26d-f264-4071-b993-fbdccc85c5e7', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt: prompt
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Ошибка генерации: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      if (data.url) {
-        const newImages = [...images, data.url];
-        const newMainImage = mainImage || data.url;
-        onImagesChange(newImages, newMainImage);
-        
-        toast({
-          title: "Изображение сгенерировано!",
-          description: "AI создал изображение товара"
-        });
-      } else {
-        throw new Error('URL изображения не найден в ответе');
-      }
-    } catch (error) {
-      toast({
-        title: "Ошибка генерации",
-        description: error instanceof Error ? error.message : "Не удалось сгенерировать изображение",
-        variant: "destructive"
-      });
-    } finally {
-      setGenerating(false);
-    }
-  };
 
   return (
     <div>
       <Label>Изображения товара</Label>
       <div className="space-y-3">
         <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="flex items-center gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => document.getElementById('image-upload')?.click()}
-              disabled={uploading || generating}
-              className="text-xs px-2"
+              disabled={uploading}
+              className="flex-1"
             >
-              <Icon name={uploading ? "Loader2" : "Upload"} size={14} className={`mr-1 ${uploading ? 'animate-spin' : ''}`} />
-              {uploading ? 'Загрузка...' : 'Файл'}
+              <Icon name={uploading ? "Loader2" : "Upload"} size={16} className={`mr-2 ${uploading ? 'animate-spin' : ''}`} />
+              {uploading ? 'Загрузка...' : 'Загрузить файл'}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowUrlInput(!showUrlInput)}
-              disabled={uploading || generating}
-              className="text-xs px-2"
+              disabled={uploading}
+              className="flex-1"
             >
-              <Icon name="Link" size={14} className="mr-1" />
-              URL
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={generateImage}
-              disabled={uploading || generating || !productTitle}
-              className="text-xs px-2 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950"
-            >
-              <Icon name={generating ? "Loader2" : "Sparkles"} size={14} className={`mr-1 ${generating ? 'animate-spin' : ''}`} />
-              {generating ? 'AI...' : 'AI'}
+              <Icon name="Link" size={16} className="mr-2" />
+              Добавить по URL
             </Button>
             <input
               id="image-upload"
