@@ -4,6 +4,12 @@ export interface DeliveryRate {
   price: number;
 }
 
+export interface CarryRate {
+  category: string;
+  description: string;
+  price: number | string;
+}
+
 export const sverdlovskRegionRates: DeliveryRate[] = [
   { city: 'Екатеринбург', distance: 'точка', price: 1000 },
   { city: 'Сдача груза в ТК', distance: 'один клиент', price: 1000 },
@@ -279,6 +285,115 @@ export const chelyabinskRegionRates: DeliveryRate[] = [
   { city: 'Магнитогорск', distance: 'Челябинская обл.', price: 6000 },
   { city: 'Озерск', distance: 'Челябинская обл.', price: 3000 },
   { city: 'Снежинск до КПП', distance: 'Челябинская обл.', price: 3000 },
+];
+
+export const tyumenRegionRates: DeliveryRate[] = [
+  { city: 'Тюмень', distance: 'Тюменская обл.', price: 3000 },
+  { city: 'Ялуторовск', distance: 'Тюменская обл.', price: 3000 },
+  { city: 'Заводоуковск', distance: 'Тюменская обл.', price: 3000 },
+  { city: 'Новая Заимка', distance: 'Тюменская обл.', price: 3000 },
+  { city: 'Омутинское', distance: 'Тюменская обл.', price: 3000 },
+  { city: 'Юргинское', distance: 'Тюменская обл.', price: 4000 },
+  { city: 'Армизонское', distance: 'Тюменская обл.', price: 5000 },
+  { city: 'Голышманово', distance: 'Тюменская обл.', price: 4000 },
+  { city: 'Аромашево', distance: 'Тюменская обл.', price: 5000 },
+  { city: 'Ишим', distance: 'Тюменская обл.', price: 4000 },
+  { city: 'Большое Сорокино', distance: 'Тюменская обл.', price: 5500 },
+  { city: 'Казанское', distance: 'Тюменская обл.', price: 5500 },
+  { city: 'Викулово', distance: 'Тюменская обл.', price: 5500 },
+  { city: 'Абатское', distance: 'Тюменская обл.', price: 4500 },
+  { city: 'Тюкалинск', distance: 'Тюменская обл.', price: 4500 },
+  { city: 'Малиновка (Тюменская)', distance: 'Тюменская обл.', price: 4500 },
+  { city: 'Называевск', distance: 'Тюменская обл.', price: 6500 },
+  { city: 'Омск', distance: 'Омская обл.', price: 4000 },
+  { city: 'Тобольск', distance: 'Тюменская обл.', price: 3500 },
+];
+
+export const yanaoHmaoRates: DeliveryRate[] = [
+  { city: 'Вынгапуровский', distance: 'ЯНАО/ХМАО', price: 6500 },
+  { city: 'Губкинский', distance: 'ЯНАО', price: 6500 },
+  { city: 'Лимбяяха', distance: 'ЯНАО', price: 6500 },
+  { city: 'Муравленко', distance: 'ЯНАО', price: 6500 },
+  { city: 'Новый Уренгой', distance: 'ЯНАО', price: 6500 },
+  { city: 'Ноябрьск', distance: 'ЯНАО', price: 6500 },
+  { city: 'Пангоды', distance: 'ЯНАО', price: 7500 },
+  { city: 'Правохеттинский', distance: 'ЯНАО', price: 7500 },
+  { city: 'Пурпе', distance: 'ЯНАО', price: 6500 },
+  { city: 'Тарко-Сале', distance: 'ЯНАО', price: 6500 },
+  { city: 'Уренгой', distance: 'ЯНАО', price: 6500 },
+  { city: 'Коротчаево', distance: 'ЯНАО', price: 6500 },
+  { city: 'Надым', distance: 'ЯНАО', price: 7500 },
+  { city: 'Высокий', distance: 'ХМАО', price: 6500 },
+  { city: 'Излучинск', distance: 'ХМАО', price: 6500 },
+  { city: 'Когалым', distance: 'ХМАО', price: 6500 },
+  { city: 'Лангепас', distance: 'ХМАО', price: 6500 },
+  { city: 'Лянтор', distance: 'ХМАО', price: 6500 },
+  { city: 'Мегион', distance: 'ХМАО', price: 6500 },
+  { city: 'Нефтеюганск', distance: 'ХМАО', price: 4000 },
+  { city: 'Нижневартовск', distance: 'ХМАО', price: 6500 },
+  { city: 'Нижнесортымский', distance: 'ХМАО', price: 6500 },
+  { city: 'Пойковский', distance: 'ХМАО', price: 6500 },
+  { city: 'Покачи', distance: 'ХМАО', price: 7500 },
+  { city: 'Пуровский', distance: 'ЯНАО', price: 6500 },
+  { city: 'Пыть-Ях', distance: 'ХМАО', price: 4000 },
+  { city: 'Сингапай', distance: 'ХМАО', price: 5500 },
+  { city: 'Сургут', distance: 'ХМАО', price: 4000 },
+  { city: 'Ульт-Ягун', distance: 'ХМАО', price: 5500 },
+  { city: 'Усть-Юган', distance: 'ХМАО', price: 6500 },
+  { city: 'Федоровский', distance: 'ХМАО', price: 6500 },
+  { city: 'Ханты-Мансийск', distance: 'ХМАО', price: 6500 },
+  { city: 'Белый Яр', distance: 'ХМАО', price: 4000 },
+  { city: 'Солнечный', distance: 'ХМАО', price: 4000 },
+];
+
+export const permRegionRates: DeliveryRate[] = [
+  { city: 'Пермь', distance: 'Пермский край', price: 3500 },
+  { city: 'Кунгур', distance: 'Пермский край', price: 3500 },
+  { city: 'Березники', distance: 'Пермский край', price: 4800 },
+  { city: 'Соликамск', distance: 'Пермский край', price: 4800 },
+  { city: 'Краснокамск', distance: 'Пермский край', price: 3500 },
+  { city: 'Чусовой', distance: 'Пермский край', price: 4800 },
+  { city: 'Чернушка', distance: 'Пермский край', price: 4800 },
+  { city: 'Губаха', distance: 'Пермский край', price: 4800 },
+  { city: 'Кудымкар', distance: 'Пермский край', price: 4800 },
+  { city: 'Лысьва', distance: 'Пермский край', price: 4800 },
+  { city: 'Добрянка', distance: 'Пермский край', price: 3500 },
+  { city: 'Верещагино', distance: 'Пермский край', price: 4800 },
+  { city: 'Оса', distance: 'Пермский край', price: 4800 },
+  { city: 'Бардым', distance: 'Пермский край', price: 4800 },
+  { city: 'Юрла', distance: 'Пермский край', price: 4800 },
+  { city: 'Кунгурский район', distance: 'Пермский край', price: 3500 },
+  { city: 'Оханск', distance: 'Пермский край', price: 4800 },
+  { city: 'Карагай', distance: 'Пермский край', price: 4800 },
+  { city: 'Куеда', distance: 'Пермский край', price: 4800 },
+  { city: 'Бардский', distance: 'Пермский край', price: 4800 },
+  { city: 'Большая Соснова', distance: 'Пермский край', price: 4800 },
+  { city: 'Гремячинск', distance: 'Пермский край', price: 4800 },
+  { city: 'ЗАТО Звездный', distance: 'Пермский край', price: 4800 },
+  { city: 'Уинское', distance: 'Пермский край', price: 4800 },
+  { city: 'Вильва', distance: 'Пермский край', price: 4800 },
+  { city: 'Суксун', distance: 'Пермский край', price: 4800 },
+  { city: 'Частые', distance: 'Пермский край', price: 4800 },
+];
+
+export const carryRates: CarryRate[] = [
+  { category: 'Интерьерные кровати', description: 'С лифтом', price: 800 },
+  { category: 'Интерьерные кровати', description: 'Без лифта, 2 этаж', price: 1000 },
+  { category: 'Интерьерные кровати', description: 'Без лифта, 3 этаж', price: 1200 },
+  { category: 'Интерьерные кровати', description: 'Без лифта, 4 этаж', price: 1400 },
+  { category: 'Интерьерные кровати', description: 'Без лифта, 5 этаж', price: 1600 },
+  { category: 'Интерьерные кровати', description: 'В частный дом, за каждый этаж', price: '+300' },
+  { category: 'Мягкая мебель', description: 'С лифтом', price: 1000 },
+  { category: 'Мягкая мебель', description: 'Без лифта, 1 этаж', price: 1000 },
+  { category: 'Мягкая мебель', description: 'Без лифта, за каждый этаж выше 1-го', price: '+200' },
+  { category: 'Угловые диваны', description: 'Доплата', price: '+300' },
+  { category: 'Кухня', description: 'С лифтом', price: 1000 },
+  { category: 'Кухня', description: 'Без лифта, 1 этаж', price: 1000 },
+  { category: 'Кухня', description: 'Без лифта, за каждый этаж выше 1-го', price: '+200' },
+  { category: 'Столешницы', description: 'До 2 300 мм', price: 1000 },
+  { category: 'Столешницы', description: 'От 2 300 мм (без лифта)', price: 'Как кухня' },
+  { category: 'Столешницы', description: 'От 2 800 мм (без лифта)', price: 'Индивидуально' },
+  { category: 'Смешанный заказ', description: 'Расчет по категории + за каждое изделие', price: '+300' },
 ];
 
 export const deliveryInfo = {

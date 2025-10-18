@@ -5,13 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
-import { sverdlovskRegionRates, cottageSettlementsEkb, chelyabinskRegionRates, deliveryInfo } from '@/data/deliveryRates';
+import { sverdlovskRegionRates, cottageSettlementsEkb, chelyabinskRegionRates, tyumenRegionRates, yanaoHmaoRates, permRegionRates, carryRates, deliveryInfo } from '@/data/deliveryRates';
 
 const Delivery = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('sverdlovsk');
 
-  const allRates = [...sverdlovskRegionRates, ...cottageSettlementsEkb, ...chelyabinskRegionRates];
+  const allRates = [...sverdlovskRegionRates, ...cottageSettlementsEkb, ...chelyabinskRegionRates, ...tyumenRegionRates, ...yanaoHmaoRates, ...permRegionRates];
 
   const filteredSverdlovsk = sverdlovskRegionRates.filter(rate =>
     rate.city.toLowerCase().includes(searchQuery.toLowerCase())
@@ -22,6 +22,18 @@ const Delivery = () => {
   );
 
   const filteredChelyabinsk = chelyabinskRegionRates.filter(rate =>
+    rate.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredTyumen = tyumenRegionRates.filter(rate =>
+    rate.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredYanaoHmao = yanaoHmaoRates.filter(rate =>
+    rate.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredPerm = permRegionRates.filter(rate =>
     rate.city.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -82,7 +94,7 @@ const Delivery = () => {
     <>
       <Helmet>
         <title>Доставка и тарифы | LARANA</title>
-        <meta name="description" content="Стоимость доставки мебели по Свердловской и Челябинской области. Бесплатная сборка и доставка для Екатеринбурга, Среднеуральска и Верхней Пышмы." />
+        <meta name="description" content="Стоимость доставки мебели по Свердловской, Челябинской, Тюменской области, ЯНАО/ХМАО и Пермскому краю. Бесплатная сборка и доставка для Екатеринбурга, Среднеуральска и Верхней Пышмы." />
       </Helmet>
 
       <div className="min-h-screen bg-background py-12">
@@ -91,7 +103,7 @@ const Delivery = () => {
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold">Доставка мебели</h1>
               <p className="text-xl text-muted-foreground">
-                Свердловская и Челябинская области
+                По всем регионам Урала и Западной Сибири
               </p>
             </div>
 
@@ -154,7 +166,43 @@ const Delivery = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Тарифы доставки</CardTitle>
+                <CardTitle>Подъём и спуск мебели</CardTitle>
+                <CardDescription>
+                  Стоимость услуг по подъёму мебели на этаж
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-3 px-4 font-semibold">Категория</th>
+                        <th className="text-left py-3 px-4 font-semibold">Условия</th>
+                        <th className="text-right py-3 px-4 font-semibold">Стоимость</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {carryRates.map((rate, index) => (
+                        <tr key={index} className="border-b hover:bg-muted/50 transition-colors">
+                          <td className="py-3 px-4 font-medium">{rate.category}</td>
+                          <td className="py-3 px-4 text-muted-foreground">{rate.description}</td>
+                          <td className="py-3 px-4 text-right font-semibold">
+                            {typeof rate.price === 'number' 
+                              ? `${rate.price.toLocaleString('ru-RU')} ₽`
+                              : rate.price
+                            }
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Тарифы доставки по регионам</CardTitle>
                 <CardDescription>
                   Выберите регион и найдите свой населенный пункт
                 </CardDescription>
@@ -173,18 +221,30 @@ const Delivery = () => {
               </CardHeader>
               <CardContent>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-4">
+                  <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
                     <TabsTrigger value="sverdlovsk">
-                      <span className="hidden sm:inline">Свердловская обл.</span>
+                      <span className="hidden sm:inline">Свердловская</span>
                       <span className="sm:hidden">Свердл.</span>
                     </TabsTrigger>
                     <TabsTrigger value="cottages">
-                      <span className="hidden sm:inline">Коттеджные посёлки</span>
+                      <span className="hidden sm:inline">КП Екб</span>
                       <span className="sm:hidden">КП</span>
                     </TabsTrigger>
                     <TabsTrigger value="chelyabinsk">
-                      <span className="hidden sm:inline">Челябинская обл.</span>
+                      <span className="hidden sm:inline">Челябинская</span>
                       <span className="sm:hidden">Челяб.</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="tyumen">
+                      <span className="hidden sm:inline">Тюменская</span>
+                      <span className="sm:hidden">Тюмен.</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="yanao">
+                      <span className="hidden sm:inline">ЯНАО/ХМАО</span>
+                      <span className="sm:hidden">Север</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="perm">
+                      <span className="hidden sm:inline">Пермский край</span>
+                      <span className="sm:hidden">Пермь</span>
                     </TabsTrigger>
                     <TabsTrigger value="all">
                       Все
@@ -194,28 +254,49 @@ const Delivery = () => {
                   <TabsContent value="sverdlovsk" className="mt-4">
                     {renderTable(filteredSverdlovsk)}
                     <p className="text-xs text-muted-foreground mt-4">
-                      Найдено населенных пунктов: {filteredSverdlovsk.length}
+                      Найдено: {filteredSverdlovsk.length} из {sverdlovskRegionRates.length}
                     </p>
                   </TabsContent>
 
                   <TabsContent value="cottages" className="mt-4">
                     {renderTable(filteredCottages)}
                     <p className="text-xs text-muted-foreground mt-4">
-                      Найдено коттеджных посёлков: {filteredCottages.length}
+                      Найдено: {filteredCottages.length} из {cottageSettlementsEkb.length}
                     </p>
                   </TabsContent>
 
                   <TabsContent value="chelyabinsk" className="mt-4">
                     {renderTable(filteredChelyabinsk)}
                     <p className="text-xs text-muted-foreground mt-4">
-                      Найдено населенных пунктов: {filteredChelyabinsk.length}
+                      Найдено: {filteredChelyabinsk.length} из {chelyabinskRegionRates.length}
+                    </p>
+                  </TabsContent>
+
+                  <TabsContent value="tyumen" className="mt-4">
+                    {renderTable(filteredTyumen)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Найдено: {filteredTyumen.length} из {tyumenRegionRates.length}
+                    </p>
+                  </TabsContent>
+
+                  <TabsContent value="yanao" className="mt-4">
+                    {renderTable(filteredYanaoHmao)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Найдено: {filteredYanaoHmao.length} из {yanaoHmaoRates.length}
+                    </p>
+                  </TabsContent>
+
+                  <TabsContent value="perm" className="mt-4">
+                    {renderTable(filteredPerm)}
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Найдено: {filteredPerm.length} из {permRegionRates.length}
                     </p>
                   </TabsContent>
 
                   <TabsContent value="all" className="mt-4">
                     {renderTable(filteredAll)}
                     <p className="text-xs text-muted-foreground mt-4">
-                      Всего населенных пунктов: {filteredAll.length}
+                      Всего населенных пунктов: {filteredAll.length} из {allRates.length}
                     </p>
                   </TabsContent>
                 </Tabs>
@@ -235,6 +316,12 @@ const Delivery = () => {
                 </p>
                 <p className="text-sm">
                   Для остальных населенных пунктов стоимость доставки рассчитывается согласно тарифам
+                </p>
+                <p className="text-sm">
+                  Стоимость подъёма на этаж зависит от типа мебели и наличия лифта
+                </p>
+                <p className="text-sm">
+                  При смешанном заказе расчёт производится по категории плюс 300 ₽ за каждое изделие
                 </p>
                 <p className="text-sm">
                   При необходимости возможно промежуточное хранение мебели на наших складах
