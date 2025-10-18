@@ -183,7 +183,7 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
     try {
       const prompt = `${productTitle}, профессиональная фотография товара, белый фон, студийное освещение, высокая детализация, 4k`;
 
-      const response = await fetch('https://api.poehali.dev/generate-image', {
+      const response = await fetch('https://functions.poehali.dev/74acd26d-f264-4071-b993-fbdccc85c5e7', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

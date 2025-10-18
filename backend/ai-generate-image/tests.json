@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS returns CORS headers",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST without prompt returns error",
+      "method": "POST",
+      "path": "/",
+      "body": {},
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "Prompt is required"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
