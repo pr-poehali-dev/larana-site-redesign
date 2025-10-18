@@ -118,43 +118,48 @@ const OrdersTab = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-3">
+    <div className="space-y-3 md:space-y-4">
+      <div className="flex flex-col gap-2 md:gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
           <div className="relative flex-1">
-            <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Icon name="Search" size={16} className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Поиск по номеру, клиенту, телефону, товару..."
-              className="pl-10"
+              placeholder="Поиск по номеру, клиенту..."
+              className="pl-8 md:pl-10 text-sm"
             />
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Все заказы" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Все заказы</SelectItem>
-              <SelectItem value="new">Новые</SelectItem>
-              <SelectItem value="in_processing">В обработке</SelectItem>
-              <SelectItem value="in_delivery">В доставке</SelectItem>
-              <SelectItem value="delivered">Доставлены</SelectItem>
-              <SelectItem value="completed">Завершены</SelectItem>
-              <SelectItem value="cancelled">Отменены</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="sm" onClick={fetchAllOrders}>
-            <Icon name="RefreshCw" size={16} className="mr-2" />
-            Обновить
-          </Button>
+          <div className="flex gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-[140px] md:w-[180px] text-xs md:text-sm">
+                <SelectValue placeholder="Все заказы" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все заказы</SelectItem>
+                <SelectItem value="new">Новые</SelectItem>
+                <SelectItem value="in_processing">В обработке</SelectItem>
+                <SelectItem value="in_delivery">В доставке</SelectItem>
+                <SelectItem value="delivered">Доставлены</SelectItem>
+                <SelectItem value="completed">Завершены</SelectItem>
+                <SelectItem value="cancelled">Отменены</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" onClick={fetchAllOrders} className="hidden sm:flex">
+              <Icon name="RefreshCw" size={16} className="mr-2" />
+              Обновить
+            </Button>
+            <Button variant="outline" size="icon" onClick={fetchAllOrders} className="sm:hidden">
+              <Icon name="RefreshCw" size={16} />
+            </Button>
+          </div>
         </div>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-xs md:text-sm text-muted-foreground">
           Найдено заказов: {filteredOrders.length}
         </div>
       </div>
 
-      <ScrollArea className="h-[500px] pr-4">
+      <ScrollArea className="h-[500px] pr-2 md:pr-4">
         {loadingOrders ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-muted-foreground">Загрузка заказов...</div>

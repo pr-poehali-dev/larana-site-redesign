@@ -253,8 +253,8 @@ const Admin = () => {
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
               <Icon name="Shield" size={32} className="text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl">Админ-панель</CardTitle>
-            <CardDescription>Введите пароль для доступа</CardDescription>
+            <CardTitle className="text-xl md:text-2xl">Админ-панель</CardTitle>
+            <CardDescription className="text-sm">Введите пароль для доступа</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -314,60 +314,84 @@ const Admin = () => {
       </Helmet>
       <div className="min-h-screen bg-background">
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-3 md:px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Icon name="Shield" size={24} className="text-primary-foreground" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Icon name="Shield" size={20} className="md:w-6 md:h-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Админ-панель</h1>
-                <p className="text-xs text-muted-foreground">Управление заказами и товарами</p>
+                <h1 className="text-base md:text-xl font-bold">Админ-панель</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">Управление заказами и товарами</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Button 
-                variant="outline" 
+                variant="outline"
+                size="sm"
                 onClick={() => navigate('/')}
+                className="hidden sm:flex"
               >
                 <Icon name="Home" size={16} className="mr-2" />
                 На сайт
               </Button>
               <Button 
-                variant="outline" 
+                variant="outline"
+                size="icon"
+                onClick={() => navigate('/')}
+                className="sm:hidden"
+              >
+                <Icon name="Home" size={16} />
+              </Button>
+              <Button 
+                variant="outline"
+                size="sm" 
                 onClick={handleLogout}
+                className="hidden sm:flex"
               >
                 <Icon name="LogOut" size={16} className="mr-2" />
                 Выход
+              </Button>
+              <Button 
+                variant="outline"
+                size="icon" 
+                onClick={handleLogout}
+                className="sm:hidden"
+              >
+                <Icon name="LogOut" size={16} />
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 md:px-4 py-4 md:py-8">
 
         <Tabs defaultValue="statistics" className="space-y-4">
-          <TabsList className="grid w-full max-w-3xl grid-cols-5">
-            <TabsTrigger value="statistics" className="flex items-center gap-2">
-              <Icon name="BarChart3" size={16} />
-              Статистика
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 gap-1">
+            <TabsTrigger value="statistics" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Icon name="BarChart3" size={14} className="md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Статистика</span>
+              <span className="sm:hidden">Стат</span>
             </TabsTrigger>
-            <TabsTrigger value="orders" className="flex items-center gap-2">
-              <Icon name="ShoppingBag" size={16} />
-              Заказы
+            <TabsTrigger value="orders" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Icon name="ShoppingBag" size={14} className="md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Заказы</span>
+              <span className="sm:hidden">Зак</span>
             </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center gap-2">
-              <Icon name="Package" size={16} />
-              Товары
+            <TabsTrigger value="products" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Icon name="Package" size={14} className="md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Товары</span>
+              <span className="sm:hidden">Тов</span>
             </TabsTrigger>
-            <TabsTrigger value="ozon" className="flex items-center gap-2">
-              <Icon name="Download" size={16} />
+            <TabsTrigger value="ozon" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Icon name="Download" size={14} className="md:w-4 md:h-4" />
               Ozon
             </TabsTrigger>
-            <TabsTrigger value="employees" className="flex items-center gap-2">
-              <Icon name="Users" size={16} />
-              Сотрудники
+            <TabsTrigger value="employees" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Icon name="Users" size={14} className="md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Сотрудники</span>
+              <span className="sm:hidden">Сотр</span>
             </TabsTrigger>
           </TabsList>
 

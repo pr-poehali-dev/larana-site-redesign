@@ -117,34 +117,34 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <ScrollArea className="h-[500px] pr-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <ScrollArea className="h-[500px] pr-2 md:pr-4">
         <div className="space-y-2">
           <div className="space-y-2 mb-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Список товаров</h3>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={exportProducts}>
-                  <Icon name="Download" size={16} className="mr-2" />
-                  Экспорт
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h3 className="font-semibold text-sm md:text-base">Список товаров</h3>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button size="sm" variant="outline" onClick={exportProducts} className="flex-1 sm:flex-none">
+                  <Icon name="Download" size={16} className="mr-1 md:mr-2" />
+                  <span className="text-xs md:text-sm">Экспорт</span>
                 </Button>
-                <Button size="sm" onClick={startNewProduct}>
-                  <Icon name="Plus" size={16} className="mr-2" />
-                  Добавить
+                <Button size="sm" onClick={startNewProduct} className="flex-1 sm:flex-none">
+                  <Icon name="Plus" size={16} className="mr-1 md:mr-2" />
+                  <span className="text-xs md:text-sm">Добавить</span>
                 </Button>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <Button size="sm" variant="outline" onClick={openBulkImport}>
-                <Icon name="Upload" size={16} className="mr-2" />
+              <Button size="sm" variant="outline" onClick={openBulkImport} className="text-xs md:text-sm">
+                <Icon name="Upload" size={14} className="mr-1 md:mr-2" />
                 Импорт
               </Button>
-              <Button size="sm" variant="outline" onClick={openBulkUpdate}>
-                <Icon name="DollarSign" size={16} className="mr-2" />
+              <Button size="sm" variant="outline" onClick={openBulkUpdate} className="text-xs md:text-sm">
+                <Icon name="DollarSign" size={14} className="mr-1 md:mr-2" />
                 Цены
               </Button>
-              <Button size="sm" variant="outline" onClick={openBulkStock}>
-                <Icon name="Package" size={16} className="mr-2" />
+              <Button size="sm" variant="outline" onClick={openBulkStock} className="text-xs md:text-sm">
+                <Icon name="Package" size={14} className="mr-1 md:mr-2" />
                 Остатки
               </Button>
             </div>
@@ -157,29 +157,29 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
               }`}
               onClick={() => startEditProduct(product)}
             >
-              <CardContent className="p-3">
-                <div className="flex gap-3">
+              <CardContent className="p-2 md:p-3">
+                <div className="flex gap-2 md:gap-3">
                   <img 
                     src={product.image} 
                     alt={product.title}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-12 h-12 md:w-16 md:h-16 object-cover rounded flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{product.title}</p>
-                    <p className="text-xs text-muted-foreground">{product.category}</p>
-                    <p className="text-sm font-semibold mt-1">{formatPrice(product.price)}</p>
+                    <p className="font-medium text-xs md:text-sm truncate">{product.title}</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">{product.category}</p>
+                    <p className="text-xs md:text-sm font-semibold mt-1">{formatPrice(product.price)}</p>
                     {product.supplierArticle && (
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-[10px] md:text-xs text-muted-foreground mt-1 truncate">
                         Арт: {product.supplierArticle}
                       </p>
                     )}
                     {product.stockQuantity !== null && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[10px] md:text-xs text-muted-foreground">
                         Склад: {product.stockQuantity} шт
                       </p>
                     )}
                     {product.variantGroupId && (
-                      <p className="text-xs text-blue-600 mt-1">
+                      <p className="text-[10px] md:text-xs text-blue-600 mt-1">
                         🎨 {product.colorVariant || 'Вариант'}
                       </p>
                     )}
@@ -188,17 +188,17 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-7 px-2"
+                      className="h-6 md:h-7 px-1 md:px-2"
                       onClick={(e) => duplicateProduct(product, e)}
                       title="Создать копию"
                     >
-                      <Icon name="Copy" size={14} />
+                      <Icon name="Copy" size={12} className="md:w-3.5 md:h-3.5" />
                     </Button>
-                    <Badge variant={product.inStock ? 'default' : 'secondary'}>
+                    <Badge variant={product.inStock ? 'default' : 'secondary'} className="text-[10px] md:text-xs px-1 md:px-2">
                       {product.inStock ? 'В наличии' : 'Нет'}
                     </Badge>
                     {product.stockQuantity !== null && (
-                      <Badge variant={product.stockQuantity > 0 ? 'outline' : 'destructive'}>
+                      <Badge variant={product.stockQuantity > 0 ? 'outline' : 'destructive'} className="text-[10px] md:text-xs px-1 md:px-2">
                         {product.stockQuantity} шт
                       </Badge>
                     )}
@@ -210,7 +210,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
         </div>
       </ScrollArea>
 
-      <ScrollArea className="h-[500px] pr-4">
+      <ScrollArea className="h-[500px] pr-2 md:pr-4">
         {showBulkImport ? (
           <BulkProductImport 
             products={products}
