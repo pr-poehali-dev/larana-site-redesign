@@ -38,7 +38,7 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
     { value: 'price', label: 'Цена', example: '25000' },
     { value: 'ozonCategory', label: 'Категория и тип', example: 'Мебель / Диваны' },
     { value: 'color', label: 'Название цвета', example: 'Серый' },
-    { value: 'modelName', label: 'Название модели', example: 'Комфорт-2024' },
+    { value: 'modelName', label: 'Название модели (для объединения в одну карточку)', example: 'Комфорт-2024' },
     { value: 'description', label: 'Описание', example: 'Удобный диван...' },
     { value: 'stocks.present', label: 'Остаток на складе', example: '15' },
   ];
@@ -49,6 +49,7 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
     { value: 'price', label: 'Цена' },
     { value: 'description', label: 'Описание' },
     { value: 'supplierArticle', label: 'Артикул поставщика' },
+    { value: 'colors', label: 'Цвета (Основные цвета этого товара)' },
     { value: 'colorVariant', label: 'Цветовой вариант' },
     { value: 'variantGroupId', label: 'ID группы вариантов' },
     { value: 'stockQuantity', label: 'Количество на складе' },

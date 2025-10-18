@@ -99,9 +99,13 @@ export const convertOzonToProduct = (
           ? ozonValue.replace(/[^\d]/g, '')
           : ozonValue;
         result.price = `${priceValue} ₽`;
+      } else if (mapping.catalogField === 'colors' && ozonValue) {
+        result.colors = Array.isArray(ozonValue) ? ozonValue : [ozonValue];
       } else if (mapping.catalogField === 'colorVariant' && ozonValue) {
         result.colorVariant = ozonValue;
-        result.colors = [ozonValue];
+        if (!result.colors || result.colors.length === 0) {
+          result.colors = [ozonValue];
+        }
       } else if (ozonValue !== undefined && ozonValue !== null) {
         result[mapping.catalogField] = ozonValue;
       }
