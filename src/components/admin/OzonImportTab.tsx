@@ -131,7 +131,14 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         const convertedProduct = convertOzonToProduct(ozonProduct, newProducts);
         convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
         convertedProduct.image = uploadedImages[0] || '';
-        convertedProduct.images = uploadedImages;
+        convertedProduct.images = uploadedImages.length > 0 ? uploadedImages : [''];
+        
+        console.log('📸 Изображения товара:', {
+          title: convertedProduct.title,
+          mainImage: convertedProduct.image,
+          allImages: convertedProduct.images,
+          imageCount: uploadedImages.length
+        });
         
         newProducts.push(convertedProduct);
         console.log('✅ Добавлен товар:', convertedProduct.title);

@@ -34,7 +34,11 @@ const OzonProductCard = ({ product, isSelected, onToggle }: OzonProductCardProps
             <img
               src={product.images[0].url}
               alt={product.name}
-              className="w-12 h-12 md:w-20 md:h-20 object-cover rounded flex-shrink-0"
+              className="w-12 h-12 md:w-20 md:h-20 object-cover rounded flex-shrink-0 bg-secondary/20"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
             />
           )}
 
