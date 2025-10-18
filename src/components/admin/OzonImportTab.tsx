@@ -47,6 +47,70 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     }
   };
 
+  const exportToExcel = () => {
+    if (products.length === 0) {
+      toast({
+        title: "Нет данных",
+        description: "Сначала загрузите товары с Ozon",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const headers = [
+      'Артикул продавца',
+      'Название товара',
+      'Цена',
+      'Описание',
+      'Название цвета',
+      'Название модели',
+      'Категория и тип',
+      'Ссылка на фото 1',
+      'Ссылка на фото 2',
+      'Ссылка на фото 3',
+      'Ссылка на фото 4',
+      'Ссылка на фото 5',
+    ];
+
+    const rows = products.map(product => [
+      product.offer_id || '',
+      product.name || '',
+      product.price || '',
+      product.description || '',
+      product.color || '',
+      product.modelName || '',
+      product.ozonCategory || '',
+      product.images?.[0]?.url || '',
+      product.images?.[1]?.url || '',
+      product.images?.[2]?.url || '',
+      product.images?.[3]?.url || '',
+      product.images?.[4]?.url || '',
+    ]);
+
+    let csvContent = '\uFEFF';
+    csvContent += headers.join('\t') + '\n';
+    rows.forEach(row => {
+      csvContent += row.join('\t') + '\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `ozon_products_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "✅ Экспорт завершен",
+      description: `Выгружено ${products.length} товаров в Excel`,
+    });
+  };
+
   const toggleProductSelection = (productId: number) => {
     const newSelected = new Set(selectedProducts);
     if (newSelected.has(productId)) {
@@ -215,6 +279,17 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
                   <Icon name="Settings2" size={16} className="md:w-4 md:h-4" />
                   <span className="hidden sm:inline">Настройки импорта</span>
                   <span className="sm:hidden">Настройки</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={exportToExcel}
+                  className="gap-2 w-full sm:w-auto text-xs md:text-sm"
+                  size="sm"
+                >
+                  <Icon name="FileSpreadsheet" size={16} className="md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Выгрузить в Excel</span>
+                  <span className="sm:hidden">Excel</span>
                 </Button>
               </>
             )}
