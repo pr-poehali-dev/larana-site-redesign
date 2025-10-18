@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import DeliveryCalculatorDialog from '@/components/DeliveryCalculatorDialog';
 import DeliveryCalculator from '@/components/DeliveryCalculator';
+import FloorCarryCalculator from '@/components/FloorCarryCalculator';
 import { sverdlovskRegionRates, cottageSettlementsEkb, chelyabinskRegionRates, tyumenRegionRates, yanaoHmaoRates, permRegionRates, carryRates, deliveryInfo } from '@/data/deliveryRates';
 
 const Delivery = () => {
@@ -111,8 +112,9 @@ const Delivery = () => {
               </p>
             </div>
 
-            <div className="max-w-2xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
               <DeliveryCalculator />
+              <FloorCarryCalculator />
             </div>
 
             <div className="text-center">

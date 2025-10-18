@@ -13,6 +13,7 @@ import NameInput from '@/components/NameInput';
 import AddressAutocomplete from '@/components/AddressAutocomplete';
 import SavedAddresses from '@/components/SavedAddresses';
 import DeliveryCalculator from '@/components/DeliveryCalculator';
+import FloorCarryCalculator from '@/components/FloorCarryCalculator';
 import { useCheckoutAudio } from './checkout/useCheckoutAudio';
 import { useCheckoutData } from './checkout/useCheckoutData';
 import React from 'react';
@@ -51,17 +52,22 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
 
   const [deliveryPrice, setDeliveryPrice] = React.useState(0);
   const [isFreeDelivery, setIsFreeDelivery] = React.useState(false);
+  const [carryPrice, setCarryPrice] = React.useState(0);
 
   const itemsTotal = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
     return sum + (price * item.quantity);
   }, 0);
 
-  const total = itemsTotal + (formData.deliveryType === 'delivery' ? deliveryPrice : 0);
+  const total = itemsTotal + (formData.deliveryType === 'delivery' ? deliveryPrice : 0) + carryPrice;
 
   const handleDeliveryCalculated = (price: number, isFree: boolean) => {
     setDeliveryPrice(price);
     setIsFreeDelivery(isFree);
+  };
+
+  const handleCarryCalculated = (price: number) => {
+    setCarryPrice(price);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -181,6 +187,19 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
                 onDeliveryCalculated={handleDeliveryCalculated}
                 compact
               />
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Icon name="TrendingUp" size={20} />
+                  Подъём на этаж
+                </h3>
+                <FloorCarryCalculator
+                  onCarryCalculated={handleCarryCalculated}
+                  compact
+                />
+              </div>
 
               <SavedAddresses
                 addresses={savedAddresses}
@@ -381,16 +400,24 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
                 <span>{formatPrice(itemsTotal)}</span>
               </div>
               {formData.deliveryType === 'delivery' && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Доставка:</span>
-                  {isFreeDelivery ? (
-                    <span className="text-green-600 font-medium">Бесплатно</span>
-                  ) : deliveryPrice > 0 ? (
-                    <span>{formatPrice(deliveryPrice)}</span>
-                  ) : (
-                    <span className="text-yellow-600 text-xs">Уточняется</span>
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Доставка:</span>
+                    {isFreeDelivery ? (
+                      <span className="text-green-600 font-medium">Бесплатно</span>
+                    ) : deliveryPrice > 0 ? (
+                      <span>{formatPrice(deliveryPrice)}</span>
+                    ) : (
+                      <span className="text-yellow-600 text-xs">Уточняется</span>
+                    )}
+                  </div>
+                  {carryPrice > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Подъём на этаж:</span>
+                      <span>{formatPrice(carryPrice)}</span>
+                    </div>
                   )}
-                </div>
+                </>
               )}
               <div className="flex justify-between items-center text-lg font-bold pt-2 border-t">
                 <span>Итого:</span>
