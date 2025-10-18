@@ -118,13 +118,17 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
         
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label className="text-xs">ID группы вариантов</Label>
+            <Label htmlFor="variantGroupId" className="text-xs">ID группы вариантов</Label>
             <Input
+              id="variantGroupId"
+              type="text"
               value={formData.variantGroupId || ''}
-              onChange={(e) => onChange('variantGroupId', e.target.value)}
+              onChange={(e) => {
+                console.log('🔄 Изменение variantGroupId:', e.target.value);
+                onChange('variantGroupId', e.target.value);
+              }}
               placeholder="kitchen-lara-180"
               className="text-sm"
-              disabled={false}
             />
             <p className="text-xs text-muted-foreground mt-1">
               Одинаковый для всех цветов
@@ -132,13 +136,17 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
           </div>
           
           <div>
-            <Label className="text-xs">Цвет этого варианта</Label>
+            <Label htmlFor="colorVariant" className="text-xs">Цвет этого варианта</Label>
             <Input
+              id="colorVariant"
+              type="text"
               value={formData.colorVariant || ''}
-              onChange={(e) => onChange('colorVariant', e.target.value)}
+              onChange={(e) => {
+                console.log('🔄 Изменение colorVariant:', e.target.value);
+                onChange('colorVariant', e.target.value);
+              }}
               placeholder="Белый глянец"
               className="text-sm"
-              disabled={false}
             />
             <p className="text-xs text-muted-foreground mt-1">
               Уникальный для товара

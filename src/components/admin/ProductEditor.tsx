@@ -71,6 +71,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
   }, [product]);
 
   const handleFieldChange = (field: string, value: string) => {
+    console.log(`📝 ProductEditor: Изменение поля "${field}" на значение:`, value);
     setProductForm({ ...productForm, [field]: value });
   };
 
