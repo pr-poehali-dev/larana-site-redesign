@@ -71,11 +71,11 @@ const CategoryPage = () => {
   };
 
   const categoryMapping: Record<string, string> = {
-    'gostinaya': 'Гостиные',
-    'spalnya': 'Спальни',
-    'kuhni': 'Кухни',
+    'gostinaya': 'Гостиная',
+    'spalnya': 'Спальня',
+    'kuhni': 'Кухня',
     'shkafy': 'Шкафы',
-    'prihozhaya': 'Прихожие'
+    'prihozhaya': 'Прихожая'
   };
 
   const targetCategory = categoryMapping[slug || ''];
@@ -167,7 +167,7 @@ const CategoryPage = () => {
     }
 
     return filtered;
-  }, [allFurnitureSets, targetCategory, slug, priceRange, selectedFilters, sortBy]);
+  }, [availableProducts, targetCategory, slug, priceRange, selectedFilters, sortBy]);
 
   return (
     <>

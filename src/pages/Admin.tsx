@@ -197,6 +197,9 @@ const Admin = () => {
     localStorage.setItem('adminProducts', JSON.stringify(normalizedProducts));
     localStorage.setItem('larana-products', JSON.stringify(normalizedProducts)); // Синхронизируем с каталогом
     
+    // Уведомляем другие компоненты об обновлении
+    window.dispatchEvent(new CustomEvent('larana-products-updated'));
+    
     console.log('✅ Товары обновлены в контексте и localStorage');
   };
 

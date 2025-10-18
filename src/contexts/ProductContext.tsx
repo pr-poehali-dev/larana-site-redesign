@@ -222,8 +222,15 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
+    // Слушаем изменения из других вкладок
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    // Слушаем изменения в той же вкладке через custom event
+    window.addEventListener('larana-products-updated', handleStorageChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('larana-products-updated', handleStorageChange as EventListener);
+    };
   }, []);
 
   useEffect(() => {
