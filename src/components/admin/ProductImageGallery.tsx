@@ -183,11 +183,10 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
     try {
       const prompt = `${productTitle}, профессиональная фотография товара, белый фон, студийное освещение, высокая детализация, 4k`;
 
-      const response = await fetch('https://api.kie.ai/nano-banana', {
+      const response = await fetch('https://api.poehali.dev/generate-image', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_KIE_API_KEY || ''}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           prompt: prompt
@@ -196,15 +195,14 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Ошибка API: ${response.status}`);
+        throw new Error(errorData.error || `Ошибка генерации: ${response.status}`);
       }
 
       const data = await response.json();
       
-      if (data.url || data.image_url || data.imageUrl) {
-        const generatedUrl = data.url || data.image_url || data.imageUrl;
-        const newImages = [...images, generatedUrl];
-        const newMainImage = mainImage || generatedUrl;
+      if (data.url) {
+        const newImages = [...images, data.url];
+        const newMainImage = mainImage || data.url;
         onImagesChange(newImages, newMainImage);
         
         toast({
@@ -212,7 +210,7 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
           description: "AI создал изображение товара"
         });
       } else {
-        throw new Error('URL изображения не найден в ответе API');
+        throw new Error('URL изображения не найден в ответе');
       }
     } catch (error) {
       toast({

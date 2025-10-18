@@ -71,11 +71,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
-        generate_url = 'https://api.kie.ai/api/v1/gpt4o-image/generate'
+        create_task_url = 'https://api.kie.ai/api/v1/nano-banana/createTask'
         
         request_data = {
-            'prompt': prompt,
-            'aspectRatio': aspect_ratio
+            'model': 'gemini-2.0-flash-exp-image',
+            'input': {
+                'prompt': prompt
+            }
         }
         
         headers = {
@@ -84,16 +86,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
         
         req = urllib.request.Request(
-            generate_url,
+            create_task_url,
             data=json.dumps(request_data).encode('utf-8'),
             headers=headers,
             method='POST'
         )
         
         with urllib.request.urlopen(req, timeout=30) as response:
-            response_data = json.loads(response.read().decode('utf-8'))
+            create_response_data = json.loads(response.read().decode('utf-8'))
             
-            task_id = response_data.get('data', {}).get('taskId')
+            task_id = create_response_data.get('data', {}).get('taskId')
             
             if not task_id:
                 return {
@@ -102,13 +104,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
-                    'body': json.dumps({'error': 'No taskId in response', 'response': response_data}),
+                    'body': json.dumps({'error': 'No taskId in response', 'response': create_response_data}),
                     'isBase64Encoded': False
                 }
         
-        check_url = f'https://api.kie.ai/api/v1/gpt4o-image/task/{task_id}'
+        check_url = f'https://api.kie.ai/api/v1/task/recordInfo?taskId={task_id}'
         
-        max_attempts = 30
+        max_attempts = 60
         attempt = 0
         
         while attempt < max_attempts:
@@ -126,19 +128,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 status = check_data.get('data', {}).get('status')
                 
-                if status == 'completed':
-                    image_url = check_data.get('data', {}).get('url')
-                    
-                    if image_url:
-                        return {
-                            'statusCode': 200,
-                            'headers': {
-                                'Content-Type': 'application/json',
-                                'Access-Control-Allow-Origin': '*'
-                            },
-                            'body': json.dumps({'imageUrl': image_url}),
-                            'isBase64Encoded': False
-                        }
+                if status == 'successful':
+                    results = check_data.get('data', {}).get('results', [])
+                    if results and len(results) > 0:
+                        image_url = results[0].get('url')
+                        
+                        if image_url:
+                            return {
+                                'statusCode': 200,
+                                'headers': {
+                                    'Content-Type': 'application/json',
+                                    'Access-Control-Allow-Origin': '*'
+                                },
+                                'body': json.dumps({'imageUrl': image_url}),
+                                'isBase64Encoded': False
+                            }
                 
                 elif status == 'failed':
                     return {
