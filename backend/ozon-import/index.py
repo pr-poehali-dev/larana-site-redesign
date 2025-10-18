@@ -117,14 +117,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'product_ids required'})
             }
         
-        print(f'Запрос деталей для {len(product_ids)} товаров через v2/product/list')
+        print(f'Запрос деталей для {len(product_ids)} товаров через v3/product/info/list')
         
         request_data = {
-            'product_id': [int(pid) for pid in product_ids[:100]]
+            'product_id': [int(pid) for pid in product_ids[:100]],
+            'sku': [],
+            'offer_id': []
         }
         
         req = urllib.request.Request(
-            'https://api-seller.ozon.ru/v2/product/list',
+            'https://api-seller.ozon.ru/v3/product/info/list',
             data=json.dumps(request_data).encode('utf-8'),
             headers={
                 'Client-Id': client_id,
