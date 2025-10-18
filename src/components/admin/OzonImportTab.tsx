@@ -23,7 +23,12 @@ interface OzonProduct {
   attributes?: any[];
 }
 
-const OzonImportTab = () => {
+interface OzonImportTabProps {
+  products: any[];
+  onProductsUpdate: (products: any[]) => void;
+}
+
+const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImportTabProps) => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<OzonProduct[]>([]);
   const [importProgress, setImportProgress] = useState(0);
@@ -109,6 +114,51 @@ const OzonImportTab = () => {
     }
   };
 
+  const mapOzonCategory = (productName: string, attributes?: any[]): string => {
+    const nameLower = productName.toLowerCase();
+    
+    if (nameLower.includes('диван') || nameLower.includes('кресло') || nameLower.includes('пуф')) {
+      return 'Гостиная';
+    }
+    if (nameLower.includes('кровать') || nameLower.includes('матрас')) {
+      return 'Спальня';
+    }
+    if (nameLower.includes('стол') || nameLower.includes('стул') || nameLower.includes('табурет')) {
+      return 'Кухня';
+    }
+    if (nameLower.includes('шкаф') || nameLower.includes('комод') || nameLower.includes('тумба')) {
+      return 'Прихожая';
+    }
+    if (nameLower.includes('детск')) {
+      return 'Детская';
+    }
+    
+    return 'Гостиная';
+  };
+
+  const convertOzonToProduct = (ozonProduct: OzonProduct): any => {
+    const maxId = catalogProducts.length > 0 ? Math.max(...catalogProducts.map(p => p.id)) : 0;
+    const category = mapOzonCategory(ozonProduct.name, ozonProduct.attributes);
+    
+    return {
+      id: maxId + 1,
+      title: ozonProduct.name,
+      category: category,
+      price: `${ozonProduct.price} ₽`,
+      style: 'Современный',
+      description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.`,
+      image: ozonProduct.images?.[0]?.url || '',
+      supplierArticle: ozonProduct.offer_id,
+      inStock: (ozonProduct.stocks?.present ?? 0) > 0,
+      stockQuantity: ozonProduct.stocks?.present ?? null,
+      images: ozonProduct.images?.map(img => img.url) || [],
+      colors: [],
+      items: [],
+      variantGroupId: null,
+      colorVariant: null
+    };
+  };
+
   const importSelected = async () => {
     if (selectedProducts.size === 0) {
       toast({
@@ -125,12 +175,23 @@ const OzonImportTab = () => {
     const selectedItems = products.filter(p => selectedProducts.has(p.product_id));
     const total = selectedItems.length;
     let imported = 0;
+    const newProducts = [...catalogProducts];
 
-    for (const product of selectedItems) {
+    for (const ozonProduct of selectedItems) {
+      const existingProduct = newProducts.find(p => p.supplierArticle === ozonProduct.offer_id);
+      
+      if (!existingProduct) {
+        const convertedProduct = convertOzonToProduct(ozonProduct);
+        convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
+        newProducts.push(convertedProduct);
+      }
+      
       await new Promise(resolve => setTimeout(resolve, 100));
       imported++;
       setImportProgress(Math.round((imported / total) * 100));
     }
+
+    onProductsUpdate(newProducts);
 
     toast({
       title: "Импорт завершён",
