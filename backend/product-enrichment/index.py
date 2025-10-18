@@ -144,8 +144,6 @@ def generate_description(title: str, supplier_article: str, search_info: str, di
     benefits_text = '\n'.join([f'• {benefit}' for benefit in base_benefits[:6]])
     
     characteristics = []
-    if supplier_article:
-        characteristics.append(f'Артикул: {supplier_article}')
     if materials:
         characteristics.append(f'Материал: {", ".join(materials)}')
     if dimensions:
