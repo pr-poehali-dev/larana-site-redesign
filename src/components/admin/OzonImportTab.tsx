@@ -63,28 +63,9 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
   };
 
   const uploadImageFromUrl = async (imageUrl: string): Promise<string> => {
-    try {
-      const response = await fetch('https://functions.poehali.dev/872aa2f7-0278-44a5-8930-98a76886a184', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url: imageUrl })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.url) {
-          return data.url;
-        }
-      }
-      
-      console.warn('Не удалось загрузить изображение через backend, используем оригинальный URL');
-      return imageUrl;
-    } catch (error) {
-      console.error('Ошибка загрузки изображения:', error);
-      return imageUrl;
-    }
+    // Используем прямые URL с Озона - они публичные и работают
+    console.log('📸 Используем прямой URL изображения Ozon:', imageUrl);
+    return imageUrl;
   };
 
   const importSelected = async () => {
@@ -115,11 +96,6 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       const existingProduct = newProducts.find(p => p.supplierArticle === ozonProduct.offer_id);
 
       if (!existingProduct) {
-        toast({
-          title: "⏳ Загрузка изображений",
-          description: `Обрабатываем товар: ${ozonProduct.name}`,
-        });
-
         const ozonImages = ozonProduct.images?.map(img => img.url).filter(url => url) || [];
         const uploadedImages: string[] = [];
 
