@@ -12,6 +12,7 @@ import OzonImportTab from '@/components/admin/OzonImportTab';
 import AdminLogin from '@/components/admin/AdminLogin';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminMobileMenu from '@/components/admin/AdminMobileMenu';
+import AdminStatsCards from '@/components/admin/AdminStatsCards';
 import { defaultProducts } from '@/data/defaultProducts';
 
 const Admin = () => {
@@ -71,6 +72,7 @@ const Admin = () => {
         <AdminHeader onLogout={handleLogout} />
 
         <main className="container mx-auto px-3 md:px-4 py-4 md:py-8">
+          <AdminStatsCards productsCount={products.length} />
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <AdminMobileMenu
               open={mobileMenuOpen}
