@@ -168,12 +168,19 @@ const initialProducts: Product[] = [
 ];
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
-  const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(initialProducts);
+  const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
+    const saved = localStorage.getItem('larana-products');
+    return saved ? JSON.parse(saved) : initialProducts;
+  });
   
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem('larana-cart');
     return saved ? JSON.parse(saved) : [];
   });
+
+  useEffect(() => {
+    localStorage.setItem('larana-products', JSON.stringify(allFurnitureSets));
+  }, [allFurnitureSets]);
 
   useEffect(() => {
     localStorage.setItem('larana-cart', JSON.stringify(cartItems));
