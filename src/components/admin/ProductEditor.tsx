@@ -343,6 +343,8 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
           images={productForm.images}
           mainImage={productForm.image}
           onImagesChange={handleImagesChange}
+          productTitle={productForm.title}
+          productCategory={productForm.category}
         />
 
         <ProductAdminFields
