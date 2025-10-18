@@ -231,6 +231,9 @@ const ProductPage = () => {
           onOpenChange={setCheckoutOpen}
           items={cartItems}
           onConfirm={handleConfirmOrder}
+          onUpdateQuantity={updateQuantity}
+          onRemoveItem={removeFromCart}
+          user={user}
         />
 
         <AuthDialog
