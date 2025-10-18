@@ -33,15 +33,14 @@ interface FieldMappingDialogProps {
 
 const FieldMappingDialog = ({ open, onOpenChange, onConfirm, sampleProduct }: FieldMappingDialogProps) => {
   const ozonFields = [
-    { value: 'name', label: 'Название товара', example: 'Диван угловой "Комфорт"' },
     { value: 'offer_id', label: 'Артикул продавца', example: 'SKU-12345' },
-    { value: 'product_id', label: 'ID товара Ozon', example: '123456789' },
+    { value: 'name', label: 'Название товара', example: 'Диван угловой "Комфорт"' },
     { value: 'price', label: 'Цена', example: '25000' },
-    { value: 'ozonCategory', label: 'Категория и тип', example: 'Мебель / Диваны' },
-    { value: 'color', label: 'Название цвета', example: 'Серый' },
+    { value: 'images', label: 'Все фотографии', example: '[массив изображений]' },
+    { value: 'description', label: 'Аннотация/Описание', example: 'Удобный диван...' },
+    { value: 'color', label: 'Название цвета (из атрибутов)', example: 'Серый' },
     { value: 'modelName', label: 'Название модели (для объединения в одну карточку)', example: 'Комфорт-2024' },
-    { value: 'description', label: 'Описание', example: 'Удобный диван...' },
-    { value: 'stocks.present', label: 'Остаток на складе', example: '15' },
+    { value: 'ozonCategory', label: 'Категория и тип (из атрибутов)', example: 'Диваны' },
   ];
 
   const catalogFields = [
@@ -59,14 +58,14 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm, sampleProduct }: Fi
   ];
 
   const defaultMappings: FieldMapping[] = [
-    { ozonField: 'name', catalogField: 'title', enabled: true },
     { ozonField: 'offer_id', catalogField: 'supplierArticle', enabled: true },
+    { ozonField: 'name', catalogField: 'title', enabled: true },
     { ozonField: 'price', catalogField: 'price', enabled: true },
-    { ozonField: 'ozonCategory', catalogField: 'category', enabled: true },
-    { ozonField: 'color', catalogField: 'colorVariant', enabled: true },
-    { ozonField: 'modelName', catalogField: 'variantGroupId', enabled: true },
+    { ozonField: 'images', catalogField: 'skip', enabled: false },
     { ozonField: 'description', catalogField: 'description', enabled: true },
-    { ozonField: 'stocks.present', catalogField: 'stockQuantity', enabled: true },
+    { ozonField: 'color', catalogField: 'colors', enabled: true },
+    { ozonField: 'modelName', catalogField: 'variantGroupId', enabled: true },
+    { ozonField: 'ozonCategory', catalogField: 'category', enabled: true },
   ];
 
   const [mappings, setMappings] = useState<FieldMapping[]>(defaultMappings);
