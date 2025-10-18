@@ -3,13 +3,16 @@ import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import DeliveryCalculatorDialog from '@/components/DeliveryCalculatorDialog';
 import { sverdlovskRegionRates, cottageSettlementsEkb, chelyabinskRegionRates, tyumenRegionRates, yanaoHmaoRates, permRegionRates, carryRates, deliveryInfo } from '@/data/deliveryRates';
 
 const Delivery = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('sverdlovsk');
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
 
   const allRates = [...sverdlovskRegionRates, ...cottageSettlementsEkb, ...chelyabinskRegionRates, ...tyumenRegionRates, ...yanaoHmaoRates, ...permRegionRates];
 
@@ -105,6 +108,14 @@ const Delivery = () => {
               <p className="text-xl text-muted-foreground">
                 По всем регионам Урала и Западной Сибири
               </p>
+              <Button 
+                onClick={() => setCalculatorOpen(true)} 
+                size="lg" 
+                className="mt-4"
+              >
+                <Icon name="Calculator" className="mr-2" size={20} />
+                Рассчитать стоимость доставки
+              </Button>
             </div>
 
             <div className="grid md:grid-cols-3 gap-4">
@@ -331,6 +342,11 @@ const Delivery = () => {
           </div>
         </div>
       </div>
+      
+      <DeliveryCalculatorDialog 
+        open={calculatorOpen} 
+        onOpenChange={setCalculatorOpen} 
+      />
     </>
   );
 };
