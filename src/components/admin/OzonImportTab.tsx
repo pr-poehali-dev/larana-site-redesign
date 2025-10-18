@@ -49,9 +49,9 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       const data = await response.json();
       console.log('Ozon response:', data);
       
-      const productIds = data.result?.items?.map((item: any) => item.product_id) || [];
+      const items = data.result?.items || [];
 
-      if (productIds.length === 0) {
+      if (items.length === 0) {
         toast({
           title: "Товары не найдены",
           description: "В вашем каталоге Ozon пока нет товаров",
@@ -60,31 +60,28 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         return;
       }
 
-      const detailsResponse = await fetch('https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const productsWithDetails = items.map((item: any) => ({
+        product_id: item.product_id,
+        offer_id: item.offer_id,
+        name: `Товар ${item.offer_id}`,
+        price: '0',
+        old_price: '',
+        currency_code: 'RUB',
+        visible: !item.archived,
+        images: [],
+        stocks: {
+          present: 0,
+          reserved: 0
         },
-        body: JSON.stringify({
-          product_ids: productIds.slice(0, 20)
-        })
-      });
-
-      if (!detailsResponse.ok) {
-        const errorData = await detailsResponse.json();
-        console.error('Ozon details error:', errorData);
-        throw new Error(errorData.error || 'Ошибка загрузки деталей товаров');
-      }
-
-      const detailsData = await detailsResponse.json();
-      console.log('Ozon details:', detailsData);
+        description: '',
+        attributes: []
+      }));
       
-      const items = detailsData.items || detailsData.result?.items || [];
-      setProducts(items);
+      setProducts(productsWithDetails);
       
       toast({
         title: "Товары загружены",
-        description: `Загружено ${items.length} товаров с Ozon`,
+        description: `Загружено ${productsWithDetails.length} товаров с Ozon. Для полной информации обратитесь в поддержку.`,
       });
     } catch (error) {
       console.error('Load error:', error);

@@ -117,46 +117,60 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'product_ids required'})
             }
         
-        print(f'Запрос деталей для {len(product_ids)} товаров')
+        print(f'Запрос деталей для {len(product_ids)} товаров через v2/product/list')
         
-        all_items = []
-        
-        for product_id in product_ids:
-            request_data = {
-                'product_id': int(product_id)
-            }
-            
-            req = urllib.request.Request(
-                'https://api-seller.ozon.ru/v2/product/info',
-                data=json.dumps(request_data).encode('utf-8'),
-                headers={
-                    'Client-Id': client_id,
-                    'Api-Key': api_key,
-                    'Content-Type': 'application/json'
-                },
-                method='POST'
-            )
-            
-            try:
-                with urllib.request.urlopen(req, timeout=10) as response:
-                    result = json.loads(response.read().decode('utf-8'))
-                    if 'result' in result:
-                        all_items.append(result['result'])
-            except Exception as e:
-                print(f'Ошибка загрузки товара {product_id}: {str(e)}')
-                continue
-        
-        print(f'Загружено {len(all_items)} товаров')
-        
-        return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'isBase64Encoded': False,
-            'body': json.dumps({'result': {'items': all_items}})
+        request_data = {
+            'product_id': [int(pid) for pid in product_ids[:100]]
         }
+        
+        req = urllib.request.Request(
+            'https://api-seller.ozon.ru/v2/product/list',
+            data=json.dumps(request_data).encode('utf-8'),
+            headers={
+                'Client-Id': client_id,
+                'Api-Key': api_key,
+                'Content-Type': 'application/json'
+            },
+            method='POST'
+        )
+        
+        try:
+            with urllib.request.urlopen(req, timeout=30) as response:
+                result = json.loads(response.read().decode('utf-8'))
+                items = result.get('result', [])
+                print(f'Загружено {len(items)} товаров с атрибутами')
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'result': {'items': items}})
+                }
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode('utf-8')
+            print(f'Ошибка Ozon API: {error_body}')
+            return {
+                'statusCode': e.code,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': f'Ozon API error: {error_body}'})
+            }
+        except Exception as e:
+            print(f'Ошибка запроса: {str(e)}')
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': f'Request error: {str(e)}'})
+            }
     
     return {
         'statusCode': 405,
