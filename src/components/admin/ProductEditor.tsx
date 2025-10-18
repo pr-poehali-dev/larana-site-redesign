@@ -78,16 +78,18 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
 
   const handleFieldChange = (field: string, value: string) => {
     console.log(`📝 ProductEditor: Изменение поля "${field}" на значение:`, value);
-    const newForm = { ...productForm, [field]: value };
-    console.log('📝 Новое состояние формы:', {
-      variantGroupId: newForm.variantGroupId,
-      colorVariant: newForm.colorVariant
+    setProductForm((prevForm) => {
+      const newForm = { ...prevForm, [field]: value };
+      console.log('📝 Новое состояние формы:', {
+        variantGroupId: newForm.variantGroupId,
+        colorVariant: newForm.colorVariant
+      });
+      return newForm;
     });
-    setProductForm(newForm);
   };
 
   const handleImagesChange = (images: string[], mainImage: string) => {
-    setProductForm({ ...productForm, images, image: mainImage });
+    setProductForm((prevForm) => ({ ...prevForm, images, image: mainImage }));
   };
 
   const saveProduct = () => {
