@@ -121,8 +121,8 @@ const IndexDialogs = ({
 
       <CartDialog
         open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        cartItems={cartItems}
+        onOpenChange={setCartOpen}
+        items={cartItems}
         onRemoveItem={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onCheckout={handleCheckout}
@@ -130,9 +130,11 @@ const IndexDialogs = ({
 
       <CheckoutDialog
         open={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        cartItems={cartItems}
-        onConfirmOrder={handleConfirmOrder}
+        onOpenChange={setCheckoutOpen}
+        items={cartItems}
+        onConfirm={handleConfirmOrder}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveFromCart}
         user={user}
       />
 
