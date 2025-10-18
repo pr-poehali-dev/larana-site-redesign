@@ -33,7 +33,31 @@ const Admin = () => {
     const savedProducts = localStorage.getItem('adminProducts');
     if (savedProducts) {
       try {
-        setProducts(JSON.parse(savedProducts));
+        const loadedProducts = JSON.parse(savedProducts);
+        
+        // Исправляем товары импортированные с Ozon (у них есть supplierArticle)
+        const fixedProducts = loadedProducts.map((product: any) => {
+          if (product.supplierArticle && product.price && product.price.startsWith('http')) {
+            // Это битый товар с Ozon - цена содержит ссылку на фото
+            console.log('Исправляю товар с Ozon:', product.title);
+            
+            return {
+              ...product,
+              price: '0 ₽', // Сбрасываем цену
+              image: product.images?.[0] || product.price, // Берём первое фото из images или из price
+              images: product.images || [product.price] // Сохраняем все фото
+            };
+          }
+          return product;
+        });
+        
+        setProducts(fixedProducts);
+        
+        // Сохраняем исправленные данные
+        if (JSON.stringify(fixedProducts) !== savedProducts) {
+          localStorage.setItem('adminProducts', JSON.stringify(fixedProducts));
+          console.log('✅ Исправлено товаров с Ozon');
+        }
       } catch (error) {
         console.error('Error loading products:', error);
       }
