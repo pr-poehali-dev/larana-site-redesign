@@ -373,33 +373,47 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
                   {onUpdateQuantity && onRemoveItem ? (
                     <div className="flex items-center gap-2">
                       <Button
+                        type="button"
                         variant="outline"
                         size="icon"
                         className="h-7 w-7"
-                        onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onUpdateQuantity(item.id, Math.max(1, item.quantity - 1));
+                        }}
                       >
                         <Icon name="Minus" size={14} />
                       </Button>
                       <span className="w-8 text-center font-medium">{item.quantity}</span>
                       <Button
+                        type="button"
                         variant="outline"
                         size="icon"
                         className="h-7 w-7"
-                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onUpdateQuantity(item.id, item.quantity + 1);
+                        }}
                       >
                         <Icon name="Plus" size={14} />
                       </Button>
                       <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => onRemoveItem(item.id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onRemoveItem(item.id);
+                        }}
                       >
                         <Icon name="Trash2" size={14} />
                       </Button>
                     </div>
                   ) : (
-                    <p className="text-muted-foreground text-xs">{item.quantity} шт</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground text-xs">{item.quantity} шт</span>
+                    </div>
                   )}
                   
                   <p className="font-semibold min-w-[80px] text-right">
