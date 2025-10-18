@@ -28,9 +28,10 @@ interface FieldMappingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (mappings: FieldMapping[]) => void;
+  sampleProduct?: any;
 }
 
-const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialogProps) => {
+const FieldMappingDialog = ({ open, onOpenChange, onConfirm, sampleProduct }: FieldMappingDialogProps) => {
   const ozonFields = [
     { value: 'name', label: 'Название товара', example: 'Диван угловой "Комфорт"' },
     { value: 'offer_id', label: 'Артикул продавца', example: 'SKU-12345' },
@@ -69,6 +70,7 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
   ];
 
   const [mappings, setMappings] = useState<FieldMapping[]>(defaultMappings);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('ozonFieldMappings');
@@ -80,6 +82,22 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
       }
     }
   }, []);
+
+  const getNestedValue = (obj: any, path: string): any => {
+    return path.split('.').reduce((current, key) => current?.[key], obj);
+  };
+
+  const getPreviewValue = (ozonField: string): string => {
+    if (!sampleProduct) return 'Нет данных';
+    
+    const value = getNestedValue(sampleProduct, ozonField);
+    
+    if (value === undefined || value === null) return '—';
+    if (Array.isArray(value)) return value.join(', ');
+    if (typeof value === 'object') return JSON.stringify(value);
+    
+    return String(value);
+  };
 
   const updateMapping = (index: number, catalogField: string) => {
     const newMappings = [...mappings];
@@ -123,7 +141,7 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant="outline"
               size="sm"
@@ -133,6 +151,18 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
               <Icon name="RotateCcw" size={16} />
               Сбросить настройки
             </Button>
+            
+            {sampleProduct && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPreview(!showPreview)}
+                className="gap-2"
+              >
+                <Icon name={showPreview ? "EyeOff" : "Eye"} size={16} />
+                {showPreview ? 'Скрыть предпросмотр' : 'Показать предпросмотр'}
+              </Button>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -152,6 +182,16 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
                         <div className="text-xs text-muted-foreground pl-6">
                           Пример: {getOzonFieldExample(mapping.ozonField)}
                         </div>
+                        {showPreview && sampleProduct && (
+                          <div className="mt-2 p-2 bg-orange-50 dark:bg-orange-950 rounded text-xs">
+                            <div className="font-medium text-orange-700 dark:text-orange-300 mb-1">
+                              Реальные данные:
+                            </div>
+                            <div className="text-orange-900 dark:text-orange-100 break-all">
+                              {getPreviewValue(mapping.ozonField)}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -174,6 +214,16 @@ const FieldMappingDialog = ({ open, onOpenChange, onConfirm }: FieldMappingDialo
                           ))}
                         </SelectContent>
                       </Select>
+                      {showPreview && sampleProduct && mapping.enabled && mapping.catalogField !== 'skip' && (
+                        <div className="mt-2 p-2 bg-green-50 dark:bg-green-950 rounded text-xs">
+                          <div className="font-medium text-green-700 dark:text-green-300 mb-1">
+                            Будет импортировано:
+                          </div>
+                          <div className="text-green-900 dark:text-green-100 break-all">
+                            ✓ {getPreviewValue(mapping.ozonField)}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>

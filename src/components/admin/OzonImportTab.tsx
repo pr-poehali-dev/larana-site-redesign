@@ -266,6 +266,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         open={mappingDialogOpen}
         onOpenChange={setMappingDialogOpen}
         onConfirm={handleMappingConfirm}
+        sampleProduct={products.length > 0 ? products[0] : undefined}
       />
     </div>
   );
