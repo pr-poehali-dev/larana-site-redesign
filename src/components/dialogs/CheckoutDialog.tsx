@@ -52,7 +52,9 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
 
   const [deliveryPrice, setDeliveryPrice] = React.useState(0);
   const [isFreeDelivery, setIsFreeDelivery] = React.useState(false);
+  const [deliveryDetails, setDeliveryDetails] = React.useState<any>(null);
   const [carryPrice, setCarryPrice] = React.useState(0);
+  const [carryDetails, setCarryDetails] = React.useState<any>(null);
 
   const itemsTotal = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
@@ -61,13 +63,15 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
 
   const total = itemsTotal + (formData.deliveryType === 'delivery' ? deliveryPrice : 0) + carryPrice;
 
-  const handleDeliveryCalculated = (price: number, isFree: boolean) => {
+  const handleDeliveryCalculated = (price: number, isFree: boolean, details?: any) => {
     setDeliveryPrice(price);
     setIsFreeDelivery(isFree);
+    setDeliveryDetails(details);
   };
 
-  const handleCarryCalculated = (price: number) => {
+  const handleCarryCalculated = (price: number, details?: any) => {
     setCarryPrice(price);
+    setCarryDetails(details);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,8 +89,21 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
       email: formData.email
     };
     localStorage.setItem('userData', JSON.stringify(savedUserData));
+    
+    const orderDataWithDelivery = {
+      ...formData,
+      itemsTotal,
+      deliveryPrice,
+      isFreeDelivery,
+      deliveryDetails,
+      carryPrice,
+      carryDetails,
+      total,
+      timestamp: new Date().toISOString()
+    };
+    
     playSound('success');
-    onConfirm(formData);
+    onConfirm(orderDataWithDelivery);
   };
 
   return (

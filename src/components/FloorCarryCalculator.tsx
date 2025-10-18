@@ -10,7 +10,7 @@ import { calculateFloorCarry, FurnitureCategory } from '@/utils/deliveryCalculat
 import { formatPrice } from '@/utils/formatPrice';
 
 interface FloorCarryCalculatorProps {
-  onCarryCalculated?: (carryPrice: number) => void;
+  onCarryCalculated?: (carryPrice: number, details?: any) => void;
   compact?: boolean;
 }
 
@@ -25,25 +25,25 @@ const FloorCarryCalculator = ({ onCarryCalculated, compact = false }: FloorCarry
   const handleCategoryChange = (value: FurnitureCategory) => {
     setCategory(value);
     const calc = calculateFloorCarry(value, floor, hasElevator, countertopLength);
-    onCarryCalculated?.(calc.totalPrice);
+    onCarryCalculated?.(calc.totalPrice, calc);
   };
 
   const handleFloorChange = (value: number) => {
     setFloor(value);
     const calc = calculateFloorCarry(category, value, hasElevator, countertopLength);
-    onCarryCalculated?.(calc.totalPrice);
+    onCarryCalculated?.(calc.totalPrice, calc);
   };
 
   const handleElevatorChange = (value: boolean) => {
     setHasElevator(value);
     const calc = calculateFloorCarry(category, floor, value, countertopLength);
-    onCarryCalculated?.(calc.totalPrice);
+    onCarryCalculated?.(calc.totalPrice, calc);
   };
 
   const handleCountertopLengthChange = (value: number) => {
     setCountertopLength(value);
     const calc = calculateFloorCarry(category, floor, hasElevator, value);
-    onCarryCalculated?.(calc.totalPrice);
+    onCarryCalculated?.(calc.totalPrice, calc);
   };
 
   if (compact) {

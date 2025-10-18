@@ -67,7 +67,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             order_number = f"ORD-{datetime.now().strftime('%Y%m%d')}-{user_id}-{int(datetime.now().timestamp())}"
             
             cur.execute(
-                "INSERT INTO orders (user_id, order_number, total_amount, status, delivery_type, payment_type, delivery_address, delivery_city, delivery_apartment, delivery_entrance, delivery_floor, delivery_intercom, comment) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                """INSERT INTO orders (
+                    user_id, order_number, total_amount, status, delivery_type, payment_type, 
+                    delivery_address, delivery_city, delivery_apartment, delivery_entrance, 
+                    delivery_floor, delivery_intercom, comment,
+                    items_total, delivery_price, is_free_delivery, delivery_distance, 
+                    delivery_estimated_days, carry_price, carry_category, carry_details
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                RETURNING id""",
                 (
                     user_id,
                     order_number,
@@ -76,12 +83,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     body_data.get('deliveryType'),
                     body_data.get('paymentType'),
                     body_data.get('address'),
-                    '',
+                    body_data.get('deliveryCity', ''),
                     body_data.get('apartment', ''),
                     body_data.get('entrance', ''),
                     body_data.get('floor', ''),
                     body_data.get('intercom', ''),
-                    body_data.get('comment')
+                    body_data.get('comment'),
+                    body_data.get('itemsTotal', 0),
+                    body_data.get('deliveryPrice', 0),
+                    body_data.get('isFreeDelivery', False),
+                    body_data.get('deliveryDistance', ''),
+                    body_data.get('deliveryEstimatedDays', ''),
+                    body_data.get('carryPrice', 0),
+                    body_data.get('carryCategory', ''),
+                    body_data.get('carryDetails', '')
                 )
             )
             order_id = cur.fetchone()['id']

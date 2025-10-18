@@ -5,10 +5,12 @@ export const useOrderLogic = (cartItems: any[], clearCart: () => void, user: any
 
   const handleConfirmOrder = async (orderData: any) => {
     try {
-      const totalAmount = cartItems.reduce((sum, item) => {
+      const itemsTotal = orderData.itemsTotal || cartItems.reduce((sum, item) => {
         const price = parseInt(item.price.replace(/\D/g, ''));
         return sum + (price * item.quantity);
       }, 0);
+
+      const totalAmount = orderData.total || itemsTotal;
 
       const userEmail = user?.email || orderData.email;
 
@@ -20,7 +22,18 @@ export const useOrderLogic = (cartItems: any[], clearCart: () => void, user: any
         },
         body: JSON.stringify({
           ...orderData,
+          itemsTotal,
           totalAmount,
+          deliveryPrice: orderData.deliveryPrice || 0,
+          isFreeDelivery: orderData.isFreeDelivery || false,
+          deliveryCity: orderData.deliveryDetails?.city || orderData.city || '',
+          deliveryDistance: orderData.deliveryDetails?.distance || '',
+          deliveryEstimatedDays: orderData.deliveryDetails?.estimatedDays || '',
+          carryPrice: orderData.carryPrice || 0,
+          carryCategory: orderData.carryDetails?.category || '',
+          carryFloor: orderData.floor || '',
+          carryHasElevator: orderData.carryDetails ? true : false,
+          carryDetails: orderData.carryDetails?.details || '',
           items: cartItems.map(item => ({
             id: item.id,
             title: item.title,
@@ -58,6 +71,15 @@ export const useOrderLogic = (cartItems: any[], clearCart: () => void, user: any
               entrance: orderData.entrance,
               floor: orderData.floor,
               intercom: orderData.intercom,
+              itemsTotal,
+              deliveryPrice: orderData.deliveryPrice || 0,
+              isFreeDelivery: orderData.isFreeDelivery || false,
+              deliveryCity: orderData.deliveryDetails?.city || orderData.city || '',
+              deliveryDistance: orderData.deliveryDetails?.distance || '',
+              deliveryEstimatedDays: orderData.deliveryDetails?.estimatedDays || '',
+              carryPrice: orderData.carryPrice || 0,
+              carryCategory: orderData.carryDetails?.category || '',
+              carryDetails: orderData.carryDetails?.details || '',
               totalAmount,
               items: cartItems.map(item => ({
                 title: item.title,

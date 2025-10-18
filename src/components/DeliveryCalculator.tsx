@@ -10,7 +10,7 @@ import { formatPrice } from '@/utils/formatPrice';
 interface DeliveryCalculatorProps {
   city?: string;
   address?: string;
-  onDeliveryCalculated?: (deliveryPrice: number, isFreeZone: boolean) => void;
+  onDeliveryCalculated?: (deliveryPrice: number, isFreeZone: boolean, details?: any) => void;
   compact?: boolean;
 }
 
@@ -25,7 +25,7 @@ const DeliveryCalculator = ({ city = '', address = '', onDeliveryCalculated, com
       setInputCity(city);
       const info = calculateDelivery(city, address);
       setDeliveryInfo(info);
-      onDeliveryCalculated?.(info.deliveryPrice, info.isFreeZone);
+      onDeliveryCalculated?.(info.deliveryPrice, info.isFreeZone, info);
     }
   }, [city, address]);
 
@@ -43,7 +43,7 @@ const DeliveryCalculator = ({ city = '', address = '', onDeliveryCalculated, com
 
     const info = calculateDelivery(value, address);
     setDeliveryInfo(info);
-    onDeliveryCalculated?.(info.deliveryPrice, info.isFreeZone);
+    onDeliveryCalculated?.(info.deliveryPrice, info.isFreeZone, info);
   };
 
   const handleSelectCity = (selectedCity: string) => {
@@ -52,7 +52,7 @@ const DeliveryCalculator = ({ city = '', address = '', onDeliveryCalculated, com
     
     const info = calculateDelivery(selectedCity, address);
     setDeliveryInfo(info);
-    onDeliveryCalculated?.(info.deliveryPrice, info.isFreeZone);
+    onDeliveryCalculated?.(info.deliveryPrice, info.isFreeZone, info);
   };
 
   if (compact) {
