@@ -36,26 +36,38 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
         body: formData
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const imageUrl = data.url;
-        
-        const newImages = [...images, imageUrl];
-        const newMainImage = mainImage || imageUrl;
-        onImagesChange(newImages, newMainImage);
-        
-        toast({
-          title: "Изображение загружено",
-          description: "Файл успешно добавлен"
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => '');
+        console.error('Upload error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
         });
-      } else {
-        throw new Error('Upload failed');
+        throw new Error(`Ошибка загрузки: ${response.status} ${response.statusText}`);
       }
+
+      const data = await response.json();
+      console.log('Upload success response:', data);
+      
+      const imageUrl = data.url || data.file_url || data.fileUrl;
+      
+      if (!imageUrl) {
+        throw new Error('URL изображения не найден в ответе сервера');
+      }
+      
+      const newImages = [...images, imageUrl];
+      const newMainImage = mainImage || imageUrl;
+      onImagesChange(newImages, newMainImage);
+      
+      toast({
+        title: "Изображение загружено",
+        description: "Файл успешно добавлен"
+      });
     } catch (error) {
       console.error('Error uploading image:', error);
       toast({
         title: "Ошибка загрузки",
-        description: "Не удалось загрузить изображение",
+        description: error instanceof Error ? error.message : "Не удалось загрузить изображение",
         variant: "destructive"
       });
     } finally {
