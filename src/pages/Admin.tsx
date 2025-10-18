@@ -63,6 +63,12 @@ const Admin = () => {
           const cleanedImage = cleanImageUrl(fixed.image || '');
           const cleanedImages = (fixed.images || []).map(cleanImageUrl);
           
+          // Очищаем описание от фразы "Товар импортирован из Ozon."
+          const cleanedDescription = (fixed.description || fixed.title || '')
+            .replace(/\.\s*Товар импортирован из Ozon\./g, '')
+            .replace(/Товар импортирован из Ozon\.\s*/g, '')
+            .trim();
+          
           // Добавляем обязательные поля для каталога
           return {
             ...fixed,
@@ -70,7 +76,7 @@ const Admin = () => {
             images: cleanedImages.length > 0 ? cleanedImages : [cleanedImage],
             items: fixed.items || [],
             style: fixed.style || 'Современный',
-            description: fixed.description || fixed.title || '',
+            description: cleanedDescription || fixed.title || '',
             colors: fixed.colors || ['Базовый']
           };
         });
