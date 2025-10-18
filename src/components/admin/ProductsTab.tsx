@@ -134,17 +134,23 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
           <div className="space-y-2 mb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <h3 className="font-semibold text-sm md:text-base">Список товаров</h3>
-              <div className="flex gap-2 flex-shrink-0">
-                <Button size="sm" variant="outline" onClick={exportProducts} className="gap-1 whitespace-nowrap">
-                  <Icon name="Download" size={16} />
-                  Экспорт
-                </Button>
-                <Button size="sm" onClick={startNewProduct} className="gap-1 whitespace-nowrap">
-                  <Icon name="Plus" size={16} />
-                  Добавить
-                </Button>
-              </div>
             </div>
+            
+            <div className="flex flex-wrap gap-2 mb-2">
+              <Button size="sm" onClick={startNewProduct}>
+                <Icon name="Plus" size={16} className="mr-1" />
+                Добавить товар
+              </Button>
+              <Button size="sm" variant="outline" onClick={exportProducts}>
+                <Icon name="Download" size={16} className="mr-1" />
+                Экспортировать
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => duplicateProduct(products[0], new MouseEvent('click'))}>
+                <Icon name="Copy" size={16} className="mr-1" />
+                Копировать
+              </Button>
+            </div>
+            
             <div className="grid grid-cols-3 gap-2 max-w-[50%]">
               <Button size="sm" variant="outline" onClick={openBulkImport} className="text-[10px] px-1">
                 <Icon name="Upload" size={12} className="mr-1" />
