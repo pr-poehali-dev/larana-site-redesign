@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +18,8 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
+  const [imageUrl, setImageUrl] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
   const { toast } = useToast();
 
   const uploadImage = async (file: File) => {
@@ -118,29 +121,111 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
     setViewerOpen(true);
   };
 
+  const addImageFromUrl = () => {
+    if (!imageUrl.trim()) {
+      toast({
+        title: "Ошибка",
+        description: "Введите URL изображения",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Простая валидация URL
+    if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+      toast({
+        title: "Некорректный URL",
+        description: "URL должен начинаться с http:// или https://",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newImages = [...images, imageUrl.trim()];
+    const newMainImage = mainImage || imageUrl.trim();
+    onImagesChange(newImages, newMainImage);
+    
+    setImageUrl('');
+    setShowUrlInput(false);
+    
+    toast({
+      title: "Изображение добавлено",
+      description: "URL успешно добавлен в галерею"
+    });
+  };
+
   return (
     <div>
       <Label>Изображения товара</Label>
       <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => document.getElementById('image-upload')?.click()}
-            disabled={uploading}
-            className="w-full"
-          >
-            <Icon name={uploading ? "Loader2" : "Upload"} size={16} className={`mr-2 ${uploading ? 'animate-spin' : ''}`} />
-            {uploading ? 'Загрузка...' : 'Загрузить изображения'}
-          </Button>
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileSelect}
-            className="hidden"
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => document.getElementById('image-upload')?.click()}
+              disabled={uploading}
+              className="flex-1"
+            >
+              <Icon name={uploading ? "Loader2" : "Upload"} size={16} className={`mr-2 ${uploading ? 'animate-spin' : ''}`} />
+              {uploading ? 'Загрузка...' : 'Загрузить файл'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowUrlInput(!showUrlInput)}
+              disabled={uploading}
+              className="flex-1"
+            >
+              <Icon name="Link" size={16} className="mr-2" />
+              Добавить по URL
+            </Button>
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+          </div>
+
+          {showUrlInput && (
+            <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-lg">
+              <Input
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addImageFromUrl();
+                  }
+                }}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={addImageFromUrl}
+                size="sm"
+              >
+                <Icon name="Plus" size={16} className="mr-1" />
+                Добавить
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setShowUrlInput(false);
+                  setImageUrl('');
+                }}
+                size="sm"
+              >
+                <Icon name="X" size={16} />
+              </Button>
+            </div>
+          )}
         </div>
 
         {images.length > 0 && (
