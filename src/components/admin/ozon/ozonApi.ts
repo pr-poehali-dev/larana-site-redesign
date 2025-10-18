@@ -89,11 +89,16 @@ const mapOzonProducts = (rawItems: any[]): OzonProduct[] => {
       old_price: item.old_price
     });
 
-    // Правильно извлекаем ВСЕ изображения
-    const images = item.images?.map((img: any) => ({
-      file_name: img.file_name || '',
-      url: img.default || img.url || ''
-    })) || [];
+    // Правильно извлекаем ВСЕ изображения и очищаем URL
+    const images = item.images?.map((img: any) => {
+      let url = img.default || img.url || '';
+      // Убираем лишние символы из URL (валюты, пробелы и т.д.)
+      url = url.split(' ')[0].trim();
+      return {
+        file_name: img.file_name || '',
+        url: url
+      };
+    }).filter((img: any) => img.url && img.url.startsWith('http')) || [];
 
     console.log('🖼️ Изображений:', images.length);
 

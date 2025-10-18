@@ -48,8 +48,16 @@ export const convertOzonToProduct = (ozonProduct: OzonProduct, catalogProducts: 
   const maxId = catalogProducts.length > 0 ? Math.max(...catalogProducts.map(p => p.id)) : 0;
   const category = mapOzonCategory(ozonProduct.ozonCategory || '', ozonProduct.name);
 
-  // Все изображения товара
-  const allImages = ozonProduct.images?.map(img => img.url).filter(url => url) || [];
+  // Все изображения товара - очищаем от лишних символов
+  const allImages = ozonProduct.images
+    ?.map(img => {
+      let url = img.url || '';
+      // Убираем все после расширения файла (.jpg, .png и т.д.)
+      url = url.split(' ')[0]; // Убираем все после пробела
+      url = url.replace(/[₽₸₴€$£¥].*$/, ''); // Убираем валюты и все что после них
+      return url.trim();
+    })
+    .filter(url => url && url.startsWith('http')) || [];
 
   // "Название цвета" → "Цвет"
   const singleColor = ozonProduct.color || '';
