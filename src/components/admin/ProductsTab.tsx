@@ -137,11 +137,11 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={exportProducts} className="text-xs gap-1">
                   <Icon name="Download" size={14} />
-                  <span className="hidden sm:inline">Экспорт</span>
+                  Экспорт
                 </Button>
                 <Button size="sm" onClick={startNewProduct} className="text-xs gap-1">
                   <Icon name="Plus" size={14} />
-                  <span className="hidden sm:inline">Добавить</span>
+                  Добавить
                 </Button>
               </div>
             </div>
