@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { useProducts } from '@/contexts/ProductContext';
 import OrdersTab from '@/components/admin/OrdersTab';
 import ProductsTab from '@/components/admin/ProductsTab';
 import EmployeesTab from '@/components/admin/EmployeesTab';
@@ -19,6 +20,7 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('statistics');
+  const { allFurnitureSets, setAllFurnitureSets } = useProducts();
   const [products, setProducts] = useState(defaultProducts);
   const { toast } = useToast();
 
@@ -107,10 +109,14 @@ const Admin = () => {
       images: product.images || [product.image]
     }));
     
+    console.log('🔄 Обновление товаров:', normalizedProducts.length);
+    console.log('📦 Пример товара:', normalizedProducts[0]);
+    
     setProducts(normalizedProducts);
+    setAllFurnitureSets(normalizedProducts); // Обновляем глобальный контекст
     localStorage.setItem('adminProducts', JSON.stringify(normalizedProducts));
-    // Синхронизируем с каталогом на сайте
-    localStorage.setItem('larana-products', JSON.stringify(normalizedProducts));
+    
+    console.log('✅ Товары обновлены в контексте и localStorage');
   };
 
   if (!isAuthenticated) {

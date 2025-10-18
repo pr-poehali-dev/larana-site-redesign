@@ -199,6 +199,32 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('larana-products', JSON.stringify(allFurnitureSets));
   }, [allFurnitureSets]);
 
+  // Слушаем изменения в localStorage (когда админка обновляет товары)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('larana-products');
+      if (saved) {
+        try {
+          const products = JSON.parse(saved);
+          console.log('🔄 Обновление товаров из localStorage:', products.length);
+          setAllFurnitureSets(products.map((p: any) => ({
+            ...p,
+            items: p.items || [],
+            style: p.style || 'Современный',
+            description: p.description || p.title || '',
+            colors: p.colors || ['Базовый'],
+            images: p.images || [p.image]
+          })));
+        } catch (e) {
+          console.error('Error parsing products:', e);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('larana-cart', JSON.stringify(cartItems));
   }, [cartItems]);
