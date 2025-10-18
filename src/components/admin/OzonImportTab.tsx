@@ -62,6 +62,34 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     }
   };
 
+  const uploadImageFromUrl = async (imageUrl: string): Promise<string> => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      const filename = imageUrl.split('/').pop() || 'image.jpg';
+      const file = new File([blob], filename, { type: blob.type });
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const uploadResponse = await fetch('https://api.poehali.dev/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (uploadResponse.ok) {
+        const data = await uploadResponse.json();
+        return data.url;
+      }
+      
+      return imageUrl;
+    } catch (error) {
+      console.error('Ошибка загрузки изображения:', error);
+      return imageUrl;
+    }
+  };
+
   const importSelected = async () => {
     console.log('🚀 Начало импорта');
     console.log('Выбрано товаров:', selectedProducts.size);
@@ -90,8 +118,24 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       const existingProduct = newProducts.find(p => p.supplierArticle === ozonProduct.offer_id);
 
       if (!existingProduct) {
+        toast({
+          title: "⏳ Загрузка изображений",
+          description: `Обрабатываем товар: ${ozonProduct.name}`,
+        });
+
+        const ozonImages = ozonProduct.images?.map(img => img.url).filter(url => url) || [];
+        const uploadedImages: string[] = [];
+
+        for (const imageUrl of ozonImages) {
+          const uploadedUrl = await uploadImageFromUrl(imageUrl);
+          uploadedImages.push(uploadedUrl);
+        }
+
         const convertedProduct = convertOzonToProduct(ozonProduct, newProducts);
         convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
+        convertedProduct.image = uploadedImages[0] || '';
+        convertedProduct.images = uploadedImages;
+        
         newProducts.push(convertedProduct);
         console.log('✅ Добавлен товар:', convertedProduct.title);
         imported++;
@@ -99,7 +143,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         console.log('⏭️ Товар уже существует:', ozonProduct.offer_id);
       }
 
-      setImportProgress(Math.round((imported / total) * 100));
+      setImportProgress(Math.round(((imported + 1) / total) * 100));
     }
 
     console.log('📦 Всего импортировано:', imported);
