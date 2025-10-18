@@ -119,16 +119,16 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label htmlFor="variantGroupId" className="text-xs">ID группы вариантов</Label>
-            <Input
+            <input
               id="variantGroupId"
               type="text"
-              value={formData.variantGroupId || ''}
+              value={formData.variantGroupId ?? ''}
               onChange={(e) => {
                 console.log('🔄 Изменение variantGroupId:', e.target.value);
                 onChange('variantGroupId', e.target.value);
               }}
               placeholder="kitchen-lara-180"
-              className="text-sm"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
             <p className="text-xs text-muted-foreground mt-1">
               Одинаковый для всех цветов
@@ -137,16 +137,16 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
           
           <div>
             <Label htmlFor="colorVariant" className="text-xs">Цвет этого варианта</Label>
-            <Input
+            <input
               id="colorVariant"
               type="text"
-              value={formData.colorVariant || ''}
+              value={formData.colorVariant ?? ''}
               onChange={(e) => {
                 console.log('🔄 Изменение colorVariant:', e.target.value);
                 onChange('colorVariant', e.target.value);
               }}
               placeholder="Белый глянец"
-              className="text-sm"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
             <p className="text-xs text-muted-foreground mt-1">
               Уникальный для товара
