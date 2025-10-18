@@ -37,18 +37,29 @@ const Admin = () => {
         
         // Исправляем товары импортированные с Ozon (у них есть supplierArticle)
         const fixedProducts = loadedProducts.map((product: any) => {
+          let fixed = product;
+          
           if (product.supplierArticle && product.price && product.price.startsWith('http')) {
             // Это битый товар с Ozon - цена содержит ссылку на фото
             console.log('Исправляю товар с Ozon:', product.title);
             
-            return {
+            fixed = {
               ...product,
               price: '0 ₽', // Сбрасываем цену
               image: product.images?.[0] || product.price, // Берём первое фото из images или из price
               images: product.images || [product.price] // Сохраняем все фото
             };
           }
-          return product;
+          
+          // Добавляем обязательные поля для каталога
+          return {
+            ...fixed,
+            items: fixed.items || [],
+            style: fixed.style || 'Современный',
+            description: fixed.description || fixed.title || '',
+            colors: fixed.colors || ['Базовый'],
+            images: fixed.images || [fixed.image]
+          };
         });
         
         setProducts(fixedProducts);
@@ -56,11 +67,19 @@ const Admin = () => {
         // Сохраняем исправленные данные
         if (JSON.stringify(fixedProducts) !== savedProducts) {
           localStorage.setItem('adminProducts', JSON.stringify(fixedProducts));
+          localStorage.setItem('larana-products', JSON.stringify(fixedProducts));
           console.log('✅ Исправлено товаров с Ozon');
+        } else {
+          // Даже если не было исправлений, синхронизируем с каталогом
+          localStorage.setItem('larana-products', JSON.stringify(fixedProducts));
         }
       } catch (error) {
         console.error('Error loading products:', error);
       }
+    } else {
+      // Если нет сохранённых товаров, синхронизируем дефолтные с каталогом
+      localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
+      localStorage.setItem('larana-products', JSON.stringify(defaultProducts));
     }
   }, []);
 
@@ -78,8 +97,20 @@ const Admin = () => {
   };
 
   const handleProductUpdate = (updatedProducts: any[]) => {
-    setProducts(updatedProducts);
-    localStorage.setItem('adminProducts', JSON.stringify(updatedProducts));
+    // Добавляем обязательные поля для товаров, если их нет
+    const normalizedProducts = updatedProducts.map(product => ({
+      ...product,
+      items: product.items || [],
+      style: product.style || 'Современный',
+      description: product.description || product.title || '',
+      colors: product.colors || ['Базовый'],
+      images: product.images || [product.image]
+    }));
+    
+    setProducts(normalizedProducts);
+    localStorage.setItem('adminProducts', JSON.stringify(normalizedProducts));
+    // Синхронизируем с каталогом на сайте
+    localStorage.setItem('larana-products', JSON.stringify(normalizedProducts));
   };
 
   if (!isAuthenticated) {

@@ -170,7 +170,24 @@ const initialProducts: Product[] = [
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
     const saved = localStorage.getItem('larana-products');
-    return saved ? JSON.parse(saved) : initialProducts;
+    if (saved) {
+      try {
+        const products = JSON.parse(saved);
+        // Нормализуем товары - добавляем обязательные поля если их нет
+        return products.map((p: any) => ({
+          ...p,
+          items: p.items || [],
+          style: p.style || 'Современный',
+          description: p.description || p.title || '',
+          colors: p.colors || ['Базовый'],
+          images: p.images || [p.image]
+        }));
+      } catch (e) {
+        console.error('Error parsing products:', e);
+        return initialProducts;
+      }
+    }
+    return initialProducts;
   });
   
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
