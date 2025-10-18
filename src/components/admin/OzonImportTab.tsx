@@ -21,6 +21,8 @@ interface OzonProduct {
   };
   description?: string;
   attributes?: any[];
+  color?: string;
+  modelName?: string;
 }
 
 interface OzonImportTabProps {
@@ -137,6 +139,14 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         );
         const colorValue = colorAttr?.values?.[0]?.value || '';
         
+        // Извлекаем "Название модели" для группировки вариантов
+        const modelNameAttr = item.attributes?.find((attr: any) => 
+          attr.attribute_name?.toLowerCase().includes('название модели') ||
+          attr.attribute_name?.toLowerCase().includes('модель') ||
+          attr.attribute_id === 9048
+        );
+        const modelName = modelNameAttr?.values?.[0]?.value || '';
+        
         // Правильно извлекаем цену (НЕ изображение!)
         const price = item.marketing_price || item.price || item.old_price || '0';
         
@@ -152,7 +162,8 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           stocks: item.stocks || { present: 0, reserved: 0 },
           description: item.description || item.rich_text || '',
           attributes: item.attributes || [],
-          color: colorValue
+          color: colorValue,
+          modelName: modelName
         };
       });
       
@@ -224,6 +235,9 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     // Цвет как единое значение (не массив вариаций)
     const singleColor = ozonProduct.color || '';
     
+    // ID группы вариантов из "Название модели" Ozon
+    const variantGroupId = ozonProduct.modelName || null;
+    
     // Форматируем цену
     const priceValue = typeof ozonProduct.price === 'string' 
       ? ozonProduct.price.replace(/[^\d]/g, '')
@@ -243,7 +257,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       images: allImages,
       colors: singleColor ? [singleColor] : [],
       items: [],
-      variantGroupId: null,
+      variantGroupId: variantGroupId,
       colorVariant: singleColor || null
     };
   };
@@ -426,7 +440,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
                         </div>
                       </div>
                       
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-1 md:gap-2 text-[10px] md:text-xs">
                         <Badge variant={product.visible ? "default" : "secondary"}>
                           {product.visible ? 'Опубликован' : 'Не опубликован'}
                         </Badge>
@@ -434,6 +448,24 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
                         {product.stocks && (
                           <Badge variant="outline">
                             На складе: {product.stocks.present}
+                          </Badge>
+                        )}
+                        
+                        {product.color && (
+                          <Badge variant="outline" className="bg-blue-50">
+                            Цвет: {product.color}
+                          </Badge>
+                        )}
+                        
+                        {product.modelName && (
+                          <Badge variant="outline" className="bg-purple-50">
+                            Модель: {product.modelName}
+                          </Badge>
+                        )}
+                        
+                        {product.images && product.images.length > 1 && (
+                          <Badge variant="outline" className="bg-green-50">
+                            Фото: {product.images.length}
                           </Badge>
                         )}
                       </div>
