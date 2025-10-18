@@ -37,6 +37,17 @@ const Admin = () => {
       try {
         const loadedProducts = JSON.parse(savedProducts);
         
+        // Нормализация категорий к единственному числу
+        const normalizeCategory = (category: string) => {
+          const categoryMap: Record<string, string> = {
+            'Гостиные': 'Гостиная',
+            'Спальни': 'Спальня',
+            'Кухни': 'Кухня',
+            'Прихожие': 'Прихожая'
+          };
+          return categoryMap[category] || category;
+        };
+        
         // Исправляем товары импортированные с Ozon (у них есть supplierArticle)
         const fixedProducts = loadedProducts.map((product: any) => {
           let fixed = product;
@@ -72,6 +83,7 @@ const Admin = () => {
           // Добавляем обязательные поля для каталога
           return {
             ...fixed,
+            category: normalizeCategory(fixed.category || 'Гостиная'),
             image: cleanedImage,
             images: cleanedImages.length > 0 ? cleanedImages : [cleanedImage],
             items: fixed.items || [],
@@ -116,9 +128,21 @@ const Admin = () => {
   };
 
   const handleProductUpdate = (updatedProducts: any[]) => {
+    // Нормализация категорий к единственному числу
+    const normalizeCategory = (category: string) => {
+      const categoryMap: Record<string, string> = {
+        'Гостиные': 'Гостиная',
+        'Спальни': 'Спальня',
+        'Кухни': 'Кухня',
+        'Прихожие': 'Прихожая'
+      };
+      return categoryMap[category] || category;
+    };
+    
     // Добавляем обязательные поля для товаров, если их нет
     const normalizedProducts = updatedProducts.map(product => ({
       ...product,
+      category: normalizeCategory(product.category || 'Гостиная'),
       items: product.items || [],
       style: product.style || 'Современный',
       description: product.description || product.title || '',
@@ -132,6 +156,7 @@ const Admin = () => {
     setProducts(normalizedProducts);
     setAllFurnitureSets(normalizedProducts); // Обновляем глобальный контекст
     localStorage.setItem('adminProducts', JSON.stringify(normalizedProducts));
+    localStorage.setItem('larana-products', JSON.stringify(normalizedProducts)); // Синхронизируем с каталогом
     
     console.log('✅ Товары обновлены в контексте и localStorage');
   };
