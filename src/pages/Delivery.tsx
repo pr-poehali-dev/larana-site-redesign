@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import DeliveryCalculatorDialog from '@/components/DeliveryCalculatorDialog';
+import DeliveryCalculator from '@/components/DeliveryCalculator';
 import { sverdlovskRegionRates, cottageSettlementsEkb, chelyabinskRegionRates, tyumenRegionRates, yanaoHmaoRates, permRegionRates, carryRates, deliveryInfo } from '@/data/deliveryRates';
 
 const Delivery = () => {
@@ -108,13 +109,20 @@ const Delivery = () => {
               <p className="text-xl text-muted-foreground">
                 По всем регионам Урала и Западной Сибири
               </p>
+            </div>
+
+            <div className="max-w-2xl mx-auto">
+              <DeliveryCalculator />
+            </div>
+
+            <div className="text-center">
               <Button 
                 onClick={() => setCalculatorOpen(true)} 
-                size="lg" 
-                className="mt-4"
+                variant="outline"
+                size="lg"
               >
-                <Icon name="Calculator" className="mr-2" size={20} />
-                Рассчитать стоимость доставки
+                <Icon name="MessageSquare" className="mr-2" size={20} />
+                Заказать обратный звонок
               </Button>
             </div>
 

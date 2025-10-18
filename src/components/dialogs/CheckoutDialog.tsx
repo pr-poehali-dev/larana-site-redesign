@@ -12,8 +12,10 @@ import EmailInput from '@/components/EmailInput';
 import NameInput from '@/components/NameInput';
 import AddressAutocomplete from '@/components/AddressAutocomplete';
 import SavedAddresses from '@/components/SavedAddresses';
+import DeliveryCalculator from '@/components/DeliveryCalculator';
 import { useCheckoutAudio } from './checkout/useCheckoutAudio';
 import { useCheckoutData } from './checkout/useCheckoutData';
+import React from 'react';
 
 interface CartItem {
   id: number;
@@ -47,10 +49,20 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
     isFormValid
   } = useCheckoutData(open, user);
 
-  const total = items.reduce((sum, item) => {
+  const [deliveryPrice, setDeliveryPrice] = React.useState(0);
+  const [isFreeDelivery, setIsFreeDelivery] = React.useState(false);
+
+  const itemsTotal = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/\D/g, ''));
     return sum + (price * item.quantity);
   }, 0);
+
+  const total = itemsTotal + (formData.deliveryType === 'delivery' ? deliveryPrice : 0);
+
+  const handleDeliveryCalculated = (price: number, isFree: boolean) => {
+    setDeliveryPrice(price);
+    setIsFreeDelivery(isFree);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,6 +175,13 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
 
           {formData.deliveryType === 'delivery' && (
             <>
+              <DeliveryCalculator
+                city={formData.city}
+                address={formData.address}
+                onDeliveryCalculated={handleDeliveryCalculated}
+                compact
+              />
+
               <SavedAddresses
                 addresses={savedAddresses}
                 onSelect={handleSelectAddress}
@@ -356,9 +375,27 @@ const CheckoutDialog = ({ open, onOpenChange, items = [], onConfirm, onUpdateQua
             
             <Separator />
             
-            <div className="flex justify-between items-center text-lg font-bold">
-              <span>Итого:</span>
-              <span className="text-primary">{formatPrice(total)}</span>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Товары:</span>
+                <span>{formatPrice(itemsTotal)}</span>
+              </div>
+              {formData.deliveryType === 'delivery' && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Доставка:</span>
+                  {isFreeDelivery ? (
+                    <span className="text-green-600 font-medium">Бесплатно</span>
+                  ) : deliveryPrice > 0 ? (
+                    <span>{formatPrice(deliveryPrice)}</span>
+                  ) : (
+                    <span className="text-yellow-600 text-xs">Уточняется</span>
+                  )}
+                </div>
+              )}
+              <div className="flex justify-between items-center text-lg font-bold pt-2 border-t">
+                <span>Итого:</span>
+                <span className="text-primary">{formatPrice(total)}</span>
+              </div>
             </div>
           </div>
 
