@@ -79,12 +79,41 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       const detailsData = await detailsResponse.json();
       console.log('Ozon details:', detailsData);
       
-      const items = detailsData.result?.items || [];
-      setProducts(items);
+      const rawItems = detailsData.result?.items || detailsData.result || [];
+      
+      const mappedProducts = rawItems.map((item: any) => {
+        const name = item.name || item.title || `Товар ${item.offer_id}`;
+        const images = item.images?.map((img: any) => ({
+          file_name: img.file_name || '',
+          url: img.default || img.url || ''
+        })) || [];
+        
+        const colorAttr = item.attributes?.find((attr: any) => 
+          attr.attribute_name?.toLowerCase().includes('цвет') || 
+          attr.attribute_id === 85
+        );
+        
+        return {
+          product_id: item.id || item.product_id,
+          offer_id: item.offer_id,
+          name: name,
+          price: item.primary_image || item.marketing_price || item.price || '0',
+          old_price: item.old_price || '',
+          currency_code: item.currency_code || 'RUB',
+          visible: item.visible || item.status?.state === 'processed',
+          images: images,
+          stocks: item.stocks || { present: 0, reserved: 0 },
+          description: item.description || item.rich_text || '',
+          attributes: item.attributes || [],
+          color: colorAttr?.values?.[0]?.value || ''
+        };
+      });
+      
+      setProducts(mappedProducts);
       
       toast({
         title: "Товары загружены",
-        description: `Загружено ${items.length} товаров с Ozon`,
+        description: `Загружено ${mappedProducts.length} товаров с Ozon`,
       });
     } catch (error) {
       console.error('Load error:', error);
