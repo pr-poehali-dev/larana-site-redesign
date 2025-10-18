@@ -82,11 +82,20 @@ const mapOzonProducts = (rawItems: any[]): OzonProduct[] => {
   return rawItems.map((item: any) => {
     const name = item.name || item.title || `Товар ${item.offer_id}`;
 
+    console.log('🔍 Товар:', name);
+    console.log('💰 Структура цены:', {
+      marketing_price: item.marketing_price,
+      price: item.price,
+      old_price: item.old_price
+    });
+
     // Правильно извлекаем ВСЕ изображения
     const images = item.images?.map((img: any) => ({
       file_name: img.file_name || '',
       url: img.default || img.url || ''
     })) || [];
+
+    console.log('🖼️ Изображений:', images.length);
 
     // "Название цвета" из Ozon → "Цвет" в нашей карточке
     const colorNameAttr = item.attributes?.find((attr: any) =>
@@ -117,8 +126,17 @@ const mapOzonProducts = (rawItems: any[]): OzonProduct[] => {
     );
     const ozonCategory = categoryAttr?.values?.[0]?.value || '';
 
-    // Правильно извлекаем цену (НЕ изображение!)
-    const price = item.marketing_price || item.price || item.old_price || '0';
+    // Правильно извлекаем цену
+    let price = '0';
+    if (typeof item.marketing_price === 'string') {
+      price = item.marketing_price;
+    } else if (typeof item.price === 'string') {
+      price = item.price;
+    } else if (typeof item.old_price === 'string') {
+      price = item.old_price;
+    }
+
+    console.log('✅ Итоговая цена:', price);
 
     return {
       product_id: item.id || item.product_id,
