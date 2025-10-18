@@ -22,6 +22,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [showBulkStock, setShowBulkStock] = useState(false);
+  const [stockFilter, setStockFilter] = useState<'all' | 'out' | 'zero'>('all');
   const { toast } = useToast();
 
   const startEditProduct = (product: any) => {
@@ -116,9 +117,19 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     });
   };
 
+  const filteredProducts = products.filter(product => {
+    if (stockFilter === 'out') {
+      return !product.inStock;
+    }
+    if (stockFilter === 'zero') {
+      return product.stockQuantity === 0 || product.stockQuantity === null;
+    }
+    return true;
+  });
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <ScrollArea className="h-[500px] pr-2 md:pr-4">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <ScrollArea className="h-[500px] xl:h-[600px] pr-2 md:pr-4">
         <div className="space-y-2">
           <div className="space-y-2 mb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
@@ -148,8 +159,34 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 Остатки
               </Button>
             </div>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant={stockFilter === 'all' ? 'default' : 'outline'}
+                onClick={() => setStockFilter('all')}
+                className="flex-1 text-xs"
+              >
+                Все ({products.length})
+              </Button>
+              <Button 
+                size="sm" 
+                variant={stockFilter === 'out' ? 'default' : 'outline'}
+                onClick={() => setStockFilter('out')}
+                className="flex-1 text-xs"
+              >
+                Нет в наличии ({products.filter(p => !p.inStock).length})
+              </Button>
+              <Button 
+                size="sm" 
+                variant={stockFilter === 'zero' ? 'default' : 'outline'}
+                onClick={() => setStockFilter('zero')}
+                className="flex-1 text-xs"
+              >
+                Остаток 0 ({products.filter(p => p.stockQuantity === 0 || p.stockQuantity === null).length})
+              </Button>
+            </div>
           </div>
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Card 
               key={product.id}
               className={`cursor-pointer transition-colors ${
@@ -210,7 +247,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
         </div>
       </ScrollArea>
 
-      <ScrollArea className="h-[500px] pr-2 md:pr-4">
+      <ScrollArea className="h-[500px] xl:h-[600px] pr-2 md:pr-4">
         {showBulkImport ? (
           <BulkProductImport 
             products={products}

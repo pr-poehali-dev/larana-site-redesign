@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -105,6 +106,21 @@ const Delivery = () => {
       <div className="min-h-screen bg-background py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto space-y-8">
+            <div className="flex items-center gap-4 mb-6">
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/">
+                  <Icon name="ArrowLeft" size={20} className="mr-2" />
+                  На главную
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/catalog">
+                  <Icon name="Package" size={20} className="mr-2" />
+                  Каталог
+                </Link>
+              </Button>
+            </div>
+
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold">Доставка мебели</h1>
               <p className="text-xl text-muted-foreground">
