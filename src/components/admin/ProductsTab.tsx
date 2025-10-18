@@ -132,7 +132,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-      <ScrollArea className="h-[500px] xl:h-[600px] pr-2 md:pr-4">
+      <ScrollArea className="h-[500px] xl:h-[600px] pr-2 md:pr-4 xl:max-w-[50%]">
         <div className="space-y-2">
           <div className="space-y-2 mb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
