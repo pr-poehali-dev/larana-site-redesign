@@ -170,12 +170,17 @@ const initialProducts: Product[] = [
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
+    console.log('\n🚀 ИНИЦИАЛИЗАЦИЯ КАТАЛОГА');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
     const saved = localStorage.getItem('larana-products');
     if (saved) {
       try {
         const products = JSON.parse(saved);
+        console.log('📦 Загружено товаров из localStorage:', products.length);
+        
         // Нормализуем товары - добавляем обязательные поля если их нет
-        return products.map((p: any) => ({
+        const normalized = products.map((p: any) => ({
           ...p,
           items: p.items || [],
           style: p.style || 'Современный',
@@ -183,11 +188,21 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           colors: p.colors || ['Базовый'],
           images: p.images || [p.image]
         }));
+        
+        console.log('✅ Каталог готов с данными из админки');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+        return normalized;
       } catch (e) {
-        console.error('Error parsing products:', e);
+        console.error('❌ Ошибка загрузки товаров:', e);
+        console.log('⚠️ Использую дефолтные товары');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
         return initialProducts;
       }
     }
+    
+    console.log('ℹ️ localStorage пуст - использую дефолтные товары');
+    console.log('📦 Товаров:', initialProducts.length);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     return initialProducts;
   });
   
@@ -202,33 +217,59 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   // Слушаем изменения в localStorage (когда админка обновляет товары)
   useEffect(() => {
-    const handleStorageChange = () => {
+    const handleStorageChange = (event?: CustomEvent | StorageEvent) => {
+      console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('📡 КАТАЛОГ: Получен сигнал обновления товаров!');
+      
+      if (event && 'detail' in event) {
+        console.log('   📅 Время:', event.detail?.timestamp);
+        console.log('   📊 Товаров в обновлении:', event.detail?.count);
+      }
+      
       const saved = localStorage.getItem('larana-products');
       if (saved) {
         try {
           const products = JSON.parse(saved);
-          console.log('🔄 Обновление товаров из localStorage:', products.length);
-          setAllFurnitureSets(products.map((p: any) => ({
+          console.log('📦 Загружено товаров из localStorage:', products.length);
+          
+          const normalizedProducts = products.map((p: any) => ({
             ...p,
             items: p.items || [],
             style: p.style || 'Современный',
             description: p.description || p.title || '',
             colors: p.colors || ['Базовый'],
             images: p.images || [p.image]
-          })));
+          }));
+          
+          console.log('🔄 Применяю новые данные к каталогу...');
+          setAllFurnitureSets(normalizedProducts);
+          console.log('✅ КАТАЛОГ ОБНОВЛЁН! Товаров:', normalizedProducts.length);
+          console.log('💡 Теперь:');
+          console.log('   - Фильтры пересчитаются');
+          console.log('   - Карточки обновятся');
+          console.log('   - Цены актуализируются');
+          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
         } catch (e) {
-          console.error('Error parsing products:', e);
+          console.error('❌ Ошибка парсинга товаров:', e);
         }
+      } else {
+        console.log('⚠️ localStorage пуст');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
       }
     };
 
+    console.log('\n👂 КАТАЛОГ: Начал слушать события обновления товаров');
+    console.log('   - storage (изменения из других вкладок)');
+    console.log('   - larana-products-updated (изменения в текущей вкладке)\n');
+    
     // Слушаем изменения из других вкладок
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange as EventListener);
     // Слушаем изменения в той же вкладке через custom event
     window.addEventListener('larana-products-updated', handleStorageChange as EventListener);
     
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      console.log('👋 КАТАЛОГ: Перестал слушать события обновления');
+      window.removeEventListener('storage', handleStorageChange as EventListener);
       window.removeEventListener('larana-products-updated', handleStorageChange as EventListener);
     };
   }, []);

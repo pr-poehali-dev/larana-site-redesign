@@ -305,18 +305,43 @@ const Admin = () => {
       colors: product.colors || ['Базовый']
     }));
     
-    console.log('🔄 Обновление товаров:', normalizedProducts.length);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔄 НАЧАЛО СИНХРОНИЗАЦИИ ТОВАРОВ');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('📊 Количество товаров:', normalizedProducts.length);
     console.log('📦 Пример товара:', normalizedProducts[0]);
     
+    console.log('\n1️⃣ Обновление локального состояния админки...');
     setProducts(normalizedProducts);
-    setAllFurnitureSets(normalizedProducts); // Обновляем глобальный контекст
+    console.log('   ✅ Состояние админки обновлено');
+    
+    console.log('\n2️⃣ Обновление глобального контекста (ProductContext)...');
+    setAllFurnitureSets(normalizedProducts);
+    console.log('   ✅ Глобальный контекст обновлён - каталог получит новые данные');
+    
+    console.log('\n3️⃣ Сохранение в localStorage...');
     localStorage.setItem('adminProducts', JSON.stringify(normalizedProducts));
-    localStorage.setItem('larana-products', JSON.stringify(normalizedProducts)); // Синхронизируем с каталогом
+    console.log('   ✅ adminProducts сохранён');
+    localStorage.setItem('larana-products', JSON.stringify(normalizedProducts));
+    console.log('   ✅ larana-products сохранён (используется каталогом)');
     
-    // Уведомляем другие компоненты об обновлении
-    window.dispatchEvent(new CustomEvent('larana-products-updated'));
+    console.log('\n4️⃣ Отправка события обновления...');
+    window.dispatchEvent(new CustomEvent('larana-products-updated', {
+      detail: { 
+        count: normalizedProducts.length,
+        timestamp: new Date().toISOString()
+      }
+    }));
+    console.log('   ✅ Event "larana-products-updated" отправлен');
     
-    console.log('✅ Товары обновлены в контексте и localStorage');
+    console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('✅ СИНХРОНИЗАЦИЯ ЗАВЕРШЕНА');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('💡 Теперь:');
+    console.log('   - Каталог покажет обновлённые данные');
+    console.log('   - Фильтры пересчитаются автоматически');
+    console.log('   - Карточки товаров обновятся');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
   };
 
   if (!isAuthenticated) {
