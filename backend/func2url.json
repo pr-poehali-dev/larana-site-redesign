@@ -1,5 +1,4 @@
 {
-  "ozon-import": "https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00",
   "send-email": "https://functions.poehali.dev/655e638f-76f8-464e-bafc-f29f0e5f9db4",
   "telegram-notify": "https://functions.poehali.dev/5bb39c34-5468-4f00-906c-c2bed52f18d9",
   "employee-change-password": "https://functions.poehali.dev/a2f2f499-2f7b-470e-8fe6-c9529301c09f",
