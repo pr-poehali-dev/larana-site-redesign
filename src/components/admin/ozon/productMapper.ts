@@ -1,4 +1,5 @@
 import { OzonProduct } from './types';
+import { FieldMapping } from './FieldMappingDialog';
 
 export const mapOzonCategory = (ozonCategory: string, productName: string): string => {
   // Сначала проверяем категорию из Ozon "Категория и тип"
@@ -44,47 +45,91 @@ export const mapOzonCategory = (ozonCategory: string, productName: string): stri
   return 'Гостиная';
 };
 
-export const convertOzonToProduct = (ozonProduct: OzonProduct, catalogProducts: any[]): any => {
+const getNestedValue = (obj: any, path: string): any => {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+};
+
+export const convertOzonToProduct = (
+  ozonProduct: OzonProduct, 
+  catalogProducts: any[],
+  mappings?: FieldMapping[]
+): any => {
   const maxId = catalogProducts.length > 0 ? Math.max(...catalogProducts.map(p => p.id)) : 0;
-  const category = mapOzonCategory(ozonProduct.ozonCategory || '', ozonProduct.name);
 
   // Все изображения товара - очищаем от лишних символов
   const allImages = ozonProduct.images
     ?.map(img => {
       let url = img.url || '';
-      // Убираем все после расширения файла (.jpg, .png и т.д.)
-      url = url.split(' ')[0]; // Убираем все после пробела
-      url = url.replace(/[₽₸₴€$£¥].*$/, ''); // Убираем валюты и все что после них
+      url = url.split(' ')[0];
+      url = url.replace(/[₽₸₴€$£¥].*$/, '');
       return url.trim();
     })
     .filter(url => url && url.startsWith('http')) || [];
 
-  // "Название цвета" → "Цвет"
-  const singleColor = ozonProduct.color || '';
+  // Загружаем сохраненные маппинги
+  const savedMappings = mappings || (() => {
+    try {
+      const saved = localStorage.getItem('ozonFieldMappings');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  })();
 
-  // ID группы вариантов из "Название модели" Ozon
-  const variantGroupId = ozonProduct.modelName || null;
-
-  // Форматируем цену
-  const priceValue = typeof ozonProduct.price === 'string'
-    ? ozonProduct.price.replace(/[^\d]/g, '')
-    : ozonProduct.price;
-
-  return {
+  const result: any = {
     id: maxId + 1,
-    title: ozonProduct.name,
-    category: category,
-    price: `${priceValue} ₽`,
-    style: 'Современный',
-    description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.`,
     image: allImages[0] || '',
-    supplierArticle: ozonProduct.offer_id,
-    inStock: (ozonProduct.stocks?.present ?? 0) > 0,
-    stockQuantity: ozonProduct.stocks?.present ?? null,
     images: allImages,
-    colors: singleColor ? [singleColor] : [],
+    inStock: (ozonProduct.stocks?.present ?? 0) > 0,
+    colors: [],
     items: [],
-    variantGroupId: variantGroupId,
-    colorVariant: singleColor || null
+    style: 'Современный',
   };
+
+  if (savedMappings) {
+    savedMappings.forEach((mapping: FieldMapping) => {
+      if (!mapping.enabled || mapping.catalogField === 'skip') return;
+
+      const ozonValue = getNestedValue(ozonProduct, mapping.ozonField);
+
+      if (mapping.catalogField === 'category' && mapping.ozonField === 'ozonCategory') {
+        result.category = mapOzonCategory(ozonValue || '', ozonProduct.name);
+      } else if (mapping.catalogField === 'price') {
+        const priceValue = typeof ozonValue === 'string'
+          ? ozonValue.replace(/[^\d]/g, '')
+          : ozonValue;
+        result.price = `${priceValue} ₽`;
+      } else if (mapping.catalogField === 'colorVariant' && ozonValue) {
+        result.colorVariant = ozonValue;
+        result.colors = [ozonValue];
+      } else if (ozonValue !== undefined && ozonValue !== null) {
+        result[mapping.catalogField] = ozonValue;
+      }
+    });
+  } else {
+    const category = mapOzonCategory(ozonProduct.ozonCategory || '', ozonProduct.name);
+    const singleColor = ozonProduct.color || '';
+    const variantGroupId = ozonProduct.modelName || null;
+    const priceValue = typeof ozonProduct.price === 'string'
+      ? ozonProduct.price.replace(/[^\d]/g, '')
+      : ozonProduct.price;
+
+    result.title = ozonProduct.name;
+    result.category = category;
+    result.price = `${priceValue} ₽`;
+    result.description = ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.`;
+    result.supplierArticle = ozonProduct.offer_id;
+    result.stockQuantity = ozonProduct.stocks?.present ?? null;
+    result.colors = singleColor ? [singleColor] : [];
+    result.variantGroupId = variantGroupId;
+    result.colorVariant = singleColor || null;
+  }
+
+  // Значения по умолчанию если не заданы
+  if (!result.title) result.title = 'Товар без названия';
+  if (!result.category) result.category = 'Гостиная';
+  if (!result.price) result.price = '0 ₽';
+  if (!result.description) result.description = result.title;
+
+  return result;
 };

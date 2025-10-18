@@ -8,12 +8,15 @@ import { OzonProduct, OzonImportTabProps } from './ozon/types';
 import { loadOzonProductsFromAPI } from './ozon/ozonApi';
 import { convertOzonToProduct } from './ozon/productMapper';
 import OzonProductCard from './ozon/OzonProductCard';
+import FieldMappingDialog, { FieldMapping } from './ozon/FieldMappingDialog';
 
 const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImportTabProps) => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<OzonProduct[]>([]);
   const [importProgress, setImportProgress] = useState(0);
   const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
+  const [mappingDialogOpen, setMappingDialogOpen] = useState(false);
+  const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>([]);
   const { toast } = useToast();
 
   const loadOzonProducts = async () => {
@@ -68,11 +71,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     return imageUrl;
   };
 
-  const importSelected = async () => {
-    console.log('🚀 Начало импорта');
-    console.log('Выбрано товаров:', selectedProducts.size);
-    console.log('Текущий каталог:', catalogProducts.length, 'товаров');
-
+  const handleImportClick = () => {
     if (selectedProducts.size === 0) {
       toast({
         title: "Выберите товары",
@@ -81,6 +80,19 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       });
       return;
     }
+
+    setMappingDialogOpen(true);
+  };
+
+  const handleMappingConfirm = (mappings: FieldMapping[]) => {
+    setFieldMappings(mappings);
+    importSelected(mappings);
+  };
+
+  const importSelected = async (mappings: FieldMapping[]) => {
+    console.log('🚀 Начало импорта с маппингом:', mappings);
+    console.log('Выбрано товаров:', selectedProducts.size);
+    console.log('Текущий каталог:', catalogProducts.length, 'товаров');
 
     setLoading(true);
     setImportProgress(0);
@@ -104,15 +116,13 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           uploadedImages.push(uploadedUrl);
         }
 
-        const convertedProduct = convertOzonToProduct(ozonProduct, newProducts);
+        const convertedProduct = convertOzonToProduct(ozonProduct, newProducts, mappings);
         convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
         
-        // Изображения уже установлены в convertOzonToProduct, но мы их обновили
         if (uploadedImages.length > 0) {
           convertedProduct.image = uploadedImages[0];
           convertedProduct.images = uploadedImages;
         }
-        // Если uploadedImages пустой, оставляем как есть из convertOzonToProduct
         
         console.log('📸 Изображения товара:', {
           title: convertedProduct.title,
@@ -187,13 +197,24 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
                 </Button>
 
                 <Button
-                  onClick={importSelected}
+                  onClick={handleImportClick}
                   disabled={selectedProducts.size === 0 || loading}
                   className="gap-2 w-full sm:w-auto text-xs md:text-sm"
                   size="sm"
                 >
                   <Icon name="Upload" size={16} className="md:w-4 md:h-4" />
                   Импорт ({selectedProducts.size})
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => setMappingDialogOpen(true)}
+                  className="gap-2 w-full sm:w-auto text-xs md:text-sm"
+                  size="sm"
+                >
+                  <Icon name="Settings2" size={16} className="md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Настройки импорта</span>
+                  <span className="sm:hidden">Настройки</span>
                 </Button>
               </>
             )}
@@ -240,6 +261,12 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           </CardContent>
         </Card>
       )}
+
+      <FieldMappingDialog
+        open={mappingDialogOpen}
+        onOpenChange={setMappingDialogOpen}
+        onConfirm={handleMappingConfirm}
+      />
     </div>
   );
 };
