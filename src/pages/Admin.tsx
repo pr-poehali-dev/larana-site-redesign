@@ -171,12 +171,21 @@ const Admin = () => {
             };
           }
           
-          // Очищаем ссылки на изображения от символа ₽ и других валют
+          // Очищаем ссылки на изображения от символа ₽/Р и других валют
           const cleanImageUrl = (url: string) => {
             if (!url) return url;
-            // Удаляем символ валюты и всё что после него (включая русское Р и английское P с пробелами)
-            const cleaned = url
-              .replace(/\s*[₽₸₴€$£¥Р]\s*.*$/, '') // Удаляем валюты с пробелами
+            
+            // Удаляем последний символ "Р" и "₽" если он есть
+            let cleaned = url.trim();
+            
+            // Удаляем "Р" в конце (русская буква, не валюта)
+            if (cleaned.endsWith('Р') || cleaned.endsWith('р')) {
+              cleaned = cleaned.slice(0, -1).trim();
+            }
+            
+            // Удаляем символ валюты и всё что после него
+            cleaned = cleaned
+              .replace(/\s*[₽₸₴€$£¥]\s*.*$/, '') // Удаляем валюты с пробелами
               .replace(/\s+₽.*$/, '') // Удаляем ₽ с любыми пробелами
               .replace(/₽.*$/, '') // Удаляем просто ₽
               .split(' ')[0] // Берем только первую часть до пробела
@@ -187,7 +196,7 @@ const Admin = () => {
           };
           
           const cleanedImage = cleanImageUrl(fixed.image || '');
-          const cleanedImages = (fixed.images || []).map(cleanImageUrl);
+          const cleanedImages = (fixed.images || []).map(cleanImageUrl).filter(url => url.startsWith('http'));
           
           // Очищаем описание от фразы "Товар импортирован из Ozon."
           const cleanedDescription = (fixed.description || fixed.title || '')

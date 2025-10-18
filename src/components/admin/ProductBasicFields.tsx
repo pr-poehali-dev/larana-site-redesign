@@ -124,6 +124,7 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
               onChange={(e) => onChange('variantGroupId', e.target.value)}
               placeholder="kitchen-lara-180"
               className="text-sm"
+              disabled={false}
             />
             <p className="text-xs text-muted-foreground mt-1">
               Одинаковый для всех цветов
@@ -137,6 +138,7 @@ const ProductBasicFields = ({ formData, onChange }: ProductBasicFieldsProps) => 
               onChange={(e) => onChange('colorVariant', e.target.value)}
               placeholder="Белый глянец"
               className="text-sm"
+              disabled={false}
             />
             <p className="text-xs text-muted-foreground mt-1">
               Уникальный для товара
