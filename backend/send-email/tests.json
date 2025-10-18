@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Send email with HTML content",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "to": "customer@example.com",
+        "subject": "Восстановление пароля",
+        "html": "<h1>Восстановление пароля</h1><p>Перейдите по ссылке для сброса пароля</p>",
+        "text": "Восстановление пароля. Перейдите по ссылке для сброса пароля"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing required fields",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "to": "customer@example.com"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

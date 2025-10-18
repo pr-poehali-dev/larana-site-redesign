@@ -43,14 +43,47 @@ const AuthDialog = ({ open, onClose, onSuccess }: AuthDialogProps) => {
     onClose();
   };
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    setResetSent(true);
-    setTimeout(() => {
-      setResetSent(false);
-      setShowResetForm(false);
-      setResetEmail('');
-    }, 3000);
+    
+    try {
+      const resetLink = `${window.location.origin}/reset-password?token=example-token`;
+      
+      const response = await fetch('https://functions.poehali.dev/655e638f-76f8-464e-bafc-f29f0e5f9db4', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: resetEmail,
+          subject: 'Восстановление пароля - LARANA',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #333;">Восстановление пароля</h2>
+              <p>Вы запросили восстановление пароля для вашего аккаунта на LARANA.</p>
+              <p>Перейдите по ссылке ниже для создания нового пароля:</p>
+              <a href="${resetLink}" style="display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">
+                Сбросить пароль
+              </a>
+              <p style="color: #666; font-size: 14px;">Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</p>
+              <p style="color: #666; font-size: 14px;">Ссылка действительна в течение 24 часов.</p>
+            </div>
+          `,
+          text: `Восстановление пароля\n\nВы запросили восстановление пароля для вашего аккаунта на LARANA.\n\nПерейдите по ссылке для создания нового пароля:\n${resetLink}\n\nЕсли вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.\n\nСсылка действительна в течение 24 часов.`
+        })
+      });
+
+      if (response.ok) {
+        setResetSent(true);
+        setTimeout(() => {
+          setResetSent(false);
+          setShowResetForm(false);
+          setResetEmail('');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Failed to send reset email:', error);
+    }
   };
 
   return (

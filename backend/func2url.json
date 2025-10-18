@@ -1,4 +1,5 @@
 {
+  "send-email": "https://functions.poehali.dev/655e638f-76f8-464e-bafc-f29f0e5f9db4",
   "telegram-notify": "https://functions.poehali.dev/5bb39c34-5468-4f00-906c-c2bed52f18d9",
   "employee-change-password": "https://functions.poehali.dev/a2f2f499-2f7b-470e-8fe6-c9529301c09f",
   "employee-auth": "https://functions.poehali.dev/4ea75d0c-6fc5-4fcc-81e4-f0fdf7ee65b2",
