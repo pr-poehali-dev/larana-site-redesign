@@ -236,7 +236,7 @@ const Index = () => {
             </p>
           </div>
           <ProductCarousel 
-            products={allFurnitureSets.slice(0, 8)}
+            products={availableProducts.slice(0, 8)}
             onProductClick={setSelectedSet}
             onAddToCart={handleAddToCart}
           />
@@ -296,7 +296,7 @@ const Index = () => {
         resultsCount={furnitureSets.length}
         cartItems={cartItems}
         user={user}
-        allFurnitureSets={allFurnitureSets}
+        availableProducts={availableProducts}
         setAllFurnitureSets={setAllFurnitureSets}
         handleAddToCart={handleAddToCart}
         handleRemoveFromCart={handleRemoveFromCart}
