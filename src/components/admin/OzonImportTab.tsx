@@ -3,33 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-
-interface OzonProduct {
-  product_id: number;
-  offer_id: string;
-  name: string;
-  price: string;
-  old_price: string;
-  currency_code: string;
-  visible: boolean;
-  images: { file_name: string; url: string }[];
-  stocks?: {
-    present: number;
-    reserved: number;
-  };
-  description?: string;
-  attributes?: any[];
-  color?: string;
-  modelName?: string;
-  ozonCategory?: string;
-}
-
-interface OzonImportTabProps {
-  products: any[];
-  onProductsUpdate: (products: any[]) => void;
-}
+import { OzonProduct, OzonImportTabProps } from './ozon/types';
+import { loadOzonProductsFromAPI } from './ozon/ozonApi';
+import { convertOzonToProduct } from './ozon/productMapper';
+import OzonProductCard from './ozon/OzonProductCard';
 
 const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImportTabProps) => {
   const [loading, setLoading] = useState(false);
@@ -41,150 +19,15 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
   const loadOzonProducts = async () => {
     setLoading(true);
     try {
-      toast({
-        title: "⏳ Загрузка товаров...",
-        description: "Загружаем все товары с Ozon, это может занять время",
-      });
-
-      let allProducts: any[] = [];
-      let lastId = '';
-      let hasMore = true;
-      
-      while (hasMore) {
-        const url = lastId 
-          ? `https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00?limit=1000&last_id=${lastId}`
-          : 'https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00?limit=1000';
-        
-        const response = await fetch(url);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Ozon API error:', errorData);
-        throw new Error(errorData.error || 'Ошибка загрузки товаров с Ozon');
-      }
-
-        const data = await response.json();
-        const items = data.result?.items || [];
-        
-        if (items.length === 0) {
-          hasMore = false;
-          break;
-        }
-        
-        allProducts = [...allProducts, ...items];
-        lastId = data.result?.last_id || '';
-        hasMore = !!lastId && items.length === 1000;
-        
-        console.log(`Загружено ${allProducts.length} товаров...`);
-      }
-      
-      const productIds = allProducts.map((item: any) => item.product_id);
-
-      if (productIds.length === 0) {
+      const mappedProducts = await loadOzonProductsFromAPI((message) => {
         toast({
-          title: "Товары не найдены",
-          description: "В вашем каталоге Ozon пока нет товаров",
+          title: "⏳ Загрузка товаров...",
+          description: message,
         });
-        setLoading(false);
-        return;
-      }
-
-      toast({
-        title: "⏳ Загрузка деталей...",
-        description: `Загружаем детали для ${productIds.length} товаров`,
       });
 
-      let allDetails: any[] = [];
-      const batchSize = 100;
-      
-      for (let i = 0; i < productIds.length; i += batchSize) {
-        const batch = productIds.slice(i, i + batchSize);
-        
-        const detailsResponse = await fetch('https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            product_ids: batch
-          })
-        });
-
-        if (!detailsResponse.ok) {
-          console.error('Ошибка загрузки батча', i);
-          continue;
-        }
-
-        const detailsData = await detailsResponse.json();
-        const items = detailsData.result?.items || detailsData.result || [];
-        allDetails = [...allDetails, ...items];
-        
-        console.log(`Загружено деталей: ${allDetails.length}/${productIds.length}`);
-      }
-      
-      const rawItems = allDetails;
-      
-      const mappedProducts = rawItems.map((item: any) => {
-        const name = item.name || item.title || `Товар ${item.offer_id}`;
-        
-        // Правильно извлекаем ВСЕ изображения
-        const images = item.images?.map((img: any) => ({
-          file_name: img.file_name || '',
-          url: img.default || img.url || ''
-        })) || [];
-        
-        // "Название цвета" из Ozon → "Цвет" в нашей карточке
-        const colorNameAttr = item.attributes?.find((attr: any) => 
-          attr.attribute_name?.toLowerCase().includes('название цвета') ||
-          attr.attribute_id === 10096
-        );
-        const colorName = colorNameAttr?.values?.[0]?.value || '';
-        
-        // "Название модели" из Ozon → "ID группы вариантов"
-        const modelNameAttr = item.attributes?.find((attr: any) => 
-          attr.attribute_name?.toLowerCase().includes('название модели') ||
-          attr.attribute_name?.toLowerCase().includes('модель') ||
-          attr.attribute_id === 9048
-        );
-        const modelName = modelNameAttr?.values?.[0]?.value || '';
-        
-        // "Аннотация" из Ozon → "Описание" в нашей карточке
-        const annotationAttr = item.attributes?.find((attr: any) => 
-          attr.attribute_name?.toLowerCase().includes('аннотация') ||
-          attr.attribute_id === 4191
-        );
-        const annotation = annotationAttr?.values?.[0]?.value || item.description || item.rich_text || '';
-        
-        // "Категория и тип" из Ozon → "Категория" в нашей карточке
-        const categoryAttr = item.attributes?.find((attr: any) => 
-          attr.attribute_name?.toLowerCase().includes('тип') ||
-          attr.attribute_id === 8229
-        );
-        const ozonCategory = categoryAttr?.values?.[0]?.value || '';
-        
-        // Правильно извлекаем цену (НЕ изображение!)
-        const price = item.marketing_price || item.price || item.old_price || '0';
-        
-        return {
-          product_id: item.id || item.product_id,
-          offer_id: item.offer_id,
-          name: name,
-          price: price,
-          old_price: item.old_price || '',
-          currency_code: item.currency_code || 'RUB',
-          visible: item.visible || item.status?.state === 'processed',
-          images: images,
-          stocks: item.stocks || { present: 0, reserved: 0 },
-          description: annotation,
-          attributes: item.attributes || [],
-          color: colorName,
-          modelName: modelName,
-          ozonCategory: ozonCategory
-        };
-      });
-      
       setProducts(mappedProducts);
-      
+
       toast({
         title: "Товары загружены",
         description: `Загружено ${mappedProducts.length} товаров с Ozon`,
@@ -219,92 +62,11 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     }
   };
 
-  const mapOzonCategory = (ozonCategory: string, productName: string): string => {
-    // Сначала проверяем категорию из Ozon "Категория и тип"
-    if (ozonCategory) {
-      const categoryLower = ozonCategory.toLowerCase();
-      
-      if (categoryLower.includes('диван') || categoryLower.includes('кресло') || categoryLower.includes('пуф')) {
-        return 'Гостиная';
-      }
-      if (categoryLower.includes('кровать') || categoryLower.includes('матрас')) {
-        return 'Спальня';
-      }
-      if (categoryLower.includes('стол') || categoryLower.includes('стул') || categoryLower.includes('табурет')) {
-        return 'Кухня';
-      }
-      if (categoryLower.includes('шкаф') || categoryLower.includes('комод') || categoryLower.includes('тумба')) {
-        return 'Прихожая';
-      }
-      if (categoryLower.includes('детск')) {
-        return 'Детская';
-      }
-    }
-    
-    // Если категория не определена, пробуем по названию товара
-    const nameLower = productName.toLowerCase();
-    
-    if (nameLower.includes('диван') || nameLower.includes('кресло') || nameLower.includes('пуф')) {
-      return 'Гостиная';
-    }
-    if (nameLower.includes('кровать') || nameLower.includes('матрас')) {
-      return 'Спальня';
-    }
-    if (nameLower.includes('стол') || nameLower.includes('стул') || nameLower.includes('табурет')) {
-      return 'Кухня';
-    }
-    if (nameLower.includes('шкаф') || nameLower.includes('комод') || nameLower.includes('тумба')) {
-      return 'Прихожая';
-    }
-    if (nameLower.includes('детск')) {
-      return 'Детская';
-    }
-    
-    return 'Гостиная';
-  };
-
-  const convertOzonToProduct = (ozonProduct: OzonProduct): any => {
-    const maxId = catalogProducts.length > 0 ? Math.max(...catalogProducts.map(p => p.id)) : 0;
-    const category = mapOzonCategory(ozonProduct.ozonCategory || '', ozonProduct.name);
-    
-    // Все изображения товара
-    const allImages = ozonProduct.images?.map(img => img.url).filter(url => url) || [];
-    
-    // "Название цвета" → "Цвет"
-    const singleColor = ozonProduct.color || '';
-    
-    // ID группы вариантов из "Название модели" Ozon
-    const variantGroupId = ozonProduct.modelName || null;
-    
-    // Форматируем цену
-    const priceValue = typeof ozonProduct.price === 'string' 
-      ? ozonProduct.price.replace(/[^\d]/g, '')
-      : ozonProduct.price;
-    
-    return {
-      id: maxId + 1,
-      title: ozonProduct.name,
-      category: category,
-      price: `${priceValue} ₽`,
-      style: 'Современный',
-      description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.`,
-      image: allImages[0] || '',
-      supplierArticle: ozonProduct.offer_id,
-      inStock: (ozonProduct.stocks?.present ?? 0) > 0,
-      stockQuantity: ozonProduct.stocks?.present ?? null,
-      images: allImages,
-      colors: singleColor ? [singleColor] : [],
-      items: [],
-      variantGroupId: variantGroupId,
-      colorVariant: singleColor || null
-    };
-  };
-
   const importSelected = async () => {
     console.log('🚀 Начало импорта');
     console.log('Выбрано товаров:', selectedProducts.size);
     console.log('Текущий каталог:', catalogProducts.length, 'товаров');
-    
+
     if (selectedProducts.size === 0) {
       toast({
         title: "Выберите товары",
@@ -316,19 +78,19 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
 
     setLoading(true);
     setImportProgress(0);
-    
+
     const selectedItems = products.filter(p => selectedProducts.has(p.product_id));
     console.log('Товары для импорта:', selectedItems);
-    
+
     const total = selectedItems.length;
     let imported = 0;
     const newProducts = [...catalogProducts];
 
     for (const ozonProduct of selectedItems) {
       const existingProduct = newProducts.find(p => p.supplierArticle === ozonProduct.offer_id);
-      
+
       if (!existingProduct) {
-        const convertedProduct = convertOzonToProduct(ozonProduct);
+        const convertedProduct = convertOzonToProduct(ozonProduct, newProducts);
         convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
         newProducts.push(convertedProduct);
         console.log('✅ Добавлен товар:', convertedProduct.title);
@@ -336,13 +98,13 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       } else {
         console.log('⏭️ Товар уже существует:', ozonProduct.offer_id);
       }
-      
+
       setImportProgress(Math.round((imported / total) * 100));
     }
 
     console.log('📦 Всего импортировано:', imported);
     console.log('📊 Новый каталог:', newProducts.length, 'товаров');
-    
+
     onProductsUpdate(newProducts);
 
     toast({
@@ -370,8 +132,8 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button 
-              onClick={loadOzonProducts} 
+            <Button
+              onClick={loadOzonProducts}
               disabled={loading}
               className="gap-2 w-full sm:w-auto text-xs md:text-sm"
               size="sm"
@@ -380,11 +142,11 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
               <span className="hidden sm:inline">{loading ? 'Загрузка...' : 'Загрузить товары с Ozon'}</span>
               <span className="sm:hidden">{loading ? 'Загрузка...' : 'Загрузить'}</span>
             </Button>
-            
+
             {products.length > 0 && (
               <>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={selectAll}
                   className="gap-2 w-full sm:w-auto text-xs md:text-sm"
                   size="sm"
@@ -393,8 +155,8 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
                   <span className="hidden sm:inline">{selectedProducts.size === products.length ? 'Снять все' : 'Выбрать все'}</span>
                   <span className="sm:hidden">{selectedProducts.size === products.length ? 'Снять' : 'Выбрать'}</span>
                 </Button>
-                
-                <Button 
+
+                <Button
                   onClick={importSelected}
                   disabled={selectedProducts.size === 0 || loading}
                   className="gap-2 w-full sm:w-auto text-xs md:text-sm"
@@ -423,94 +185,15 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           <h3 className="text-base md:text-lg font-semibold">
             Товары из Ozon ({products.length})
           </h3>
-          
+
           <div className="grid gap-2 md:gap-3">
             {products.map((product) => (
-              <Card 
+              <OzonProductCard
                 key={product.product_id}
-                className={`cursor-pointer transition-all ${
-                  selectedProducts.has(product.product_id) 
-                    ? 'border-primary bg-primary/5' 
-                    : 'hover:border-gray-400'
-                }`}
-                onClick={() => toggleProductSelection(product.product_id)}
-              >
-                <CardContent className="p-2 md:p-4">
-                  <div className="flex gap-2 md:gap-4">
-                    <div className="flex items-center flex-shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={selectedProducts.has(product.product_id)}
-                        onChange={() => toggleProductSelection(product.product_id)}
-                        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </div>
-                    
-                    {product.images?.[0] && (
-                      <img 
-                        src={product.images[0].url} 
-                        alt={product.name}
-                        className="w-12 h-12 md:w-20 md:h-20 object-cover rounded flex-shrink-0"
-                      />
-                    )}
-                    
-                    <div className="flex-1 space-y-1 md:space-y-2 min-w-0">
-                      <div className="flex items-start justify-between gap-2 md:gap-4">
-                        <div className="min-w-0 flex-1">
-                          <h4 className="font-semibold text-xs md:text-sm line-clamp-2">
-                            {product.name}
-                          </h4>
-                          <p className="text-[10px] md:text-xs text-muted-foreground truncate">
-                            ID: {product.product_id} • Арт: {product.offer_id}
-                          </p>
-                        </div>
-                        
-                        <div className="text-right">
-                          <p className="font-bold text-lg">
-                            {product.price} {product.currency_code}
-                          </p>
-                          {product.old_price && product.old_price !== product.price && (
-                            <p className="text-xs text-muted-foreground line-through">
-                              {product.old_price}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-1 md:gap-2 text-[10px] md:text-xs">
-                        <Badge variant={product.visible ? "default" : "secondary"}>
-                          {product.visible ? 'Опубликован' : 'Не опубликован'}
-                        </Badge>
-                        
-                        {product.stocks && (
-                          <Badge variant="outline">
-                            На складе: {product.stocks.present}
-                          </Badge>
-                        )}
-                        
-                        {product.color && (
-                          <Badge variant="outline" className="bg-blue-50">
-                            Цвет: {product.color}
-                          </Badge>
-                        )}
-                        
-                        {product.modelName && (
-                          <Badge variant="outline" className="bg-purple-50">
-                            Модель: {product.modelName}
-                          </Badge>
-                        )}
-                        
-                        {product.images && product.images.length > 1 && (
-                          <Badge variant="outline" className="bg-green-50">
-                            Фото: {product.images.length}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                product={product}
+                isSelected={selectedProducts.has(product.product_id)}
+                onToggle={toggleProductSelection}
+              />
             ))}
           </div>
         </div>
