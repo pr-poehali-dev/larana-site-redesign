@@ -105,9 +105,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     if method == 'POST':
         body_data = json.loads(event.get('body', '{}'))
         product_ids = body_data.get('product_ids', [])
-        offer_ids = body_data.get('offer_ids', [])
         
-        if not product_ids and not offer_ids:
+        if not product_ids:
             return {
                 'statusCode': 400,
                 'headers': {
@@ -115,59 +114,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Access-Control-Allow-Origin': '*'
                 },
                 'isBase64Encoded': False,
-                'body': json.dumps({'error': 'product_ids or offer_ids required'})
+                'body': json.dumps({'error': 'product_ids required'})
             }
         
-        request_data = {}
-        if product_ids:
-            request_data['product_id'] = product_ids
-        if offer_ids:
-            request_data['offer_id'] = offer_ids
+        print(f'Запрос деталей для {len(product_ids)} товаров')
         
-        req = urllib.request.Request(
-            'https://api-seller.ozon.ru/v3/product/info/list',
-            data=json.dumps(request_data).encode('utf-8'),
-            headers={
-                'Client-Id': client_id,
-                'Api-Key': api_key,
-                'Content-Type': 'application/json'
+        all_items = []
+        
+        for product_id in product_ids:
+            request_data = {
+                'product_id': int(product_id)
+            }
+            
+            req = urllib.request.Request(
+                'https://api-seller.ozon.ru/v2/product/info',
+                data=json.dumps(request_data).encode('utf-8'),
+                headers={
+                    'Client-Id': client_id,
+                    'Api-Key': api_key,
+                    'Content-Type': 'application/json'
+                },
+                method='POST'
+            )
+            
+            try:
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    result = json.loads(response.read().decode('utf-8'))
+                    if 'result' in result:
+                        all_items.append(result['result'])
+            except Exception as e:
+                print(f'Ошибка загрузки товара {product_id}: {str(e)}')
+                continue
+        
+        print(f'Загружено {len(all_items)} товаров')
+        
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
-            method='POST'
-        )
-        
-        try:
-            with urllib.request.urlopen(req, timeout=30) as response:
-                result = json.loads(response.read().decode('utf-8'))
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'isBase64Encoded': False,
-                    'body': json.dumps(result)
-                }
-        except urllib.error.HTTPError as e:
-            error_body = e.read().decode('utf-8')
-            return {
-                'statusCode': e.code,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'isBase64Encoded': False,
-                'body': json.dumps({'error': f'Ozon API error: {error_body}'})
-            }
-        except Exception as e:
-            return {
-                'statusCode': 500,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'isBase64Encoded': False,
-                'body': json.dumps({'error': f'Request error: {str(e)}'})
-            }
+            'isBase64Encoded': False,
+            'body': json.dumps({'result': {'items': all_items}})
+        }
     
     return {
         'statusCode': 405,

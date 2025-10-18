@@ -15,7 +15,7 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "product_ids": [123456789]
+        "product_ids": [972355604]
       },
       "expectedStatus": 200,
       "expectedBody": {

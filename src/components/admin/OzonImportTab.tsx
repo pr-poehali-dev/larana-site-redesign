@@ -78,11 +78,13 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
 
       const detailsData = await detailsResponse.json();
       console.log('Ozon details:', detailsData);
-      setProducts(detailsData.result?.items || []);
+      
+      const items = detailsData.items || detailsData.result?.items || [];
+      setProducts(items);
       
       toast({
         title: "Товары загружены",
-        description: `Загружено ${detailsData.result?.items?.length || 0} товаров с Ozon`,
+        description: `Загружено ${items.length} товаров с Ozon`,
       });
     } catch (error) {
       console.error('Load error:', error);
