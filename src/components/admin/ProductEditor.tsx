@@ -230,7 +230,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
             style: productForm.style,
             items: productForm.items,
             colors: productForm.colors,
-            description: productForm.description
+            description: productForm.description,
+            variantGroupId: productForm.variantGroupId,
+            colorVariant: productForm.colorVariant
           }}
           onChange={handleFieldChange}
         />
