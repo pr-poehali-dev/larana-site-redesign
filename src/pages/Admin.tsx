@@ -67,8 +67,16 @@ const Admin = () => {
           // Очищаем ссылки на изображения от символа ₽ и других валют
           const cleanImageUrl = (url: string) => {
             if (!url) return url;
-            // Удаляем символ валюты и всё что после него
-            return url.replace(/[₽₸₴€$£¥].*$/, '').trim();
+            // Удаляем символ валюты и всё что после него (включая русское Р и английское P с пробелами)
+            const cleaned = url
+              .replace(/\s*[₽₸₴€$£¥Р]\s*.*$/, '') // Удаляем валюты с пробелами
+              .replace(/\s+₽.*$/, '') // Удаляем ₽ с любыми пробелами
+              .replace(/₽.*$/, '') // Удаляем просто ₽
+              .split(' ')[0] // Берем только первую часть до пробела
+              .trim();
+            
+            // Проверяем что это валидная ссылка
+            return cleaned.startsWith('http') ? cleaned : url;
           };
           
           const cleanedImage = cleanImageUrl(fixed.image || '');
@@ -139,15 +147,28 @@ const Admin = () => {
       return categoryMap[category] || category;
     };
     
+    // Очищаем ссылки на изображения от символа ₽
+    const cleanImageUrl = (url: string) => {
+      if (!url) return url;
+      const cleaned = url
+        .replace(/\s*[₽₸₴€$£¥Р]\s*.*$/, '')
+        .replace(/\s+₽.*$/, '')
+        .replace(/₽.*$/, '')
+        .split(' ')[0]
+        .trim();
+      return cleaned.startsWith('http') ? cleaned : url;
+    };
+    
     // Добавляем обязательные поля для товаров, если их нет
     const normalizedProducts = updatedProducts.map(product => ({
       ...product,
       category: normalizeCategory(product.category || 'Гостиная'),
+      image: cleanImageUrl(product.image || ''),
+      images: (product.images || [product.image]).map(cleanImageUrl),
       items: product.items || [],
       style: product.style || 'Современный',
       description: product.description || product.title || '',
-      colors: product.colors || ['Базовый'],
-      images: product.images || [product.image]
+      colors: product.colors || ['Базовый']
     }));
     
     console.log('🔄 Обновление товаров:', normalizedProducts.length);
