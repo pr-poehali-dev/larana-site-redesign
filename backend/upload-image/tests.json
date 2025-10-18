@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "Upload image from URL",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "url": "https://cdn.poehali.dev/files/placeholder.jpg"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "url": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing URL",
+      "method": "POST",
+      "path": "/",
+      "body": {},
+      "expectedStatus": 400,
+      "expectedBody": {
+        "success": false,
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -64,25 +64,22 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
 
   const uploadImageFromUrl = async (imageUrl: string): Promise<string> => {
     try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      
-      const filename = imageUrl.split('/').pop() || 'image.jpg';
-      const file = new File([blob], filename, { type: blob.type });
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const uploadResponse = await fetch('https://api.poehali.dev/upload', {
+      const response = await fetch('https://functions.poehali.dev/872aa2f7-0278-44a5-8930-98a76886a184', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url: imageUrl })
       });
 
-      if (uploadResponse.ok) {
-        const data = await uploadResponse.json();
-        return data.url;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.url) {
+          return data.url;
+        }
       }
       
+      console.warn('Не удалось загрузить изображение через backend, используем оригинальный URL');
       return imageUrl;
     } catch (error) {
       console.error('Ошибка загрузки изображения:', error);
