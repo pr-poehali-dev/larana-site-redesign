@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { formatPrice } from '@/utils/formatPrice';
+import { smoothScrollToSection } from '@/utils/smoothScroll';
 
 interface FurnitureSet {
   id: number;
@@ -57,7 +58,12 @@ const CartDialog = ({
           <div className="text-center py-12">
             <Icon name="ShoppingCart" size={64} className="mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-4">Добавьте комплекты мебели в корзину</p>
-            <Button onClick={() => onOpenChange(false)}>Перейти к каталогу</Button>
+            <Button onClick={() => {
+              onOpenChange(false);
+              setTimeout(() => smoothScrollToSection('catalog'), 100);
+            }}>
+              Перейти к каталогу
+            </Button>
           </div>
         ) : (
           <>
