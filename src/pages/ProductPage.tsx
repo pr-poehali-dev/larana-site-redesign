@@ -182,7 +182,23 @@ const ProductPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
               <ProductGallery 
-                images={product.images || [product.image]}
+                images={(() => {
+                  const allImages = product.images || [];
+                  const mainImg = product.image;
+                  
+                  // Если главное изображение есть и оно есть в массиве - ставим его первым
+                  if (mainImg && allImages.includes(mainImg)) {
+                    return [mainImg, ...allImages.filter(img => img !== mainImg)];
+                  }
+                  
+                  // Если главного изображения нет в массиве, но оно указано - добавляем его первым
+                  if (mainImg && !allImages.includes(mainImg)) {
+                    return [mainImg, ...allImages];
+                  }
+                  
+                  // Иначе просто возвращаем массив или главное изображение
+                  return allImages.length > 0 ? allImages : [mainImg];
+                })()}
                 title={product.title}
               />
 
