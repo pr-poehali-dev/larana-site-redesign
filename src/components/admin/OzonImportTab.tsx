@@ -38,7 +38,21 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
   const loadOzonProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00?limit=100');
+      toast({
+        title: "⏳ Загрузка товаров...",
+        description: "Загружаем все товары с Ozon, это может занять время",
+      });
+
+      let allProducts: any[] = [];
+      let lastId = '';
+      let hasMore = true;
+      
+      while (hasMore) {
+        const url = lastId 
+          ? `https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00?limit=1000&last_id=${lastId}`
+          : 'https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00?limit=1000';
+        
+        const response = await fetch(url);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -46,10 +60,22 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         throw new Error(errorData.error || 'Ошибка загрузки товаров с Ozon');
       }
 
-      const data = await response.json();
-      console.log('Ozon response:', data);
+        const data = await response.json();
+        const items = data.result?.items || [];
+        
+        if (items.length === 0) {
+          hasMore = false;
+          break;
+        }
+        
+        allProducts = [...allProducts, ...items];
+        lastId = data.result?.last_id || '';
+        hasMore = !!lastId && items.length === 1000;
+        
+        console.log(`Загружено ${allProducts.length} товаров...`);
+      }
       
-      const productIds = data.result?.items?.map((item: any) => item.product_id) || [];
+      const productIds = allProducts.map((item: any) => item.product_id);
 
       if (productIds.length === 0) {
         toast({
@@ -60,26 +86,40 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         return;
       }
 
-      const detailsResponse = await fetch('https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          product_ids: productIds
-        })
+      toast({
+        title: "⏳ Загрузка деталей...",
+        description: `Загружаем детали для ${productIds.length} товаров`,
       });
 
-      if (!detailsResponse.ok) {
-        const errorData = await detailsResponse.json();
-        console.error('Ozon details error:', errorData);
-        throw new Error(errorData.error || 'Ошибка загрузки деталей товаров');
-      }
-
-      const detailsData = await detailsResponse.json();
-      console.log('Ozon details:', detailsData);
+      let allDetails: any[] = [];
+      const batchSize = 100;
       
-      const rawItems = detailsData.result?.items || detailsData.result || [];
+      for (let i = 0; i < productIds.length; i += batchSize) {
+        const batch = productIds.slice(i, i + batchSize);
+        
+        const detailsResponse = await fetch('https://functions.poehali.dev/41fcd72f-4164-49f0-8cf6-315f1a291c00', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            product_ids: batch
+          })
+        });
+
+        if (!detailsResponse.ok) {
+          console.error('Ошибка загрузки батча', i);
+          continue;
+        }
+
+        const detailsData = await detailsResponse.json();
+        const items = detailsData.result?.items || detailsData.result || [];
+        allDetails = [...allDetails, ...items];
+        
+        console.log(`Загружено деталей: ${allDetails.length}/${productIds.length}`);
+      }
+      
+      const rawItems = allDetails;
       
       const mappedProducts = rawItems.map((item: any) => {
         const name = item.name || item.title || `Товар ${item.offer_id}`;
@@ -191,6 +231,10 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
   };
 
   const importSelected = async () => {
+    console.log('🚀 Начало импорта');
+    console.log('Выбрано товаров:', selectedProducts.size);
+    console.log('Текущий каталог:', catalogProducts.length, 'товаров');
+    
     if (selectedProducts.size === 0) {
       toast({
         title: "Выберите товары",
@@ -204,6 +248,8 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     setImportProgress(0);
     
     const selectedItems = products.filter(p => selectedProducts.has(p.product_id));
+    console.log('Товары для импорта:', selectedItems);
+    
     const total = selectedItems.length;
     let imported = 0;
     const newProducts = [...catalogProducts];
@@ -215,21 +261,23 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
         const convertedProduct = convertOzonToProduct(ozonProduct);
         convertedProduct.id = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
         newProducts.push(convertedProduct);
+        console.log('✅ Добавлен товар:', convertedProduct.title);
+        imported++;
+      } else {
+        console.log('⏭️ Товар уже существует:', ozonProduct.offer_id);
       }
       
-      await new Promise(resolve => setTimeout(resolve, 100));
-      imported++;
       setImportProgress(Math.round((imported / total) * 100));
     }
 
-    onProductsUpdate(newProducts);
+    console.log('📦 Всего импортировано:', imported);
+    console.log('📊 Новый каталог:', newProducts.length, 'товаров');
     
-    console.log('Импортировано товаров:', imported);
-    console.log('Обновлённый каталог:', newProducts);
+    onProductsUpdate(newProducts);
 
     toast({
       title: "✅ Импорт завершён",
-      description: `Импортировано ${imported} товаров в каталог. Перейдите на вкладку "Товары" для просмотра.`,
+      description: `Импортировано ${imported} товаров. Всего в каталоге: ${newProducts.length}`,
     });
 
     setLoading(false);
