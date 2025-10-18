@@ -9,6 +9,7 @@ import ProductEditor from './ProductEditor';
 import BulkPriceUpdate from './BulkPriceUpdate';
 import BulkProductImport from './BulkProductImport';
 import BulkStockUpdate from './BulkStockUpdate';
+import BulkImageImport from './BulkImageImport';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,6 +23,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [showBulkStock, setShowBulkStock] = useState(false);
+  const [showBulkImages, setShowBulkImages] = useState(false);
   const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out'>('all');
   const { toast } = useToast();
 
@@ -30,6 +32,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkUpdate(false);
     setShowBulkImport(false);
     setShowBulkStock(false);
+    setShowBulkImages(false);
   };
 
   const startNewProduct = () => {
@@ -37,6 +40,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkUpdate(false);
     setShowBulkImport(false);
     setShowBulkStock(false);
+    setShowBulkImages(false);
   };
 
   const duplicateProduct = (product: any, e: React.MouseEvent) => {
@@ -54,6 +58,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkUpdate(false);
     setShowBulkImport(false);
     setShowBulkStock(false);
+    setShowBulkImages(false);
     
     toast({
       title: "Создана копия товара",
@@ -66,6 +71,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkUpdate(true);
     setShowBulkImport(false);
     setShowBulkStock(false);
+    setShowBulkImages(false);
   };
 
   const openBulkImport = () => {
@@ -73,6 +79,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkUpdate(false);
     setShowBulkImport(true);
     setShowBulkStock(false);
+    setShowBulkImages(false);
   };
 
   const openBulkStock = () => {
@@ -80,6 +87,15 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
     setShowBulkUpdate(false);
     setShowBulkImport(false);
     setShowBulkStock(true);
+    setShowBulkImages(false);
+  };
+
+  const openBulkImages = () => {
+    setEditingProduct(null);
+    setShowBulkUpdate(false);
+    setShowBulkImport(false);
+    setShowBulkStock(false);
+    setShowBulkImages(true);
   };
 
   const exportProducts = () => {
@@ -151,7 +167,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
               </Button>
             </div>
             
-            <div className="grid grid-cols-3 gap-2 max-w-[50%]">
+            <div className="grid grid-cols-4 gap-2 max-w-[66%]">
               <Button size="sm" variant="outline" onClick={openBulkImport} className="text-[10px] px-1">
                 <Icon name="Upload" size={12} className="mr-1" />
                 Импорт
@@ -163,6 +179,10 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
               <Button size="sm" variant="outline" onClick={openBulkStock} className="text-[10px] px-1">
                 <Icon name="Package" size={12} className="mr-1" />
                 Остатки
+              </Button>
+              <Button size="sm" variant="outline" onClick={openBulkImages} className="text-[10px] px-1">
+                <Icon name="Image" size={12} className="mr-1" />
+                Фото
               </Button>
             </div>
             <div className="grid grid-cols-3 gap-2 max-w-[50%]">
@@ -272,6 +292,12 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
           <BulkStockUpdate 
             products={products}
             onProductsUpdate={onProductUpdate}
+          />
+        ) : showBulkImages ? (
+          <BulkImageImport 
+            products={products}
+            onProductUpdate={onProductUpdate}
+            onClose={() => setShowBulkImages(false)}
           />
         ) : editingProduct ? (
           <ProductEditor
