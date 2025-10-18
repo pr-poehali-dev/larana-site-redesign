@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Any, List
+from typing import Dict, Any
 import urllib.request
 import urllib.error
 
@@ -21,6 +21,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
+            'isBase64Encoded': False,
             'body': ''
         }
     
@@ -34,7 +35,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': json.dumps({'error': 'Ozon API credentials not configured'})
+            'isBase64Encoded': False,
+            'body': json.dumps({
+                'error': 'Ozon API ключи не настроены',
+                'message': 'Добавьте OZON_CLIENT_ID и OZON_API_KEY в секреты проекта'
+            })
         }
     
     if method == 'GET':
@@ -63,7 +68,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         )
         
         try:
-            with urllib.request.urlopen(req) as response:
+            with urllib.request.urlopen(req, timeout=30) as response:
                 result = json.loads(response.read().decode('utf-8'))
                 return {
                     'statusCode': 200,
@@ -71,6 +76,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
+                    'isBase64Encoded': False,
                     'body': json.dumps(result)
                 }
         except urllib.error.HTTPError as e:
@@ -81,7 +87,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
+                'isBase64Encoded': False,
                 'body': json.dumps({'error': f'Ozon API error: {error_body}'})
+            }
+        except Exception as e:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': f'Request error: {str(e)}'})
             }
     
     if method == 'POST':
@@ -96,6 +113,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
+                'isBase64Encoded': False,
                 'body': json.dumps({'error': 'product_ids or offer_ids required'})
             }
         
@@ -117,7 +135,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         )
         
         try:
-            with urllib.request.urlopen(req) as response:
+            with urllib.request.urlopen(req, timeout=30) as response:
                 result = json.loads(response.read().decode('utf-8'))
                 return {
                     'statusCode': 200,
@@ -125,6 +143,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
+                    'isBase64Encoded': False,
                     'body': json.dumps(result)
                 }
         except urllib.error.HTTPError as e:
@@ -135,7 +154,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
+                'isBase64Encoded': False,
                 'body': json.dumps({'error': f'Ozon API error: {error_body}'})
+            }
+        except Exception as e:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': f'Request error: {str(e)}'})
             }
     
     return {
@@ -144,5 +174,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
         },
+        'isBase64Encoded': False,
         'body': json.dumps({'error': 'Method not allowed'})
     }
