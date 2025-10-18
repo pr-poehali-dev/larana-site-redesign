@@ -31,25 +31,24 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange, productTitle, 
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('https://api.poehali.dev/upload', {
+      const response = await fetch('https://functions.poehali.dev/1a0d83e1-cea3-41fb-a393-b01eba523b70', {
         method: 'POST',
         body: formData
       });
 
       if (!response.ok) {
-        const errorText = await response.text().catch(() => '');
-        console.error('Upload error response:', {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Upload error:', {
           status: response.status,
-          statusText: response.statusText,
-          body: errorText
+          error: errorData
         });
-        throw new Error(`Ошибка загрузки: ${response.status} ${response.statusText}`);
+        throw new Error(errorData.error || `Ошибка загрузки: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Upload success response:', data);
+      console.log('Upload success:', data);
       
-      const imageUrl = data.url || data.file_url || data.fileUrl;
+      const imageUrl = data.url;
       
       if (!imageUrl) {
         throw new Error('URL изображения не найден в ответе сервера');
