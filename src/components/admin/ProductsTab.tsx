@@ -3,6 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { formatPrice } from '@/utils/formatPrice';
 import ProductEditor from './ProductEditor';
@@ -25,6 +26,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [showBulkStock, setShowBulkStock] = useState(false);
   const [showBulkImages, setShowBulkImages] = useState(false);
   const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
 
   const startEditProduct = (product: any) => {
@@ -134,6 +136,10 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   };
 
   const filteredProducts = products.filter(product => {
+    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (!matchesSearch) return false;
+    
     if (stockFilter === 'in') {
       return product.inStock;
     }
@@ -150,6 +156,17 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
           <div className="space-y-2 mb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <h3 className="font-semibold text-sm md:text-base">Список товаров</h3>
+            </div>
+            
+            <div className="relative">
+              <Icon name="Search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Поиск по названию..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9"
+              />
             </div>
             
             <div className="flex flex-wrap gap-2 mb-2">
