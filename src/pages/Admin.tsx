@@ -88,10 +88,19 @@ const Admin = () => {
             .replace(/Товар импортирован из Ozon\.\s*/g, '')
             .trim();
           
+          // Округляем цену до целого числа
+          const roundPrice = (price: string) => {
+            if (!price) return '0 ₽';
+            const numericValue = price.replace(/[^\d.,]/g, '').replace(',', '.');
+            const rounded = Math.round(parseFloat(numericValue) || 0);
+            return `${rounded} ₽`;
+          };
+          
           // Добавляем обязательные поля для каталога
           return {
             ...fixed,
             category: normalizeCategory(fixed.category || 'Гостиная'),
+            price: roundPrice(fixed.price || '0 ₽'),
             image: cleanedImage,
             images: cleanedImages.length > 0 ? cleanedImages : [cleanedImage],
             items: fixed.items || [],
@@ -159,10 +168,19 @@ const Admin = () => {
       return cleaned.startsWith('http') ? cleaned : url;
     };
     
+    // Округляем цену до целого числа
+    const roundPrice = (price: string) => {
+      if (!price) return '0 ₽';
+      const numericValue = price.replace(/[^\d.,]/g, '').replace(',', '.');
+      const rounded = Math.round(parseFloat(numericValue) || 0);
+      return `${rounded} ₽`;
+    };
+    
     // Добавляем обязательные поля для товаров, если их нет
     const normalizedProducts = updatedProducts.map(product => ({
       ...product,
       category: normalizeCategory(product.category || 'Гостиная'),
+      price: roundPrice(product.price || '0 ₽'),
       image: cleanImageUrl(product.image || ''),
       images: (product.images || [product.image]).map(cleanImageUrl),
       items: product.items || [],
