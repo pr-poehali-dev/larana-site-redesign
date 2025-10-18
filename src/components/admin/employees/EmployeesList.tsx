@@ -40,15 +40,15 @@ export const EmployeesList = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {filterType === 'all' ? (
         Object.entries(groupedEmployees).map(([type, emps]) => (
           <div key={type}>
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]}`} />
+            <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3 flex items-center gap-2">
+              <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full ${EMPLOYEE_TYPES_COLORS[type as keyof typeof EMPLOYEE_TYPES_COLORS]}`} />
               {EMPLOYEE_TYPES[type as keyof typeof EMPLOYEE_TYPES]} ({emps.length})
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
               {emps.map(employee => (
                 <EmployeeCard
                   key={employee.id}
@@ -60,12 +60,12 @@ export const EmployeesList = ({
               ))}
             </div>
             {emps.length === 0 && (
-              <p className="text-muted-foreground text-sm">Нет сотрудников</p>
+              <p className="text-muted-foreground text-xs md:text-sm">Нет сотрудников</p>
             )}
           </div>
         ))
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
           {filteredEmployees.map(employee => (
             <EmployeeCard
               key={employee.id}

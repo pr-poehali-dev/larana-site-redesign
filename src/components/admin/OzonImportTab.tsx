@@ -155,14 +155,16 @@ const OzonImportTab = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <Button 
               onClick={loadOzonProducts} 
               disabled={loading}
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto text-xs md:text-sm"
+              size="sm"
             >
-              <Icon name="Download" size={18} />
-              {loading ? 'Загрузка...' : 'Загрузить товары с Ozon'}
+              <Icon name="Download" size={16} className="md:w-4 md:h-4" />
+              <span className="hidden sm:inline">{loading ? 'Загрузка...' : 'Загрузить товары с Ozon'}</span>
+              <span className="sm:hidden">{loading ? 'Загрузка...' : 'Загрузить'}</span>
             </Button>
             
             {products.length > 0 && (
@@ -170,19 +172,22 @@ const OzonImportTab = () => {
                 <Button 
                   variant="outline" 
                   onClick={selectAll}
-                  className="gap-2"
+                  className="gap-2 w-full sm:w-auto text-xs md:text-sm"
+                  size="sm"
                 >
-                  <Icon name="CheckSquare" size={18} />
-                  {selectedProducts.size === products.length ? 'Снять все' : 'Выбрать все'}
+                  <Icon name="CheckSquare" size={16} className="md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">{selectedProducts.size === products.length ? 'Снять все' : 'Выбрать все'}</span>
+                  <span className="sm:hidden">{selectedProducts.size === products.length ? 'Снять' : 'Выбрать'}</span>
                 </Button>
                 
                 <Button 
                   onClick={importSelected}
                   disabled={selectedProducts.size === 0 || loading}
-                  className="gap-2"
+                  className="gap-2 w-full sm:w-auto text-xs md:text-sm"
+                  size="sm"
                 >
-                  <Icon name="Upload" size={18} />
-                  Импортировать ({selectedProducts.size})
+                  <Icon name="Upload" size={16} className="md:w-4 md:h-4" />
+                  Импорт ({selectedProducts.size})
                 </Button>
               </>
             )}
@@ -200,12 +205,12 @@ const OzonImportTab = () => {
       </Card>
 
       {products.length > 0 && (
-        <div className="grid gap-4">
-          <h3 className="text-lg font-semibold">
+        <div className="grid gap-3 md:gap-4">
+          <h3 className="text-base md:text-lg font-semibold">
             Товары из Ozon ({products.length})
           </h3>
           
-          <div className="grid gap-3">
+          <div className="grid gap-2 md:gap-3">
             {products.map((product) => (
               <Card 
                 key={product.product_id}
@@ -216,14 +221,14 @@ const OzonImportTab = () => {
                 }`}
                 onClick={() => toggleProductSelection(product.product_id)}
               >
-                <CardContent className="p-4">
-                  <div className="flex gap-4">
-                    <div className="flex items-center">
+                <CardContent className="p-2 md:p-4">
+                  <div className="flex gap-2 md:gap-4">
+                    <div className="flex items-center flex-shrink-0">
                       <input
                         type="checkbox"
                         checked={selectedProducts.has(product.product_id)}
                         onChange={() => toggleProductSelection(product.product_id)}
-                        className="w-5 h-5 cursor-pointer"
+                        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -232,18 +237,18 @@ const OzonImportTab = () => {
                       <img 
                         src={product.images[0].url} 
                         alt={product.name}
-                        className="w-20 h-20 object-cover rounded"
+                        className="w-12 h-12 md:w-20 md:h-20 object-cover rounded flex-shrink-0"
                       />
                     )}
                     
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <h4 className="font-semibold text-sm line-clamp-2">
+                    <div className="flex-1 space-y-1 md:space-y-2 min-w-0">
+                      <div className="flex items-start justify-between gap-2 md:gap-4">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-xs md:text-sm line-clamp-2">
                             {product.name}
                           </h4>
-                          <p className="text-xs text-muted-foreground">
-                            ID: {product.product_id} • Артикул: {product.offer_id}
+                          <p className="text-[10px] md:text-xs text-muted-foreground truncate">
+                            ID: {product.product_id} • Арт: {product.offer_id}
                           </p>
                         </div>
                         

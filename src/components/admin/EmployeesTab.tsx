@@ -236,22 +236,25 @@ const EmployeesTab = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold">Сотрудники</h2>
-          <p className="text-muted-foreground">Управление персоналом</p>
+          <h2 className="text-xl md:text-2xl font-bold">Сотрудники</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Управление персоналом</p>
         </div>
-        <Button onClick={() => handleOpenDialog()}>
-          <Icon name="Plus" size={20} className="mr-2" />
-          Добавить сотрудника
+        <Button onClick={() => handleOpenDialog()} size="sm" className="w-full sm:w-auto text-xs md:text-sm">
+          <Icon name="Plus" size={16} className="mr-1 md:mr-2 md:w-5 md:h-5" />
+          <span className="hidden sm:inline">Добавить сотрудника</span>
+          <span className="sm:hidden">Добавить</span>
         </Button>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         <Button
           variant={filterType === 'all' ? 'default' : 'outline'}
           onClick={() => setFilterType('all')}
+          size="sm"
+          className="text-xs md:text-sm whitespace-nowrap flex-shrink-0"
         >
           Все ({employees.length})
         </Button>
@@ -260,6 +263,8 @@ const EmployeesTab = () => {
             key={type}
             variant={filterType === type ? 'default' : 'outline'}
             onClick={() => setFilterType(type)}
+            size="sm"
+            className="text-xs md:text-sm whitespace-nowrap flex-shrink-0"
           >
             {label} ({employees.filter(e => e.employeeType === type).length})
           </Button>
