@@ -123,21 +123,28 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
       
       const mappedProducts = rawItems.map((item: any) => {
         const name = item.name || item.title || `Товар ${item.offer_id}`;
+        
+        // Правильно извлекаем ВСЕ изображения
         const images = item.images?.map((img: any) => ({
           file_name: img.file_name || '',
           url: img.default || img.url || ''
         })) || [];
         
+        // Извлекаем цвет как единое значение (не массив)
         const colorAttr = item.attributes?.find((attr: any) => 
           attr.attribute_name?.toLowerCase().includes('цвет') || 
           attr.attribute_id === 85
         );
+        const colorValue = colorAttr?.values?.[0]?.value || '';
+        
+        // Правильно извлекаем цену (НЕ изображение!)
+        const price = item.marketing_price || item.price || item.old_price || '0';
         
         return {
           product_id: item.id || item.product_id,
           offer_id: item.offer_id,
           name: name,
-          price: item.primary_image || item.marketing_price || item.price || '0',
+          price: price,
           old_price: item.old_price || '',
           currency_code: item.currency_code || 'RUB',
           visible: item.visible || item.status?.state === 'processed',
@@ -145,7 +152,7 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
           stocks: item.stocks || { present: 0, reserved: 0 },
           description: item.description || item.rich_text || '',
           attributes: item.attributes || [],
-          color: colorAttr?.values?.[0]?.value || ''
+          color: colorValue
         };
       });
       
@@ -211,22 +218,33 @@ const OzonImportTab = ({ products: catalogProducts, onProductsUpdate }: OzonImpo
     const maxId = catalogProducts.length > 0 ? Math.max(...catalogProducts.map(p => p.id)) : 0;
     const category = mapOzonCategory(ozonProduct.name, ozonProduct.attributes);
     
+    // Все изображения товара
+    const allImages = ozonProduct.images?.map(img => img.url).filter(url => url) || [];
+    
+    // Цвет как единое значение (не массив вариаций)
+    const singleColor = ozonProduct.color || '';
+    
+    // Форматируем цену
+    const priceValue = typeof ozonProduct.price === 'string' 
+      ? ozonProduct.price.replace(/[^\d]/g, '')
+      : ozonProduct.price;
+    
     return {
       id: maxId + 1,
       title: ozonProduct.name,
       category: category,
-      price: `${ozonProduct.price} ₽`,
+      price: `${priceValue} ₽`,
       style: 'Современный',
-      description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.`,
-      image: ozonProduct.images?.[0]?.url || '',
+      description: ozonProduct.description || `${ozonProduct.name}. Товар импортирован из Ozon.${singleColor ? ` Цвет: ${singleColor}.` : ''}`,
+      image: allImages[0] || '',
       supplierArticle: ozonProduct.offer_id,
       inStock: (ozonProduct.stocks?.present ?? 0) > 0,
       stockQuantity: ozonProduct.stocks?.present ?? null,
-      images: ozonProduct.images?.map(img => img.url) || [],
-      colors: [],
+      images: allImages,
+      colors: singleColor ? [singleColor] : [],
       items: [],
       variantGroupId: null,
-      colorVariant: null
+      colorVariant: singleColor || null
     };
   };
 
