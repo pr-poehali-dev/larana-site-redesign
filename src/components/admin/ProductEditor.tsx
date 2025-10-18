@@ -33,7 +33,12 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('🔄 ProductEditor: useEffect сработал, product.id:', product?.id);
     if (product.title) {
+      console.log('📋 Загрузка формы с данными товара:', {
+        variantGroupId: product.variantGroupId,
+        colorVariant: product.colorVariant
+      });
       setProductForm({
         title: product.title,
         category: product.category,
@@ -51,6 +56,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         colorVariant: product.colorVariant || ''
       });
     } else {
+      console.log('📋 Создание новой формы (пустой товар)');
       setProductForm({
         title: '',
         category: '',
@@ -68,11 +74,16 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         colorVariant: ''
       });
     }
-  }, [product]);
+  }, [product.id]);
 
   const handleFieldChange = (field: string, value: string) => {
     console.log(`📝 ProductEditor: Изменение поля "${field}" на значение:`, value);
-    setProductForm({ ...productForm, [field]: value });
+    const newForm = { ...productForm, [field]: value };
+    console.log('📝 Новое состояние формы:', {
+      variantGroupId: newForm.variantGroupId,
+      colorVariant: newForm.colorVariant
+    });
+    setProductForm(newForm);
   };
 
   const handleImagesChange = (images: string[], mainImage: string) => {
