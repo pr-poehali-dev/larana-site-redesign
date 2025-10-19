@@ -23,19 +23,31 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
   const { toast } = useToast();
 
   const uploadImage = async (file: File) => {
+    console.log('🔄 Starting upload:', file.name, file.type, file.size);
     setUploading(true);
     try {
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Файл должен быть изображением');
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error('Размер файла не должен превышать 10 МБ');
+      }
+
       const formData = new FormData();
       formData.append('file', file);
 
+      console.log('📤 Sending request to upload-file...');
       const response = await fetch('https://functions.poehali.dev/1a0d83e1-cea3-41fb-a393-b01eba523b70', {
         method: 'POST',
         body: formData
       });
 
+      console.log('📥 Response status:', response.status);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('Upload error:', {
+        console.error('❌ Upload error:', {
           status: response.status,
           error: errorData
         });
@@ -43,7 +55,7 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
       }
 
       const data = await response.json();
-      console.log('Upload success:', data);
+      console.log('✅ Upload success:', data);
       
       const imageUrl = data.url;
       
@@ -56,13 +68,13 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
       onImagesChange(newImages, newMainImage);
       
       toast({
-        title: "Изображение загружено",
-        description: "Файл успешно добавлен"
+        title: "✅ Изображение загружено",
+        description: `Файл ${file.name} успешно добавлен`
       });
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('❌ Error uploading image:', error);
       toast({
-        title: "Ошибка загрузки",
+        title: "❌ Ошибка загрузки",
         description: error instanceof Error ? error.message : "Не удалось загрузить изображение",
         variant: "destructive"
       });
@@ -71,15 +83,28 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
-      Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-          uploadImage(file);
-        }
-      });
+    if (!files || files.length === 0) {
+      console.log('⚠️ No files selected');
+      return;
     }
+
+    console.log(`📁 Selected ${files.length} file(s)`);
+    
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Пропущен файл",
+          description: `${file.name} не является изображением`,
+          variant: "destructive"
+        });
+        continue;
+      }
+      await uploadImage(file);
+    }
+    
+    e.target.value = '';
   };
 
   const setMainImage = (imageUrl: string) => {
@@ -175,13 +200,22 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
           <div className="flex items-center gap-2">
             <Button
               type="button"
-              variant="outline"
-              onClick={() => document.getElementById('image-upload')?.click()}
+              variant={uploading ? "secondary" : "outline"}
+              onClick={() => {
+                console.log('🖱️ Upload button clicked');
+                const input = document.getElementById('image-upload') as HTMLInputElement;
+                if (input) {
+                  input.click();
+                  console.log('✅ File input triggered');
+                } else {
+                  console.error('❌ File input not found');
+                }
+              }}
               disabled={uploading}
               className="flex-1"
             >
               <Icon name={uploading ? "Loader2" : "Upload"} size={16} className={`mr-2 ${uploading ? 'animate-spin' : ''}`} />
-              {uploading ? 'Загрузка...' : 'Загрузить файл'}
+              {uploading ? 'Загрузка...' : '📁 Загрузить файл'}
             </Button>
             <Button
               type="button"
@@ -191,15 +225,16 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
               className="flex-1"
             >
               <Icon name="Link" size={16} className="mr-2" />
-              Добавить по URL
+              🔗 Добавить по URL
             </Button>
             <input
               id="image-upload"
               type="file"
-              accept="image/*"
+              accept="image/*,image/jpeg,image/png,image/webp,image/gif"
               multiple
               onChange={handleFileSelect}
               className="hidden"
+              aria-label="Выбрать изображения"
             />
           </div>
 
