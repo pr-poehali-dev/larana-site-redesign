@@ -44,12 +44,8 @@ const ProductAdminFields = ({
           <Input
             type="number"
             min="0"
-            inputMode="numeric"
             value={stockQuantity === null ? '' : stockQuantity}
-            onChange={(e) => {
-              const val = e.target.value;
-              onStockQuantityChange(val === '' ? null : parseInt(val, 10));
-            }}
+            onChange={(e) => onStockQuantityChange(e.target.value ? parseInt(e.target.value) : null)}
             placeholder="Оставьте пустым, если неизвестно"
           />
           <p className="text-xs text-muted-foreground mt-1">

@@ -38,10 +38,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     if (product.title) {
       console.log('📋 Загрузка формы с данными товара:', {
         variantGroupId: product.variantGroupId,
-        colorVariant: product.colorVariant,
-        inStock: product.inStock,
-        stockQuantity: product.stockQuantity,
-        supplierArticle: product.supplierArticle
+        colorVariant: product.colorVariant
       });
       setProductForm({
         title: product.title,
@@ -53,9 +50,9 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
         style: product.style,
         description: product.description,
         colors: Array.isArray(product.colors) ? product.colors.join(', ') : product.colors || '',
-        inStock: product.inStock !== undefined ? product.inStock : true,
+        inStock: product.inStock,
         supplierArticle: product.supplierArticle || '',
-        stockQuantity: product.stockQuantity !== undefined ? product.stockQuantity : null,
+        stockQuantity: product.stockQuantity || null,
         variantGroupId: product.variantGroupId || '',
         colorVariant: product.colorVariant || ''
       });

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import func2url from '@/../backend/func2url.json';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -45,7 +44,7 @@ const ProfileSettingsDialog = ({ open, onClose, user }: ProfileSettingsDialogPro
 
   const fetchAddresses = async () => {
     try {
-      const response = await fetch(`${func2url.profile}?action=addresses`, {
+      const response = await fetch('https://functions.poehali.dev/9e157aab-894b-47e4-8fb7-4e88d0a941b1?action=addresses', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +72,7 @@ const ProfileSettingsDialog = ({ open, onClose, user }: ProfileSettingsDialogPro
     }
 
     try {
-      const response = await fetch(`${func2url.profile}?action=addresses`, {
+      const response = await fetch('https://functions.poehali.dev/9e157aab-894b-47e4-8fb7-4e88d0a941b1?action=addresses', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +101,7 @@ const ProfileSettingsDialog = ({ open, onClose, user }: ProfileSettingsDialogPro
 
   const handleDeleteAddress = async (addressId: number) => {
     try {
-      const response = await fetch(`${func2url.profile}?action=addresses&addressId=${addressId}`, {
+      const response = await fetch(`https://functions.poehali.dev/9e157aab-894b-47e4-8fb7-4e88d0a941b1?action=addresses&addressId=${addressId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +154,7 @@ const ProfileSettingsDialog = ({ open, onClose, user }: ProfileSettingsDialogPro
     }
 
     try {
-      const response = await fetch(`${func2url.profile}?action=password`, {
+      const response = await fetch('https://functions.poehali.dev/9e157aab-894b-47e4-8fb7-4e88d0a941b1?action=password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
