@@ -163,7 +163,7 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
     setDraggedIndex(index);
   };
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  const handleImageDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     
     if (draggedIndex === null || draggedIndex === index) return;
@@ -336,7 +336,7 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
                 key={idx}
                 draggable
                 onDragStart={() => handleDragStart(idx)}
-                onDragOver={(e) => handleDragOver(e, idx)}
+                onDragOver={(e) => handleImageDragOver(e, idx)}
                 onDragEnd={handleDragEnd}
                 className={`relative overflow-hidden cursor-move transition-all ${
                   mainImage === imageUrl ? 'ring-2 ring-primary' : ''
