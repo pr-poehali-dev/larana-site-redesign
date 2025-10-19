@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Import products successfully",
+      "method": "POST",
+      "headers": {
+        "X-Admin-Key": "larana-admin-2024"
+      },
+      "body": {
+        "products": [
+          {
+            "id": 9999,
+            "title": "Test Product",
+            "category": "Спальни",
+            "price": "1000 ₽",
+            "image": "https://example.com/test.jpg",
+            "items": ["Тест"],
+            "style": "Современный",
+            "description": "Тестовый товар",
+            "colors": ["Белый"],
+            "inStock": true
+          }
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "imported": 1
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

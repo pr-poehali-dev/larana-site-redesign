@@ -169,124 +169,104 @@ const initialProducts: Product[] = [
 ];
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
-  const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
-    console.log('\n🚀 ИНИЦИАЛИЗАЦИЯ КАТАЛОГА');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    
-    const saved = localStorage.getItem('larana-products');
-    if (saved) {
+  const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Загружаем товары из БД при старте
+  useEffect(() => {
+    const loadProducts = async () => {
+      console.log('\n🚀 ЗАГРУЗКА КАТАЛОГА ИЗ БАЗЫ ДАННЫХ');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      
       try {
-        const products = JSON.parse(saved);
-        console.log('📦 Загружено товаров из localStorage:', products.length);
+        const response = await fetch('https://functions.poehali.dev/c69aa5c0-9a2e-48aa-a1fc-14db5d5b3503');
         
-        // Нормализуем товары - добавляем обязательные поля если их нет
-        const normalized = products.map((p: any) => ({
-          ...p,
-          items: p.items || [],
-          style: p.style || 'Современный',
-          description: p.description || p.title || '',
-          colors: p.colors || ['Базовый'],
-          images: p.images || [p.image]
-        }));
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
         
-        // Мерджим с дефолтными товарами - добавляем те, которых нет
-        const existingIds = new Set(normalized.map(p => p.id));
-        const missingDefaults = initialProducts.filter(p => !existingIds.has(p.id));
-        const merged = [...normalized, ...missingDefaults];
+        const data = await response.json();
+        const products = Array.isArray(data) ? data : [];
         
-        console.log('✅ Каталог готов:', merged.length, 'товаров');
-        console.log('   - Из админки:', normalized.length);
-        console.log('   - Добавлено дефолтных:', missingDefaults.length);
+        console.log('📦 Загружено товаров из БД:', products.length);
+        
+        if (products.length === 0) {
+          console.log('⚠️ БД пуста - использую дефолтные товары');
+          setAllFurnitureSets(initialProducts);
+        } else {
+          // Преобразуем формат БД в формат приложения
+          const normalized = products.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            category: p.category,
+            price: typeof p.price === 'number' ? `${p.price} ₽` : p.price,
+            image: p.images?.[0] || '',
+            images: p.images || [],
+            items: p.items || [],
+            style: p.style || 'Современный',
+            description: p.description || '',
+            colors: p.colors || [],
+            inStock: p.in_stock !== false
+          }));
+          
+          setAllFurnitureSets(normalized);
+          console.log('✅ Каталог готов:', normalized.length, 'товаров');
+        }
+        
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-        
-        // Сохраняем объединённый список обратно
-        localStorage.setItem('larana-products', JSON.stringify(merged));
-        
-        return merged;
-      } catch (e) {
-        console.error('❌ Ошибка загрузки товаров:', e);
+      } catch (error) {
+        console.error('❌ Ошибка загрузки из БД:', error);
         console.log('⚠️ Использую дефолтные товары');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-        return initialProducts;
+        setAllFurnitureSets(initialProducts);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
     
-    console.log('ℹ️ localStorage пуст - использую дефолтные товары');
-    console.log('📦 Товаров:', initialProducts.length);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-    
-    // Сохраняем в localStorage для других пользователей
-    localStorage.setItem('larana-products', JSON.stringify(initialProducts));
-    
-    return initialProducts;
-  });
+    loadProducts();
+  }, []);
   
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem('larana-cart');
     return saved ? JSON.parse(saved) : [];
   });
 
-  useEffect(() => {
-    localStorage.setItem('larana-products', JSON.stringify(allFurnitureSets));
-  }, [allFurnitureSets]);
-
-  // Слушаем изменения в localStorage (когда админка обновляет товары)
-  useEffect(() => {
-    const handleStorageChange = (event?: CustomEvent | StorageEvent) => {
-      console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('📡 КАТАЛОГ: Получен сигнал обновления товаров!');
-      
-      if (event && 'detail' in event) {
-        console.log('   📅 Время:', event.detail?.timestamp);
-        console.log('   📊 Товаров в обновлении:', event.detail?.count);
+  // Функция для перезагрузки товаров из БД (для админки)
+  const reloadProducts = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/c69aa5c0-9a2e-48aa-a1fc-14db5d5b3503');
+      if (response.ok) {
+        const data = await response.json();
+        const products = Array.isArray(data) ? data : [];
+        
+        const normalized = products.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          category: p.category,
+          price: typeof p.price === 'number' ? `${p.price} ₽` : p.price,
+          image: p.images?.[0] || '',
+          images: p.images || [],
+          items: p.items || [],
+          style: p.style || 'Современный',
+          description: p.description || '',
+          colors: p.colors || [],
+          inStock: p.in_stock !== false
+        }));
+        
+        setAllFurnitureSets(normalized);
+        console.log('✅ Каталог перезагружен:', normalized.length, 'товаров');
       }
-      
-      const saved = localStorage.getItem('larana-products');
-      if (saved) {
-        try {
-          const products = JSON.parse(saved);
-          console.log('📦 Загружено товаров из localStorage:', products.length);
-          
-          const normalizedProducts = products.map((p: any) => ({
-            ...p,
-            items: p.items || [],
-            style: p.style || 'Современный',
-            description: p.description || p.title || '',
-            colors: p.colors || ['Базовый'],
-            images: p.images || [p.image]
-          }));
-          
-          console.log('🔄 Применяю новые данные к каталогу...');
-          setAllFurnitureSets(normalizedProducts);
-          console.log('✅ КАТАЛОГ ОБНОВЛЁН! Товаров:', normalizedProducts.length);
-          console.log('💡 Теперь:');
-          console.log('   - Фильтры пересчитаются');
-          console.log('   - Карточки обновятся');
-          console.log('   - Цены актуализируются');
-          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-        } catch (e) {
-          console.error('❌ Ошибка парсинга товаров:', e);
-        }
-      } else {
-        console.log('⚠️ localStorage пуст');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-      }
-    };
-
-    console.log('\n👂 КАТАЛОГ: Начал слушать события обновления товаров');
-    console.log('   - storage (изменения из других вкладок)');
-    console.log('   - larana-products-updated (изменения в текущей вкладке)\n');
-    
-    // Слушаем изменения из других вкладок
-    window.addEventListener('storage', handleStorageChange as EventListener);
-    // Слушаем изменения в той же вкладке через custom event
-    window.addEventListener('larana-products-updated', handleStorageChange as EventListener);
-    
-    return () => {
-      console.log('👋 КАТАЛОГ: Перестал слушать события обновления');
-      window.removeEventListener('storage', handleStorageChange as EventListener);
-      window.removeEventListener('larana-products-updated', handleStorageChange as EventListener);
-    };
+    } catch (error) {
+      console.error('❌ Ошибка перезагрузки:', error);
+    }
+  };
+  
+  // Слушаем события обновления каталога
+  useEffect(() => {
+    const handleReload = () => reloadProducts();
+    window.addEventListener('larana-products-updated', handleReload);
+    return () => window.removeEventListener('larana-products-updated', handleReload);
   }, []);
 
   useEffect(() => {

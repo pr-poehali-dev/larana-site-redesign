@@ -178,9 +178,51 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 <Icon name="Download" size={16} className="mr-1" />
                 Экспортировать
               </Button>
-              <Button size="sm" variant="outline" onClick={() => duplicateProduct(products[0], new MouseEvent('click'))}>
-                <Icon name="Copy" size={16} className="mr-1" />
-                Копировать
+              <Button 
+                size="sm" 
+                variant="default" 
+                className="bg-green-600 hover:bg-green-700"
+                onClick={async () => {
+                  const confirmed = confirm(`Перенести ${products.length} товаров в базу данных? Все покупатели увидят ваш каталог!`);
+                  if (!confirmed) return;
+                  
+                  try {
+                    const response = await fetch('https://functions.poehali.dev/1aa3b0e9-1067-47c6-97ee-40e0747b7d8e', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Key': 'larana-admin-2024'
+                      },
+                      body: JSON.stringify({ products, clearBefore: true })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                      toast({
+                        title: "✅ Успешно!",
+                        description: `Перенесено ${result.imported} товаров в БД. Теперь все видят каталог!`
+                      });
+                      
+                      window.dispatchEvent(new CustomEvent('larana-products-updated'));
+                    } else {
+                      toast({
+                        title: "Ошибка",
+                        description: result.error || 'Не удалось перенести товары',
+                        variant: 'destructive'
+                      });
+                    }
+                  } catch (error) {
+                    toast({
+                      title: "Ошибка",
+                      description: 'Проблема с подключением к БД',
+                      variant: 'destructive'
+                    });
+                  }
+                }}
+              >
+                <Icon name="Database" size={16} className="mr-1" />
+                Перенести в БД ({products.length})
               </Button>
             </div>
             

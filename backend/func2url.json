@@ -1,4 +1,6 @@
 {
+  "products-import": "https://functions.poehali.dev/1aa3b0e9-1067-47c6-97ee-40e0747b7d8e",
+  "products": "https://functions.poehali.dev/eecf4811-c6f1-4f6c-be05-ab02dae44689",
   "ai-generate-image": "https://functions.poehali.dev/74acd26d-f264-4071-b993-fbdccc85c5e7",
   "upload-file": "https://functions.poehali.dev/1a0d83e1-cea3-41fb-a393-b01eba523b70",
   "generate-product-image": "https://functions.poehali.dev/431e5a22-1a5a-4419-b4cb-294ee10babbb",
