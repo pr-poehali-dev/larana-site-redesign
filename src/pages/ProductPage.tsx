@@ -32,8 +32,6 @@ const ProductPage = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   
-
-  
   const product = availableProducts.find(p => p.id === parseInt(id || '0'));
   const { variants, hasVariants, allAvailableColors } = useProductVariants(
     product || {} as any,
@@ -47,8 +45,6 @@ const ProductPage = () => {
       setSelectedColor(product.colors[0]);
     }
   }, [product?.id, product?.colors]);
-
-
 
   if (!product) {
     return <Navigate to="/404" replace />;

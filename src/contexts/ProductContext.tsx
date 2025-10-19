@@ -39,7 +39,7 @@ const initialProducts: Product[] = [
   {
     id: 1,
     title: 'Спальня "Сканди Мини"',
-    category: 'Спальня',
+    category: 'Спальни',
     price: '38900 ₽',
     image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d6e0d2f2-8f4d-41f4-b563-ea53d8e436e4.jpg',
     images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d6e0d2f2-8f4d-41f4-b563-ea53d8e436e4.jpg'],
@@ -48,21 +48,161 @@ const initialProducts: Product[] = [
     description: 'Кровать, 2 тумбы, шкаф, всё в скандинавском стиле. Идеально для молодых пар.',
     colors: ['Белый/дуб', 'серый/дуб'],
     inStock: true
+  },
+  {
+    id: 2,
+    title: 'Спальня "Комфорт Люкс"',
+    category: 'Спальни',
+    price: '57900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/10717cc5-40db-4449-abd5-71b9d8b6c269.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/10717cc5-40db-4449-abd5-71b9d8b6c269.jpg'],
+    items: ['Кровать 180', 'Шкаф-купе', 'Комод', 'Зеркало'],
+    style: 'Современный',
+    description: 'Расширенный комплект: кровать, шкаф-купе, комод, зеркало. Цвет — дуб сонома.',
+    colors: ['Дуб сонома', 'венге'],
+    inStock: true
+  },
+  {
+    id: 3,
+    title: 'Кухня "Лара 180"',
+    category: 'Кухни',
+    price: '25900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/28dd2d42-f20f-4093-a79c-3581f1162a03.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/28dd2d42-f20f-4093-a79c-3581f1162a03.jpg'],
+    items: ['Фасады', 'Столешница', 'Фурнитура'],
+    style: 'Современный',
+    description: 'Базовая кухня 180 см, верх + низ, фасады белый глянец. Подходит для арендаторов.',
+    colors: ['Белый глянец'],
+    inStock: true
+  },
+  {
+    id: 4,
+    title: 'Кухня "Милан 240"',
+    category: 'Кухни',
+    price: '37900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/0ce710ad-5197-4e39-accf-50b5f8ffe640.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/0ce710ad-5197-4e39-accf-50b5f8ffe640.jpg'],
+    items: ['Фасады', 'Ручки', 'Фурнитура', 'Мойка'],
+    style: 'Современный',
+    description: '240 см, угловая, встроенная мойка и духовой шкаф. Белая глянцевая с серыми акцентами.',
+    colors: ['Белый/серый'],
+    inStock: true
+  },
+  {
+    id: 5,
+    title: 'Гостиная "Фиеста"',
+    category: 'Гостиные',
+    price: '42900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/3df816ee-8a95-4339-bf44-cda7f25d59a7.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/3df816ee-8a95-4339-bf44-cda7f25d59a7.jpg'],
+    items: ['Диван 3-местный', 'Журнальный стол', 'Тумба ТВ'],
+    style: 'Современный',
+    description: 'Современная гостиная: диван, столик, ТВ-тумба. Диван — механизм еврокнижка.',
+    colors: ['Серый'],
+    inStock: true
+  },
+  {
+    id: 6,
+    title: 'Гостиная "Модерн"',
+    category: 'Гостиные',
+    price: '52900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5bcce75e-8fd6-45ae-bdac-3aade8786678.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5bcce75e-8fd6-45ae-bdac-3aade8786678.jpg'],
+    items: ['Угловой диван', 'Стенка', 'Журнальный стол'],
+    style: 'Современный',
+    description: 'Угловой диван с механизмом дельфин + стенка + стол. Для просторной гостиной.',
+    colors: ['Бежевый', 'коричневый'],
+    inStock: true
+  },
+  {
+    id: 7,
+    title: 'Гостиная "Классика Плюс"',
+    category: 'Гостиные',
+    price: '64900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/c58a6ff8-f6db-4de5-8785-0293ccb4ea98.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/c58a6ff8-f6db-4de5-8785-0293ccb4ea98.jpg'],
+    items: ['Угловой диван', 'Кресло', 'Стенка', 'Стол'],
+    style: 'Классика',
+    description: 'Полная комплектация классической гостиной: диван, кресло, стенка, столик.',
+    colors: ['Бежевый'],
+    inStock: false
+  },
+  {
+    id: 8,
+    title: 'Шкаф-купе "Комфорт 180"',
+    category: 'Шкафы',
+    price: '29900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d50db947-51b9-44ed-9994-f0075c68c626.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d50db947-51b9-44ed-9994-f0075c68c626.jpg'],
+    items: ['Шкаф 180см'],
+    style: 'Современный',
+    description: 'Шкаф-купе 180 см, 2 двери с зеркалами. Глубина 60 см, высота 220 см.',
+    colors: ['Венге', 'дуб'],
+    inStock: true
+  },
+  {
+    id: 9,
+    title: 'Шкаф-купе "Макси 240"',
+    category: 'Шкафы',
+    price: '39900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/289830eb-e60b-426f-9f3c-8e92e8eef16a.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/289830eb-e60b-426f-9f3c-8e92e8eef16a.jpg'],
+    items: ['Шкаф 240см'],
+    style: 'Современный',
+    description: 'Большой шкаф 240 см, 3 двери. С антресолью и зеркальными вставками.',
+    colors: ['Белый', 'венге'],
+    inStock: true
+  },
+  {
+    id: 10,
+    title: 'Прихожая "Лайт"',
+    category: 'Прихожие',
+    price: '19900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d673daa8-2d56-408f-84f4-d906def95350.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d673daa8-2d56-408f-84f4-d906def95350.jpg'],
+    items: ['Шкаф', 'Зеркало', 'Полка обувная'],
+    style: 'Скандинавский',
+    description: 'Компактная прихожая: шкаф, зеркало, обувница. Для небольших квартир.',
+    colors: ['Белый'],
+    inStock: true
   }
 ];
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('larana-products') || localStorage.getItem('adminProducts');
+    console.log('\n🚀 ИНИЦИАЛИЗАЦИЯ КАТАЛОГА');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
+    const saved = localStorage.getItem('larana-products');
     if (saved) {
       try {
         const products = JSON.parse(saved);
         console.log('📦 Загружено товаров из localStorage:', products.length);
-        return products;
+        
+        // Нормализуем товары - добавляем обязательные поля если их нет
+        const normalized = products.map((p: any) => ({
+          ...p,
+          items: p.items || [],
+          style: p.style || 'Современный',
+          description: p.description || p.title || '',
+          colors: p.colors || ['Базовый'],
+          images: p.images || [p.image]
+        }));
+        
+        console.log('✅ Каталог готов с данными из админки');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+        return normalized;
       } catch (e) {
-        console.error('Ошибка загрузки из localStorage');
+        console.error('❌ Ошибка загрузки товаров:', e);
+        console.log('⚠️ Использую дефолтные товары');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+        return initialProducts;
       }
     }
+    
+    console.log('ℹ️ localStorage пуст - использую дефолтные товары');
+    console.log('📦 Товаров:', initialProducts.length);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     return initialProducts;
   });
   
@@ -73,58 +213,77 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem('larana-products', JSON.stringify(allFurnitureSets));
-    localStorage.setItem('larana-products-version', Date.now().toString());
-    window.dispatchEvent(new StorageEvent('storage', {
-      key: 'larana-products',
-      newValue: JSON.stringify(allFurnitureSets)
-    }));
   }, [allFurnitureSets]);
 
+  // Слушаем изменения в localStorage (когда админка обновляет товары)
   useEffect(() => {
-    localStorage.setItem('larana-cart', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent | CustomEvent) => {
-      if ('key' in e && e.key === 'larana-products' && e.newValue) {
+    const handleStorageChange = (event?: CustomEvent | StorageEvent) => {
+      console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('📡 КАТАЛОГ: Получен сигнал обновления товаров!');
+      
+      if (event && 'detail' in event) {
+        console.log('   📅 Время:', event.detail?.timestamp);
+        console.log('   📊 Товаров в обновлении:', event.detail?.count);
+      }
+      
+      const saved = localStorage.getItem('larana-products');
+      if (saved) {
         try {
-          const updatedProducts = JSON.parse(e.newValue);
-          setAllFurnitureSets(updatedProducts);
-        } catch (error) {
-          console.error('Error parsing storage update');
+          const products = JSON.parse(saved);
+          console.log('📦 Загружено товаров из localStorage:', products.length);
+          
+          const normalizedProducts = products.map((p: any) => ({
+            ...p,
+            items: p.items || [],
+            style: p.style || 'Современный',
+            description: p.description || p.title || '',
+            colors: p.colors || ['Базовый'],
+            images: p.images || [p.image]
+          }));
+          
+          console.log('🔄 Применяю новые данные к каталогу...');
+          setAllFurnitureSets(normalizedProducts);
+          console.log('✅ КАТАЛОГ ОБНОВЛЁН! Товаров:', normalizedProducts.length);
+          console.log('💡 Теперь:');
+          console.log('   - Фильтры пересчитаются');
+          console.log('   - Карточки обновятся');
+          console.log('   - Цены актуализируются');
+          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+        } catch (e) {
+          console.error('❌ Ошибка парсинга товаров:', e);
         }
-      } else if (e.type === 'larana-products-updated') {
-        const saved = localStorage.getItem('larana-products');
-        if (saved) {
-          try {
-            const updatedProducts = JSON.parse(saved);
-            setAllFurnitureSets(updatedProducts);
-          } catch (error) {
-            console.error('Error parsing custom event');
-          }
-        }
+      } else {
+        console.log('⚠️ localStorage пуст');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
       }
     };
 
+    console.log('\n👂 КАТАЛОГ: Начал слушать события обновления товаров');
+    console.log('   - storage (изменения из других вкладок)');
+    console.log('   - larana-products-updated (изменения в текущей вкладке)\n');
+    
+    // Слушаем изменения из других вкладок
     window.addEventListener('storage', handleStorageChange as EventListener);
+    // Слушаем изменения в той же вкладке через custom event
     window.addEventListener('larana-products-updated', handleStorageChange as EventListener);
-
+    
     return () => {
+      console.log('👋 КАТАЛОГ: Перестал слушать события обновления');
       window.removeEventListener('storage', handleStorageChange as EventListener);
       window.removeEventListener('larana-products-updated', handleStorageChange as EventListener);
     };
   }, []);
 
-  const availableProducts = allFurnitureSets.filter(product => product.inStock !== false);
+  useEffect(() => {
+    localStorage.setItem('larana-cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product: Product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
         return prev.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
       return [...prev, { ...product, quantity: 1 }];
@@ -141,9 +300,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setCartItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
+      prev.map(item => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
@@ -151,19 +308,20 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     setCartItems([]);
   };
 
+  // Фильтруем только товары в наличии для отображения на сайте
+  const availableProducts = allFurnitureSets.filter(product => product.inStock !== false);
+
   return (
-    <ProductContext.Provider
-      value={{
-        allFurnitureSets,
-        availableProducts,
-        setAllFurnitureSets,
-        cartItems,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart
-      }}
-    >
+    <ProductContext.Provider value={{ 
+      allFurnitureSets, 
+      availableProducts,
+      setAllFurnitureSets,
+      cartItems,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart
+    }}>
       {children}
     </ProductContext.Provider>
   );
