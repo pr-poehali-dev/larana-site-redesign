@@ -25,6 +25,7 @@ interface CartItem extends Product {
 interface ProductContextType {
   allFurnitureSets: Product[];
   availableProducts: Product[];
+  bundles: any[];
   setAllFurnitureSets: (products: Product[]) => void;
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
@@ -32,6 +33,7 @@ interface ProductContextType {
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
   reloadProducts: () => Promise<void>;
+  loadBundles: () => Promise<void>;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -307,6 +309,20 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   });
 
   // Функция для перезагрузки товаров из БД (для админки)
+  const [bundles, setBundles] = useState<any[]>([]);
+
+  const loadBundles = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/e73f89da-d34f-4de2-ab51-fc42b74e5a69');
+      if (response.ok) {
+        const data = await response.json();
+        setBundles(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error('❌ Ошибка загрузки наборов:', error);
+    }
+  };
+
   const reloadProducts = async () => {
     try {
       const response = await fetch('https://functions.poehali.dev/c69aa5c0-9a2e-48aa-a1fc-14db5d5b3503');
