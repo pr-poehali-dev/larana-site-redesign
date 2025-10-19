@@ -64,34 +64,16 @@ const catalogCategoriesBase = [
 
 const Catalog = () => {
   const { availableProducts } = useProducts();
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedStyle, setSelectedStyle] = useState<string>('');
   const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
   const [showProducts, setShowProducts] = useState(false);
 
-  const handleFilterChange = (type: 'category' | 'style' | 'price', value: string) => {
-    if (type === 'category') {
-      setSelectedCategory(selectedCategory === value ? '' : value);
-    } else if (type === 'style') {
-      setSelectedStyle(selectedStyle === value ? '' : value);
-    } else if (type === 'price') {
-      setSelectedPriceRange(selectedPriceRange === value ? '' : value);
-    }
+  const handleFilterChange = (type: 'price', value: string) => {
+    setSelectedPriceRange(selectedPriceRange === value ? '' : value);
     setShowProducts(true);
   };
 
   const filteredProducts = useMemo(() => {
     let filtered = availableProducts;
-
-    if (selectedCategory) {
-      filtered = filtered.filter(p => p.category === selectedCategory);
-    }
-
-    if (selectedStyle) {
-      filtered = filtered.filter(p => 
-        p.style?.toLowerCase().includes(selectedStyle.toLowerCase())
-      );
-    }
 
     if (selectedPriceRange) {
       const [min, max] = selectedPriceRange.split('-').map(Number);
@@ -104,21 +86,8 @@ const Catalog = () => {
     }
 
     return filtered;
-  }, [availableProducts, selectedCategory, selectedStyle, selectedPriceRange]);
+  }, [availableProducts, selectedPriceRange]);
 
-  const quickCategories = [
-    { id: 'gostinaya', label: 'Гостиная', icon: 'Sofa', value: 'Гостиная' },
-    { id: 'spalnya', label: 'Спальня', icon: 'Bed', value: 'Спальня' },
-    { id: 'kuhni', label: 'Кухни', icon: 'ChefHat', value: 'Кухня' },
-    { id: 'shkafy', label: 'Шкафы', icon: 'Box', value: 'Шкафы' },
-    { id: 'prihozhaya', label: 'Прихожие', icon: 'DoorOpen', value: 'Прихожая' },
-    { id: 'detskaya', label: 'Детская', icon: 'Baby', value: 'Детская' }
-  ];
-
-  const quickStyles = [
-    { id: 'modern', label: 'Современный', value: 'Современный' }
-  ];
-  
   const catalogCategories = catalogCategoriesBase.map(cat => ({
     ...cat,
     count: availableProducts.filter(product => 
@@ -191,11 +160,7 @@ const Catalog = () => {
                 <Card>
                   <CardContent className="p-6">
                     <QuickFilters
-                      categories={quickCategories}
-                      styles={quickStyles}
                       onFilterChange={handleFilterChange}
-                      selectedCategory={selectedCategory}
-                      selectedStyle={selectedStyle}
                       selectedPriceRange={selectedPriceRange}
                     />
                   </CardContent>
@@ -211,13 +176,11 @@ const Catalog = () => {
                     <Button 
                       variant="outline" 
                       onClick={() => {
-                        setSelectedCategory('');
-                        setSelectedStyle('');
                         setSelectedPriceRange('');
                         setShowProducts(false);
                       }}
                     >
-                      Сбросить фильтры
+                      Сбросить фильтр
                     </Button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
