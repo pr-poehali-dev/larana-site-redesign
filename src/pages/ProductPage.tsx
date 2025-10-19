@@ -20,7 +20,7 @@ import ProductReviews from '@/components/product/ProductReviews';
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
-  const { availableProducts, cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
+  const { availableProducts, isLoading, cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { toast } = useToast();
   
   const [selectedColor, setSelectedColor] = useState('');
@@ -35,7 +35,8 @@ const ProductPage = () => {
   console.log('🔍 ProductPage: Поиск товара', { 
     requestedId: parseInt(id || '0'), 
     totalProducts: availableProducts.length,
-    foundProduct: product ? product.title : 'NOT FOUND'
+    foundProduct: product ? product.title : 'NOT FOUND',
+    isLoading
   });
   
   const { variants, hasVariants, allAvailableColors } = useProductVariants(
@@ -50,6 +51,21 @@ const ProductPage = () => {
       setSelectedColor(product.colors[0]);
     }
   }, [product?.id, product?.colors]);
+
+  if (isLoading) {
+    return (
+      <>
+        <Header cartItemsCount={cartItems.length} onCartClick={() => setCartOpen(true)} />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Загрузка товара...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   if (!product) {
     return <Navigate to="/404" replace />;

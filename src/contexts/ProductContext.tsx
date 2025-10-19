@@ -26,6 +26,7 @@ interface ProductContextType {
   allFurnitureSets: Product[];
   availableProducts: Product[];
   bundles: any[];
+  isLoading: boolean;
   setAllFurnitureSets: (products: Product[]) => void;
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
@@ -420,6 +421,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       allFurnitureSets, 
       availableProducts,
       bundles,
+      isLoading,
       setAllFurnitureSets,
       cartItems,
       addToCart,
