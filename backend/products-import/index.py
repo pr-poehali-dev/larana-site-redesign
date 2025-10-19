@@ -64,14 +64,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     # Подготавливаем данные для batch insert
     insert_data = []
-    for p in products:
+    slug_counter = {}
+    
+    for idx, p in enumerate(products):
         # Извлекаем цену числом из строки типа "38900 ₽"
         price_str = str(p.get('price', '0'))
         price_num = float(''.join(filter(str.isdigit, price_str)) or '0')
         
-        # Генерируем slug из названия
+        # Генерируем уникальный slug из названия
         title = p.get('title', '')
-        slug = title.lower().replace(' ', '-').replace('"', '').replace("'", '')
+        base_slug = title.lower().replace(' ', '-').replace('"', '').replace("'", '').replace('(', '').replace(')', '')
+        base_slug = ''.join(c for c in base_slug if c.isalnum() or c == '-')[:50]
+        
+        # Добавляем счётчик для уникальности
+        if base_slug in slug_counter:
+            slug_counter[base_slug] += 1
+            slug = f"{base_slug}-{slug_counter[base_slug]}"
+        else:
+            slug_counter[base_slug] = 0
+            slug = base_slug
         
         # Первая картинка из массива или основная
         images_list = p.get('images', [])
@@ -81,7 +92,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 images_list = [main_image]
         
         insert_data.append((
-            p.get('id'),
             title,
             slug,
             p.get('description', ''),
@@ -97,17 +107,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         ))
     
     # Массовая вставка (вставляем без ID, база сама сгенерирует)
-    insert_data_no_id = []
-    for item in insert_data:
-        # Пропускаем ID (первый элемент), остальное оставляем
-        insert_data_no_id.append(item[1:])
-    
     execute_batch(cursor, '''
         INSERT INTO products (
             title, slug, description, price, discount_price,
             category, style, colors, images, items, in_stock, is_new
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)
-    ''', insert_data_no_id)
+    ''', insert_data)
     
     conn.commit()
     imported_count = len(insert_data)
