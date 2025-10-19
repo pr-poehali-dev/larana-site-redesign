@@ -17,9 +17,10 @@ import { useToast } from '@/hooks/use-toast';
 interface ProductsTabProps {
   products: any[];
   onProductUpdate: (products: any[]) => void;
+  onReloadCatalog?: () => void;
 }
 
-const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
+const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTabProps) => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
@@ -27,6 +28,7 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
   const [showBulkImages, setShowBulkImages] = useState(false);
   const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [lastSync, setLastSync] = useState<Date | null>(null);
   const { toast } = useToast();
 
   const startEditProduct = (product: any) => {
@@ -178,6 +180,28 @@ const ProductsTab = ({ products, onProductUpdate }: ProductsTabProps) => {
                 <Icon name="Download" size={16} className="mr-1" />
                 Экспортировать
               </Button>
+              {onReloadCatalog && (
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={async () => {
+                    await onReloadCatalog();
+                    setLastSync(new Date());
+                    toast({
+                      title: "Каталог обновлён",
+                      description: "Товары перезагружены из базы данных"
+                    });
+                  }}
+                >
+                  <Icon name="RefreshCw" size={16} className="mr-1" />
+                  Обновить каталог
+                </Button>
+              )}
+              {lastSync && (
+                <span className="text-xs text-muted-foreground">
+                  Обновлено: {lastSync.toLocaleTimeString('ru-RU')}
+                </span>
+              )}
               <Button 
                 size="sm" 
                 variant="default" 

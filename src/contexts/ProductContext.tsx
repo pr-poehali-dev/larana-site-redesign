@@ -31,6 +31,7 @@ interface ProductContextType {
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
+  reloadProducts: () => Promise<void>;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -270,6 +271,14 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     };
     
     loadProducts();
+    
+    // Автоматическое обновление каждые 30 минут
+    const intervalId = setInterval(() => {
+      console.log('🔄 Автоматическое обновление каталога...');
+      loadProducts();
+    }, 30 * 60 * 1000); // 30 минут
+    
+    return () => clearInterval(intervalId);
   }, []);
   
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
@@ -397,7 +406,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       addToCart,
       removeFromCart,
       updateQuantity,
-      clearCart
+      clearCart,
+      reloadProducts
     }}>
       {children}
     </ProductContext.Provider>

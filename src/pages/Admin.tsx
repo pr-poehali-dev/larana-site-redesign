@@ -20,7 +20,7 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('statistics');
-  const { allFurnitureSets, setAllFurnitureSets } = useProducts();
+  const { allFurnitureSets, setAllFurnitureSets, reloadProducts } = useProducts();
   const [products, setProducts] = useState(defaultProducts);
   const { toast } = useToast();
 
@@ -423,6 +423,7 @@ const Admin = () => {
                   <ProductsTab 
                     products={products}
                     onProductUpdate={handleProductUpdate}
+                    onReloadCatalog={reloadProducts}
                   />
                 </CardContent>
               </Card>
