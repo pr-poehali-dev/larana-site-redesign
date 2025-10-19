@@ -189,9 +189,20 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           images: p.images || [p.image]
         }));
         
-        console.log('✅ Каталог готов с данными из админки');
+        // Мерджим с дефолтными товарами - добавляем те, которых нет
+        const existingIds = new Set(normalized.map(p => p.id));
+        const missingDefaults = initialProducts.filter(p => !existingIds.has(p.id));
+        const merged = [...normalized, ...missingDefaults];
+        
+        console.log('✅ Каталог готов:', merged.length, 'товаров');
+        console.log('   - Из админки:', normalized.length);
+        console.log('   - Добавлено дефолтных:', missingDefaults.length);
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-        return normalized;
+        
+        // Сохраняем объединённый список обратно
+        localStorage.setItem('larana-products', JSON.stringify(merged));
+        
+        return merged;
       } catch (e) {
         console.error('❌ Ошибка загрузки товаров:', e);
         console.log('⚠️ Использую дефолтные товары');
@@ -203,6 +214,10 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     console.log('ℹ️ localStorage пуст - использую дефолтные товары');
     console.log('📦 Товаров:', initialProducts.length);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    
+    // Сохраняем в localStorage для других пользователей
+    localStorage.setItem('larana-products', JSON.stringify(initialProducts));
+    
     return initialProducts;
   });
   
