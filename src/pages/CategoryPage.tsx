@@ -31,7 +31,7 @@ const CategoryPage = () => {
   const filters = slug ? categoryFilters[slug] || [] : [];
   
   const priceFilter = filters.find(f => f.id === 'price' && f.type === 'range');
-  const initialPriceRange = priceFilter ? [priceFilter.min || 15000, priceFilter.max || 80000] : [15000, 80000];
+  const initialPriceRange = priceFilter ? [priceFilter.min || 2000, priceFilter.max || 70000] : [2000, 70000];
   
   const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
   const [priceRange, setPriceRange] = useState<number[]>(initialPriceRange);
@@ -95,7 +95,9 @@ const CategoryPage = () => {
       }));
 
     filtered = filtered.filter(product => {
-      const price = parseInt(product.price.replace(/[^\d]/g, ''));
+      const price = typeof product.price === 'string' 
+        ? parseFloat(product.price.replace(/[^\d.]/g, '')) 
+        : parseFloat(product.price);
       if (price < priceRange[0] || price > priceRange[1]) {
         return false;
       }
@@ -152,14 +154,14 @@ const CategoryPage = () => {
 
     if (sortBy === 'price-asc') {
       filtered.sort((a, b) => {
-        const priceA = parseInt(a.price.replace(/[^\d]/g, ''));
-        const priceB = parseInt(b.price.replace(/[^\d]/g, ''));
+        const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^\d.]/g, '')) : parseFloat(a.price);
+        const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^\d.]/g, '')) : parseFloat(b.price);
         return priceA - priceB;
       });
     } else if (sortBy === 'price-desc') {
       filtered.sort((a, b) => {
-        const priceA = parseInt(a.price.replace(/[^\d]/g, ''));
-        const priceB = parseInt(b.price.replace(/[^\d]/g, ''));
+        const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^\d.]/g, '')) : parseFloat(a.price);
+        const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^\d.]/g, '')) : parseFloat(b.price);
         return priceB - priceA;
       });
     } else if (sortBy === 'new') {

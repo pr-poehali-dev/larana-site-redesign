@@ -274,8 +274,8 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       id: 'price',
       name: 'Цена',
       type: 'range',
-      min: 15000,
-      max: 80000,
+      min: 2000,
+      max: 70000,
       unit: '₽'
     },
     {
@@ -324,8 +324,8 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       id: 'price',
       name: 'Цена',
       type: 'range',
-      min: 18000,
-      max: 90000,
+      min: 2000,
+      max: 70000,
       unit: '₽'
     },
     {
@@ -382,8 +382,8 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       id: 'price',
       name: 'Цена',
       type: 'range',
-      min: 20000,
-      max: 100000,
+      min: 2000,
+      max: 70000,
       unit: '₽'
     },
     {
@@ -442,8 +442,8 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       id: 'price',
       name: 'Цена',
       type: 'range',
-      min: 15000,
-      max: 120000,
+      min: 2000,
+      max: 70000,
       unit: '₽'
     },
     {
@@ -503,8 +503,8 @@ export const categoryFilters: Record<string, FilterOption[]> = {
       id: 'price',
       name: 'Цена',
       type: 'range',
-      min: 12000,
-      max: 60000,
+      min: 2000,
+      max: 70000,
       unit: '₽'
     },
     {
