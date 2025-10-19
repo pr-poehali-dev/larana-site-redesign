@@ -51,6 +51,14 @@ const catalogCategoriesBase = [
     description: 'Компактные решения для коридора и прихожей',
     icon: 'DoorOpen',
     image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/b2671236-b685-4573-ac0e-0e2e4f68a820.jpg'
+  },
+  {
+    slug: 'detskaya',
+    title: 'Детская',
+    categoryName: 'Детская',
+    description: 'Безопасная и яркая мебель для детской комнаты',
+    icon: 'Baby',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/55ef2f3b-2c0d-430e-b90d-5ac124f152a7.jpg'
   }
 ];
 

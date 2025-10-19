@@ -6,7 +6,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { categories, categoryFilters } from '@/data/catalogData';
-import { useProductData } from '@/hooks/useProductData';
 import { useProducts } from '@/contexts/ProductContext';
 import { useOrderLogic } from '@/hooks/useOrderLogic';
 import CheckoutDialog from '@/components/dialogs/CheckoutDialog';
@@ -35,8 +34,7 @@ const CategoryPage = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  const { availableProducts } = useProductData();
-  const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart, allFurnitureSets } = useProducts();
+  const { availableProducts, cartItems, addToCart, removeFromCart, updateQuantity, clearCart, allFurnitureSets } = useProducts();
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
   useEffect(() => {
@@ -77,7 +75,8 @@ const CategoryPage = () => {
     'spalnya': 'Спальня',
     'kuhni': 'Кухня',
     'shkafy': 'Шкафы',
-    'prihozhaya': 'Прихожая'
+    'prihozhaya': 'Прихожая',
+    'detskaya': 'Детская'
   };
 
   const targetCategory = categoryMapping[slug || ''];

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
-import { useProductData } from '@/hooks/useProductData';
 import { useProducts } from '@/contexts/ProductContext';
 import { useProductVariants } from '@/hooks/useProductVariants';
 import CartDialog from '@/components/dialogs/CartDialog';
@@ -21,8 +20,7 @@ import ProductReviews from '@/components/product/ProductReviews';
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
-  const { availableProducts } = useProductData();
-  const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
+  const { availableProducts, cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { toast } = useToast();
   
   const [selectedColor, setSelectedColor] = useState('');

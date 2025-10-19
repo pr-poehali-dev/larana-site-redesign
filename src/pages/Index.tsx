@@ -16,6 +16,7 @@ import LocalBusinessInfo from '@/components/LocalBusinessInfo';
 import Footer from '@/components/Footer';
 import IndexDialogs from '@/components/IndexDialogs';
 import ScrollToTop from '@/components/ScrollToTop';
+import { useProducts } from '@/contexts/ProductContext';
 import { useProductData } from '@/hooks/useProductData';
 import { useCartLogic } from '@/hooks/useCartLogic';
 import { useOrderLogic } from '@/hooks/useOrderLogic';
