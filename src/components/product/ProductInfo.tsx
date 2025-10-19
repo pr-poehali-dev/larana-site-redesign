@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import ProductRating from './ProductRating';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductInfoProps {
   product: any;
@@ -34,6 +35,33 @@ const ProductInfo = ({
   onBuyNow
 }: ProductInfoProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleShare = async () => {
+    const productUrl = `${window.location.origin}/catalog/${slug}/${product.id}`;
+    
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `${product.title} - ${formatPrice(product.price)}`,
+          url: productUrl
+        });
+        toast({
+          title: 'Готово!',
+          description: 'Ссылка отправлена'
+        });
+      } else {
+        await navigator.clipboard.writeText(productUrl);
+        toast({
+          title: 'Ссылка скопирована!',
+          description: 'Поделитесь ею с друзьями'
+        });
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -144,13 +172,24 @@ const ProductInfo = ({
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <Button size="lg" className="flex-1" onClick={onBuyNow}>
-          Купить сейчас
-        </Button>
-        <Button size="lg" variant="outline" className="flex-1" onClick={onAddToCart}>
-          <Icon name="ShoppingCart" size={20} className="mr-2" />
-          В корзину
+      <div className="space-y-3">
+        <div className="flex gap-3">
+          <Button size="lg" className="flex-1" onClick={onBuyNow}>
+            Купить сейчас
+          </Button>
+          <Button size="lg" variant="outline" className="flex-1" onClick={onAddToCart}>
+            <Icon name="ShoppingCart" size={20} className="mr-2" />
+            В корзину
+          </Button>
+        </div>
+        <Button 
+          size="lg" 
+          variant="ghost" 
+          className="w-full" 
+          onClick={handleShare}
+        >
+          <Icon name="Share2" size={20} className="mr-2" />
+          Поделиться с друзьями
         </Button>
       </div>
 
