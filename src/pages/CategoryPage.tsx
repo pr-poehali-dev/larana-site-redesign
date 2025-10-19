@@ -360,12 +360,11 @@ const CategoryPage = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
                   {mockProducts.map((product) => (
-                    <a 
-                      key={product.id} 
-                      href={`/catalog/${slug}/${product.id}`}
-                      className="block"
+                    <Card 
+                      key={product.id}
+                      className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => navigate(`/catalog/${slug}/${product.id}`)}
                     >
-                      <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                         <div className="relative aspect-[4/3] overflow-hidden bg-secondary/20">
                           {product.image ? (
                             <img
@@ -424,7 +423,6 @@ const CategoryPage = () => {
                           </Button>
                         </CardContent>
                       </Card>
-                    </a>
                   ))}
                 </div>
 
