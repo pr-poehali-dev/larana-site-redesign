@@ -340,7 +340,10 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
-  // Слушаем события обновления каталога
+  useEffect(() => {
+    loadBundles();
+  }, []);
+
   useEffect(() => {
     const handleReload = () => reloadProducts();
     window.addEventListener('larana-products-updated', handleReload);
@@ -384,8 +387,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     setCartItems([]);
   };
 
-  // Фильтруем только товары в наличии для отображения на сайте
-  const availableProducts = allFurnitureSets
+  const availableProducts = [...allFurnitureSets, ...bundles]
     .filter(product => product.inStock !== false)
     .sort((a, b) => {
       const aHasImage = a.image && a.image.startsWith('http');
@@ -401,13 +403,15 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     <ProductContext.Provider value={{ 
       allFurnitureSets, 
       availableProducts,
+      bundles,
       setAllFurnitureSets,
       cartItems,
       addToCart,
       removeFromCart,
       updateQuantity,
       clearCart,
-      reloadProducts
+      reloadProducts,
+      loadBundles
     }}>
       {children}
     </ProductContext.Provider>
