@@ -179,7 +179,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       
       try {
-        const response = await fetch('https://functions.poehali.dev/c69aa5c0-9a2e-48aa-a1fc-14db5d5b3503');
+        const response = await fetch('https://functions.poehali.dev/eecf4811-c6f1-4f6c-be05-ab02dae44689');
         
         if (!response.ok) {
           throw new Error('Failed to fetch products');
