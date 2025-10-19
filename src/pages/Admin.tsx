@@ -366,7 +366,7 @@ const Admin = () => {
               activeTab={activeTab}
               onTabChange={setActiveTab}
             />
-            <TabsList className="hidden md:grid w-full grid-cols-3 md:grid-cols-5 gap-1">
+            <TabsList className="hidden md:grid w-full grid-cols-5 gap-1">
               <TabsTrigger value="statistics" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                 <Icon name="BarChart3" size={14} className="md:w-4 md:h-4" />
                 <span className="hidden sm:inline">Статистика</span>
