@@ -1,4 +1,4 @@
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { formatPrice } from '@/utils/formatPrice';
 import { useState, useEffect, useMemo } from 'react';
@@ -27,6 +27,7 @@ import CartDialog from '@/components/dialogs/CartDialog';
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const categoryData = slug ? categories[slug] : null;
   const filters = slug ? categoryFilters[slug] || [] : [];
   
