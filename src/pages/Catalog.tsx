@@ -68,6 +68,7 @@ const Catalog = () => {
   const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('default');
   const [showProducts, setShowProducts] = useState(false);
+  const [displayLimit, setDisplayLimit] = useState(24);
 
   const handleFilterChange = (type: 'price', value: string) => {
     setSelectedPriceRange(selectedPriceRange === value ? '' : value);
@@ -188,6 +189,22 @@ const Catalog = () => {
                       onFilterChange={handleFilterChange}
                       selectedPriceRange={selectedPriceRange}
                     />
+                    <div className="mt-6 pt-6 border-t">
+                      <Button 
+                        onClick={() => {
+                          setShowProducts(true);
+                          setSelectedPriceRange('');
+                          setSortBy('default');
+                          setDisplayLimit(24);
+                        }}
+                        size="lg"
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <Icon name="Grid3x3" className="mr-2" size={20} />
+                        Показать все товары ({availableProducts.length})
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -223,7 +240,7 @@ const Catalog = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sortedProducts.slice(0, 12).map((product) => {
+                    {sortedProducts.slice(0, displayLimit).map((product) => {
                       const price = typeof product.price === 'string' 
                         ? parseFloat(product.price.replace(/[^\d.]/g, '')) 
                         : parseFloat(product.price);
@@ -251,6 +268,18 @@ const Catalog = () => {
                       );
                     })}
                   </div>
+                  {sortedProducts.length > displayLimit && (
+                    <div className="text-center mt-8">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        onClick={() => setDisplayLimit(prev => prev + 24)}
+                      >
+                        <Icon name="ChevronDown" className="mr-2" size={20} />
+                        Показать ещё ({sortedProducts.length - displayLimit} товаров)
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
 
