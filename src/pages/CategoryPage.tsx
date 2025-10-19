@@ -258,7 +258,7 @@ const CategoryPage = () => {
                 </div>
 
                 <CategoryContent categoryData={categoryData} />
-                <CategoryFAQ faq={categoryData.faq} />
+                <CategoryFAQ faq={categoryData.content.faq} />
               </div>
             </div>
           </div>
