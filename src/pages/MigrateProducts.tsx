@@ -9,6 +9,7 @@ const MigrateProducts = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<{ success: number; failed: number } | null>(null);
   const [autoMigrated, setAutoMigrated] = useState(false);
+  const [localStorageCount, setLocalStorageCount] = useState(0);
 
   const handleMigrate = async () => {
     setIsRunning(true);
@@ -25,10 +26,28 @@ const MigrateProducts = () => {
   };
 
   useEffect(() => {
-    if (!autoMigrated) {
-      setAutoMigrated(true);
-      handleMigrate();
-    }
+    const checkLocalStorage = () => {
+      const saved = localStorage.getItem('larana-products') || 
+                    localStorage.getItem('adminProducts') ||
+                    localStorage.getItem('products');
+      
+      if (saved) {
+        try {
+          const products = JSON.parse(saved);
+          setLocalStorageCount(products.length || 0);
+          console.log(`📦 Обнаружено товаров в localStorage: ${products.length}`);
+          
+          if (!autoMigrated) {
+            setAutoMigrated(true);
+            handleMigrate();
+          }
+        } catch (e) {
+          console.error('Ошибка парсинга localStorage:', e);
+        }
+      }
+    };
+    
+    checkLocalStorage();
   }, []);
 
   return (
@@ -48,8 +67,19 @@ const MigrateProducts = () => {
             <Alert>
               <Icon name="Info" size={16} />
               <AlertDescription>
-                Эта операция создаст товары в базе данных из текущего localStorage.
-                Убедитесь, что в localStorage есть актуальные товары.
+                <div className="space-y-2">
+                  <p>Эта операция создаст товары в базе данных из текущего localStorage.</p>
+                  {localStorageCount > 0 && (
+                    <p className="font-semibold text-green-700">
+                      📦 Обнаружено товаров для миграции: {localStorageCount}
+                    </p>
+                  )}
+                  {localStorageCount === 0 && (
+                    <p className="font-semibold text-red-700">
+                      ⚠️ Товары в localStorage не найдены
+                    </p>
+                  )}
+                </div>
               </AlertDescription>
             </Alert>
 

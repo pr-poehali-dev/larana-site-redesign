@@ -4,12 +4,18 @@ export async function migrateProductsToDatabase() {
   console.log('\n🚀 МИГРАЦИЯ ТОВАРОВ В БАЗУ ДАННЫХ');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
-  const saved = localStorage.getItem('larana-products');
+  const saved = localStorage.getItem('larana-products') || 
+                localStorage.getItem('adminProducts') ||
+                localStorage.getItem('products');
+  
   if (!saved) {
     console.log('⚠️ Нет товаров в localStorage для миграции');
+    console.log('Проверенные ключи: larana-products, adminProducts, products');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     return { success: 0, failed: 0 };
   }
+  
+  console.log(`✅ Найден источник данных в localStorage`);
 
   try {
     const products = JSON.parse(saved);
