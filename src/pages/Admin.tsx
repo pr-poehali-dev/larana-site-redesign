@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import { useAdminProducts } from '@/hooks/useAdminProducts';
 import OrdersTab from '@/components/admin/OrdersTab';
 import ProductsTab from '@/components/admin/ProductsTab';
 import EmployeesTab from '@/components/admin/EmployeesTab';
@@ -15,13 +14,165 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import AdminMobileMenu from '@/components/admin/AdminMobileMenu';
 import AdminStatsCards from '@/components/admin/AdminStatsCards';
 
+interface Product {
+  id: number;
+  title: string;
+  category: string;
+  price: string;
+  image: string;
+  images?: string[];
+  items: string[];
+  style: string;
+  description: string;
+  colors: string[];
+  inStock: boolean;
+  supplierArticle?: string;
+  stockQuantity?: number | null;
+  variantGroupId?: string;
+  colorVariant?: string;
+}
+
+const defaultProducts: Product[] = [
+  {
+    id: 1,
+    title: 'Спальня "Сканди Мини"',
+    category: 'Спальня',
+    price: '38900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d6e0d2f2-8f4d-41f4-b563-ea53d8e436e4.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d6e0d2f2-8f4d-41f4-b563-ea53d8e436e4.jpg'],
+    items: ['Кровать 160', 'Шкаф 2Д', 'Тумбы'],
+    style: 'Скандинавский',
+    description: 'Кровать, 2 тумбы, шкаф, всё в скандинавском стиле. Идеально для молодых пар.',
+    colors: ['Белый/дуб', 'серый/дуб'],
+    inStock: true
+  },
+  {
+    id: 2,
+    title: 'Спальня "Комфорт Люкс"',
+    category: 'Спальня',
+    price: '57900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/10717cc5-40db-4449-abd5-71b9d8b6c269.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/10717cc5-40db-4449-abd5-71b9d8b6c269.jpg'],
+    items: ['Кровать 180', 'Шкаф-купе', 'Комод', 'Зеркало'],
+    style: 'Современный',
+    description: 'Расширенный комплект: кровать, шкаф-купе, комод, зеркало. Цвет — дуб сонома.',
+    colors: ['Дуб сонома', 'венге'],
+    inStock: true
+  },
+  {
+    id: 3,
+    title: 'Кухня "Лара 180"',
+    category: 'Кухня',
+    price: '25900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/28dd2d42-f20f-4093-a79c-3581f1162a03.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/28dd2d42-f20f-4093-a79c-3581f1162a03.jpg'],
+    items: ['Фасады', 'Столешница', 'Фурнитура'],
+    style: 'Современный',
+    description: 'Базовая кухня 180 см, верх + низ, фасады белый глянец. Подходит для арендаторов.',
+    colors: ['Белый глянец'],
+    inStock: true
+  },
+  {
+    id: 4,
+    title: 'Кухня "Милан 240"',
+    category: 'Кухня',
+    price: '37900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/0ce710ad-5197-4e39-accf-50b5f8ffe640.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/0ce710ad-5197-4e39-accf-50b5f8ffe640.jpg'],
+    items: ['Фасады', 'Ручки', 'Фурнитура', 'Мойка'],
+    style: 'Современный',
+    description: '240 см, угловая, встроенная мойка и духовой шкаф. Белая глянцевая с серыми акцентами.',
+    colors: ['Белый/серый'],
+    inStock: true
+  },
+  {
+    id: 5,
+    title: 'Гостиная "Фиеста"',
+    category: 'Гостиная',
+    price: '42900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/3df816ee-8a95-4339-bf44-cda7f25d59a7.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/3df816ee-8a95-4339-bf44-cda7f25d59a7.jpg'],
+    items: ['Диван 3-местный', 'Журнальный стол', 'Тумба ТВ'],
+    style: 'Современный',
+    description: 'Современная гостиная: диван, столик, ТВ-тумба. Диван — механизм еврокнижка.',
+    colors: ['Серый'],
+    inStock: true
+  },
+  {
+    id: 6,
+    title: 'Гостиная "Модерн"',
+    category: 'Гостиная',
+    price: '52900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5bcce75e-8fd6-45ae-bdac-3aade8786678.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/5bcce75e-8fd6-45ae-bdac-3aade8786678.jpg'],
+    items: ['Угловой диван', 'Стенка', 'Журнальный стол'],
+    style: 'Современный',
+    description: 'Угловой диван с механизмом дельфин + стенка + стол. Для просторной гостиной.',
+    colors: ['Бежевый', 'коричневый'],
+    inStock: true
+  },
+  {
+    id: 7,
+    title: 'Гостиная "Классика Плюс"',
+    category: 'Гостиная',
+    price: '64900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/c58a6ff8-f6db-4de5-8785-0293ccb4ea98.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/c58a6ff8-f6db-4de5-8785-0293ccb4ea98.jpg'],
+    items: ['Угловой диван', 'Кресло', 'Стенка', 'Стол'],
+    style: 'Классика',
+    description: 'Полная комплектация классической гостиной: диван, кресло, стенка, столик.',
+    colors: ['Бежевый'],
+    inStock: false
+  },
+  {
+    id: 8,
+    title: 'Шкаф-купе "Комфорт 180"',
+    category: 'Шкаф',
+    price: '29900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d50db947-51b9-44ed-9994-f0075c68c626.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d50db947-51b9-44ed-9994-f0075c68c626.jpg'],
+    items: ['Шкаф 180см'],
+    style: 'Современный',
+    description: 'Шкаф-купе 180 см, 2 двери с зеркалами. Глубина 60 см, высота 220 см.',
+    colors: ['Венге', 'дуб'],
+    inStock: true
+  },
+  {
+    id: 9,
+    title: 'Шкаф-купе "Макси 240"',
+    category: 'Шкаф',
+    price: '39900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/289830eb-e60b-426f-9f3c-8e92e8eef16a.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/289830eb-e60b-426f-9f3c-8e92e8eef16a.jpg'],
+    items: ['Шкаф 240см'],
+    style: 'Современный',
+    description: 'Большой шкаф 240 см, 3 двери. С антресолью и зеркальными вставками.',
+    colors: ['Белый', 'венге'],
+    inStock: true
+  },
+  {
+    id: 10,
+    title: 'Прихожая "Лайт"',
+    category: 'Прихожая',
+    price: '19900 ₽',
+    image: 'https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d673daa8-2d56-408f-84f4-d906def95350.jpg',
+    images: ['https://cdn.poehali.dev/projects/38667a9f-497e-4567-b285-1db7b0b5ca66/files/d673daa8-2d56-408f-84f4-d906def95350.jpg'],
+    items: ['Шкаф', 'Зеркало', 'Полка обувная'],
+    style: 'Скандинавский',
+    description: 'Компактная прихожая: шкаф, зеркало, обувница. Для небольших квартир.',
+    colors: ['Белый'],
+    inStock: true
+  }
+];
+
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('statistics');
-  const { products, isLoading, handleProductUpdate } = useAdminProducts();
+  const [products, setProducts] = useState<Product[]>([]);
   const { toast } = useToast();
 
+  // Загрузка товаров из localStorage при монтировании компонента
   useEffect(() => {
     const adminAuth = localStorage.getItem('adminAuth');
     if (adminAuth === 'true') {
@@ -31,7 +182,7 @@ const Admin = () => {
 
   useEffect(() => {
     const savedProducts = localStorage.getItem('adminProducts');
-    if (savedProducts && false) {
+    if (savedProducts) {
       try {
         const loadedProducts = JSON.parse(savedProducts);
         
@@ -237,9 +388,14 @@ const Admin = () => {
         }
       } catch (error) {
         console.error('Error loading products:', error);
+        // Если ошибка парсинга, используем дефолтные товары
+        setProducts(defaultProducts);
+        localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
+        localStorage.setItem('larana-products', JSON.stringify(defaultProducts));
       }
     } else {
-      // Если нет сохранённых товаров, синхронизируем дефолтные с каталогом
+      // Если нет сохранённых товаров, используем дефолтные и синхронизируем с каталогом
+      setProducts(defaultProducts);
       localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
       localStorage.setItem('larana-products', JSON.stringify(defaultProducts));
     }
@@ -258,7 +414,26 @@ const Admin = () => {
     });
   };
 
-
+  const handleProductUpdate = (updatedProducts: Product[]) => {
+    console.log('💾 Сохранение товаров в localStorage');
+    
+    // Сохраняем в localStorage
+    localStorage.setItem('adminProducts', JSON.stringify(updatedProducts));
+    localStorage.setItem('larana-products', JSON.stringify(updatedProducts));
+    
+    // Обновляем состояние
+    setProducts(updatedProducts);
+    
+    // Отправляем событие для обновления каталога
+    window.dispatchEvent(new CustomEvent('larana-products-updated', {
+      detail: { count: updatedProducts.length, timestamp: new Date().toISOString() }
+    }));
+    
+    toast({
+      title: "Товары обновлены",
+      description: `Изменения сохранены (${updatedProducts.length} товаров)`
+    });
+  };
 
   if (!isAuthenticated) {
     return <AdminLogin onLogin={handleLogin} />;
