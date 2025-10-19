@@ -47,7 +47,11 @@ const initialProducts: Product[] = [
     style: 'Скандинавский',
     description: 'Кровать, 2 тумбы, шкаф, всё в скандинавском стиле. Идеально для молодых пар.',
     colors: ['Белый/дуб', 'серый/дуб'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 2,
@@ -60,7 +64,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: 'Расширенный комплект: кровать, шкаф-купе, комод, зеркало. Цвет — дуб сонома.',
     colors: ['Дуб сонома', 'венге'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 3,
@@ -73,7 +81,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: 'Базовая кухня 180 см, верх + низ, фасады белый глянец. Подходит для арендаторов.',
     colors: ['Белый глянец'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 4,
@@ -86,7 +98,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: '240 см, угловая, встроенная мойка и духовой шкаф. Белая глянцевая с серыми акцентами.',
     colors: ['Белый/серый'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 5,
@@ -99,7 +115,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: 'Современная гостиная: диван, столик, ТВ-тумба. Диван — механизм еврокнижка.',
     colors: ['Серый'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 6,
@@ -112,7 +132,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: 'Угловой диван с механизмом дельфин + стенка + стол. Для просторной гостиной.',
     colors: ['Бежевый', 'коричневый'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 7,
@@ -125,7 +149,11 @@ const initialProducts: Product[] = [
     style: 'Классика',
     description: 'Полная комплектация классической гостиной: диван, кресло, стенка, столик.',
     colors: ['Бежевый'],
-    inStock: false
+    inStock: false,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 8,
@@ -138,7 +166,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: 'Шкаф-купе 180 см, 2 двери с зеркалами. Глубина 60 см, высота 220 см.',
     colors: ['Венге', 'дуб'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 9,
@@ -151,7 +183,11 @@ const initialProducts: Product[] = [
     style: 'Современный',
     description: 'Большой шкаф 240 см, 3 двери. С антресолью и зеркальными вставками.',
     colors: ['Белый', 'венге'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   },
   {
     id: 10,
@@ -164,7 +200,11 @@ const initialProducts: Product[] = [
     style: 'Скандинавский',
     description: 'Компактная прихожая: шкаф, зеркало, обувница. Для небольших квартир.',
     colors: ['Белый'],
-    inStock: true
+    inStock: true,
+    supplierArticle: '',
+    stockQuantity: null,
+    variantGroupId: '',
+    colorVariant: ''
   }
 ];
 
