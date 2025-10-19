@@ -20,6 +20,7 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
   const [viewerIndex, setViewerIndex] = useState(0);
   const [imageUrl, setImageUrl] = useState('');
   const [showUrlInput, setShowUrlInput] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
 
   const uploadImage = async (file: File) => {
@@ -91,8 +92,12 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
     }
 
     console.log(`📁 Selected ${files.length} file(s)`);
-    
-    for (const file of Array.from(files)) {
+    await handleFiles(Array.from(files));
+    e.target.value = '';
+  };
+
+  const handleFiles = async (files: File[]) => {
+    for (const file of files) {
       if (!file.type.startsWith('image/')) {
         toast({
           title: "Пропущен файл",
@@ -103,8 +108,33 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
       }
       await uploadImage(file);
     }
-    
-    e.target.value = '';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length === 0) {
+      console.log('⚠️ No files dropped');
+      return;
+    }
+
+    console.log(`🎯 Dropped ${files.length} file(s)`);
+    await handleFiles(files);
   };
 
   const setMainImage = (imageUrl: string) => {
@@ -236,6 +266,29 @@ const ProductImageGallery = ({ images, mainImage, onImagesChange }: ProductImage
               className="hidden"
               aria-label="Выбрать изображения"
             />
+          </div>
+
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`border-2 border-dashed rounded-lg p-6 text-center transition-all ${
+              isDragging 
+                ? 'border-primary bg-primary/5 scale-[1.02]' 
+                : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+            } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+          >
+            <Icon 
+              name={isDragging ? "Download" : "ImagePlus"} 
+              size={40} 
+              className={`mx-auto mb-3 ${isDragging ? 'text-primary animate-bounce' : 'text-muted-foreground'}`}
+            />
+            <p className="text-sm font-medium mb-1">
+              {isDragging ? '📥 Отпустите файлы здесь' : '🖼️ Перетащите изображения сюда'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              или используйте кнопки выше
+            </p>
           </div>
 
           {showUrlInput && (
