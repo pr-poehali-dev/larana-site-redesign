@@ -7,6 +7,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import QuickFilters from '@/components/QuickFilters';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
 import { useProducts } from '@/contexts/ProductContext';
 import { formatPrice } from '@/utils/formatPrice';
@@ -65,6 +66,7 @@ const catalogCategoriesBase = [
 const Catalog = () => {
   const { availableProducts } = useProducts();
   const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('default');
   const [showProducts, setShowProducts] = useState(false);
 
   const handleFilterChange = (type: 'price', value: string) => {
@@ -87,6 +89,29 @@ const Catalog = () => {
 
     return filtered;
   }, [availableProducts, selectedPriceRange]);
+
+  const sortedProducts = useMemo(() => {
+    const sorted = [...filteredProducts];
+
+    switch (sortBy) {
+      case 'price-asc':
+        return sorted.sort((a, b) => {
+          const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^\d.]/g, '')) : parseFloat(a.price);
+          const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^\d.]/g, '')) : parseFloat(b.price);
+          return priceA - priceB;
+        });
+      case 'price-desc':
+        return sorted.sort((a, b) => {
+          const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^\d.]/g, '')) : parseFloat(a.price);
+          const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^\d.]/g, '')) : parseFloat(b.price);
+          return priceB - priceA;
+        });
+      case 'newest':
+        return sorted.sort((a, b) => b.id - a.id);
+      default:
+        return sorted;
+    }
+  }, [filteredProducts, sortBy]);
 
   const catalogCategories = catalogCategoriesBase.map(cat => ({
     ...cat,
@@ -169,22 +194,36 @@ const Catalog = () => {
 
               {showProducts && filteredProducts.length > 0 && (
                 <div className="mb-12">
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                     <h2 className="text-2xl font-bold">
                       Найдено: {filteredProducts.length} товаров
                     </h2>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        setSelectedPriceRange('');
-                        setShowProducts(false);
-                      }}
-                    >
-                      Сбросить фильтр
-                    </Button>
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className="w-full sm:w-[200px]">
+                          <SelectValue placeholder="Сортировка" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">По умолчанию</SelectItem>
+                          <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
+                          <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
+                          <SelectItem value="newest">Сначала новые</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setSelectedPriceRange('');
+                          setSortBy('default');
+                          setShowProducts(false);
+                        }}
+                      >
+                        Сбросить
+                      </Button>
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredProducts.slice(0, 12).map((product) => {
+                    {sortedProducts.slice(0, 12).map((product) => {
                       const price = typeof product.price === 'string' 
                         ? parseFloat(product.price.replace(/[^\d.]/g, '')) 
                         : parseFloat(product.price);
