@@ -309,7 +309,17 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Фильтруем только товары в наличии для отображения на сайте
-  const availableProducts = allFurnitureSets.filter(product => product.inStock !== false);
+  const availableProducts = allFurnitureSets
+    .filter(product => product.inStock !== false)
+    .sort((a, b) => {
+      const aHasImage = a.image && a.image.startsWith('http');
+      const bHasImage = b.image && b.image.startsWith('http');
+      
+      if (aHasImage && !bHasImage) return -1;
+      if (!aHasImage && bHasImage) return 1;
+      
+      return 0;
+    });
 
   return (
     <ProductContext.Provider value={{ 

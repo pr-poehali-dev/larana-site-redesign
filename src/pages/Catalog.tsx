@@ -51,12 +51,12 @@ const catalogCategoriesBase = [
 ];
 
 const Catalog = () => {
-  const { allFurnitureSets } = useProducts();
+  const { availableProducts } = useProducts();
   
   const catalogCategories = catalogCategoriesBase.map(cat => ({
     ...cat,
-    count: allFurnitureSets.filter(product => 
-      product.category === cat.categoryName && product.inStock === true
+    count: availableProducts.filter(product => 
+      product.category === cat.categoryName
     ).length
   }));
   return (
