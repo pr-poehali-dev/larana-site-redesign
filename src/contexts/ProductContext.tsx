@@ -206,7 +206,11 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
             style: p.style || 'Современный',
             description: p.description || '',
             colors: p.colors || [],
-            inStock: p.in_stock !== false
+            inStock: p.in_stock !== false,
+            supplierArticle: p.supplier_article || '',
+            stockQuantity: p.stock_quantity || null,
+            variantGroupId: p.variant_group_id || '',
+            colorVariant: p.color_variant || ''
           }));
           
           setAllFurnitureSets(normalized);
@@ -251,7 +255,11 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           style: p.style || 'Современный',
           description: p.description || '',
           colors: p.colors || [],
-          inStock: p.in_stock !== false
+          inStock: p.in_stock !== false,
+          supplierArticle: p.supplier_article || '',
+          stockQuantity: p.stock_quantity || null,
+          variantGroupId: p.variant_group_id || '',
+          colorVariant: p.color_variant || ''
         }));
         
         setAllFurnitureSets(normalized);

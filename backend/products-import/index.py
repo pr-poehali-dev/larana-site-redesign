@@ -103,15 +103,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             json.dumps(images_list),
             json.dumps(p.get('items', [])),
             p.get('inStock', True),
-            False  # is_new
+            False,  # is_new
+            p.get('supplierArticle'),  # supplier_article
+            p.get('stockQuantity'),  # stock_quantity
+            p.get('variantGroupId'),  # variant_group_id
+            p.get('colorVariant')  # color_variant
         ))
     
     # Массовая вставка (вставляем без ID, база сама сгенерирует)
     execute_batch(cursor, '''
         INSERT INTO products (
             title, slug, description, price, discount_price,
-            category, style, colors, images, items, in_stock, is_new
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)
+            category, style, colors, images, items, in_stock, is_new,
+            supplier_article, stock_quantity, variant_group_id, color_variant
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s, %s, %s, %s, %s)
     ''', insert_data)
     
     conn.commit()

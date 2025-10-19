@@ -83,8 +83,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body_data = json.loads(event.get('body', '{}'))
             
             cur.execute('''
-                INSERT INTO products (title, slug, description, price, discount_price, category, style, colors, images, items, in_stock, is_new)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO products (title, slug, description, price, discount_price, category, style, colors, images, items, in_stock, is_new, supplier_article, stock_quantity, variant_group_id, color_variant)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING *
             ''', (
                 body_data.get('title'),
@@ -98,7 +98,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 json.dumps(body_data.get('images', [])),
                 json.dumps(body_data.get('items', [])),
                 body_data.get('in_stock', True),
-                body_data.get('is_new', False)
+                body_data.get('is_new', False),
+                body_data.get('supplierArticle'),
+                body_data.get('stockQuantity'),
+                body_data.get('variantGroupId'),
+                body_data.get('colorVariant')
             ))
             
             product = cur.fetchone()
@@ -127,7 +131,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 UPDATE products 
                 SET title = %s, slug = %s, description = %s, price = %s, discount_price = %s, 
                     category = %s, style = %s, colors = %s, images = %s, items = %s, 
-                    in_stock = %s, is_new = %s, updated_at = CURRENT_TIMESTAMP
+                    in_stock = %s, is_new = %s, supplier_article = %s, stock_quantity = %s, 
+                    variant_group_id = %s, color_variant = %s, updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
                 RETURNING *
             ''', (
@@ -143,6 +148,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 json.dumps(body_data.get('items', [])),
                 body_data.get('in_stock', True),
                 body_data.get('is_new', False),
+                body_data.get('supplierArticle'),
+                body_data.get('stockQuantity'),
+                body_data.get('variantGroupId'),
+                body_data.get('colorVariant'),
                 product_id
             ))
             
