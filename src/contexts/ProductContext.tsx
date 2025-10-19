@@ -255,6 +255,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           
           setAllFurnitureSets(normalized);
           console.log('✅ Каталог готов:', normalized.length, 'товаров');
+          console.log('📋 Пример товара с ID=11:', normalized.find((p: any) => p.id === 11));
         }
         
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
@@ -272,8 +273,28 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   }, []);
   
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('larana-cart');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('larana-cart');
+      if (!saved) return [];
+      
+      const parsed = JSON.parse(saved);
+      // Проверяем, что у товаров есть все необходимые поля
+      const isValid = Array.isArray(parsed) && parsed.every((item: any) => 
+        item.id && item.title && item.price && item.quantity
+      );
+      
+      if (!isValid) {
+        console.warn('⚠️ Корзина содержит устаревшие данные, очищаем');
+        localStorage.removeItem('larana-cart');
+        return [];
+      }
+      
+      return parsed;
+    } catch (error) {
+      console.error('❌ Ошибка загрузки корзины:', error);
+      localStorage.removeItem('larana-cart');
+      return [];
+    }
   });
 
   // Функция для перезагрузки товаров из БД (для админки)
@@ -322,13 +343,16 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   const addToCart = (product: Product) => {
+    console.log('🛒 Добавление в корзину:', product.title, 'ID:', product.id);
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
+        console.log('✅ Товар уже в корзине, увеличиваем количество');
         return prev.map(item =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
+      console.log('✅ Добавляем новый товар в корзину');
       return [...prev, { ...product, quantity: 1 }];
     });
   };

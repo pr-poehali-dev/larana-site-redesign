@@ -33,6 +33,13 @@ const ProductPage = () => {
   const [user, setUser] = useState<any>(null);
   
   const product = availableProducts.find(p => p.id === parseInt(id || '0'));
+  
+  console.log('🔍 ProductPage: Поиск товара', { 
+    requestedId: parseInt(id || '0'), 
+    totalProducts: availableProducts.length,
+    foundProduct: product ? product.title : 'NOT FOUND'
+  });
+  
   const { variants, hasVariants, allAvailableColors } = useProductVariants(
     product || {} as any,
     availableProducts
