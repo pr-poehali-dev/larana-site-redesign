@@ -1,4 +1,4 @@
-import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { formatPrice } from '@/utils/formatPrice';
 import { useState, useEffect, useMemo } from 'react';
@@ -233,18 +233,19 @@ const CategoryPage = () => {
         
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
-            <nav className="mb-6 text-sm text-muted-foreground">
-              <ol className="flex items-center gap-2">
+            <nav className="mb-6 text-sm text-muted-foreground" aria-label="Хлебные крошки">
+              <ol className="flex items-center gap-2" itemScope itemType="https://schema.org/BreadcrumbList">
                 {categoryData.breadcrumb.map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
+                  <li key={idx} className="flex items-center gap-2" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
                     {idx > 0 && <Icon name="ChevronRight" size={14} />}
                     {idx === categoryData.breadcrumb.length - 1 ? (
-                      <span className="text-foreground">{item.name}</span>
+                      <span className="text-foreground" itemProp="name">{item.name}</span>
                     ) : (
-                      <a href={item.url} className="hover:text-foreground transition-colors">
-                        {item.name}
-                      </a>
+                      <Link to={item.url} className="hover:text-foreground transition-colors" itemProp="item">
+                        <span itemProp="name">{item.name}</span>
+                      </Link>
                     )}
+                    <meta itemProp="position" content={String(idx + 1)} />
                   </li>
                 ))}
               </ol>
@@ -361,17 +362,23 @@ const CategoryPage = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
                   {mockProducts.map((product) => (
-                    <Card 
+                    <article 
                       key={product.id}
-                      className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => navigate(`/catalog/${slug}/${product.id}`)}
+                      itemScope 
+                      itemType="https://schema.org/Product"
                     >
-                        <div className="relative aspect-[4/3] overflow-hidden bg-secondary/20">
+                      <Link 
+                        to={`/catalog/${slug}/${product.id}`}
+                        className="block"
+                      >
+                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow h-full">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-secondary/20">
                           {product.image ? (
                             <img
                               src={product.image}
                               alt={product.title}
                               loading="lazy"
+                              itemProp="image"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
@@ -391,9 +398,12 @@ const CategoryPage = () => {
                           )}
                         </div>
                         <CardContent className="p-4">
-                          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product.title}</h3>
+                          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors" itemProp="name">{product.title}</h3>
                           <p className="text-sm text-muted-foreground mb-3">{product.width} • {product.material}</p>
-                          <div className="mb-3">
+                          <div className="mb-3" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                            <meta itemProp="priceCurrency" content="RUB" />
+                            <meta itemProp="price" content={typeof product.price === 'string' ? product.price.replace(/[^\d]/g, '') : product.price} />
+                            <link itemProp="availability" href={product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'} />
                             <div className="text-3xl font-bold text-foreground mb-2">{formatPrice(product.price)}</div>
                             <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground mb-3">
                               <div className="flex items-center gap-1">
@@ -423,7 +433,9 @@ const CategoryPage = () => {
                             В корзину
                           </Button>
                         </CardContent>
-                      </Card>
+                        </Card>
+                      </Link>
+                    </article>
                   ))}
                 </div>
 
