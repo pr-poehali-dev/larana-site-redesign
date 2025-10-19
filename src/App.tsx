@@ -16,6 +16,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Oferta from "./pages/Oferta";
 import Catalog from "./pages/Catalog";
+import BundlesCatalog from "./pages/BundlesCatalog";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import Blog from "./pages/Blog";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/oferta" element={<Oferta />} />
             <Route path="/catalog" element={<Catalog />} />
+            <Route path="/catalog/bundles" element={<BundlesCatalog />} />
             <Route path="/catalog/:slug" element={<CategoryPage />} />
             <Route path="/catalog/:slug/:id" element={<ProductPage />} />
             <Route path="/blog" element={<Blog />} />

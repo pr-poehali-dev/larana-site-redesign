@@ -10,6 +10,7 @@ import ProductsTab from '@/components/admin/ProductsTab';
 import EmployeesTab from '@/components/admin/EmployeesTab';
 import StatisticsTab from '@/components/admin/StatisticsTab';
 import OzonImportTab from '@/components/admin/OzonImportTab';
+import ProductBundlesTab from '@/components/admin/ProductBundlesTab';
 import AdminLogin from '@/components/admin/AdminLogin';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminMobileMenu from '@/components/admin/AdminMobileMenu';
@@ -366,7 +367,7 @@ const Admin = () => {
               activeTab={activeTab}
               onTabChange={setActiveTab}
             />
-            <TabsList className="hidden md:grid w-full grid-cols-3 md:grid-cols-5 gap-1">
+            <TabsList className="hidden md:grid w-full grid-cols-3 md:grid-cols-6 gap-1">
               <TabsTrigger value="statistics" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                 <Icon name="BarChart3" size={14} className="md:w-4 md:h-4" />
                 <span className="hidden sm:inline">Статистика</span>
@@ -385,6 +386,11 @@ const Admin = () => {
               <TabsTrigger value="ozon" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                 <Icon name="Download" size={14} className="md:w-4 md:h-4" />
                 Ozon
+              </TabsTrigger>
+              <TabsTrigger value="bundles" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                <Icon name="Box" size={14} className="md:w-4 md:h-4" />
+                <span className="hidden sm:inline">Наборы</span>
+                <span className="sm:hidden">Набор</span>
               </TabsTrigger>
               <TabsTrigger value="employees" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                 <Icon name="Users" size={14} className="md:w-4 md:h-4" />
@@ -442,6 +448,20 @@ const Admin = () => {
                     products={products}
                     onProductsUpdate={handleProductUpdate}
                   />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="bundles" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Наборы товаров</CardTitle>
+                  <CardDescription>
+                    Создавайте комплекты мебели с автоматической проверкой наличия
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ProductBundlesTab products={products} />
                 </CardContent>
               </Card>
             </TabsContent>

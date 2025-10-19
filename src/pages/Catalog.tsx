@@ -252,6 +252,25 @@ const Catalog = () => {
                 </div>
               )}
 
+              <div className="mb-12">
+                <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+                  <CardContent className="p-8 text-center">
+                    <Icon name="Box" className="mx-auto mb-4 text-primary" size={48} />
+                    <h2 className="text-3xl font-bold mb-3">Готовые комплекты мебели</h2>
+                    <p className="text-lg text-muted-foreground mb-6">
+                      Подобранные комплекты для спальни, гостиной и детской. 
+                      Экономьте до 20% при покупке набора!
+                    </p>
+                    <Button asChild size="lg">
+                      <Link to="/catalog/bundles">
+                        <Icon name="Package" className="mr-2" size={20} />
+                        Посмотреть комплекты
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
               <h2 className="text-2xl font-bold mb-6 text-center">Категории</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">

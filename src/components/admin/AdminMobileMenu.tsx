@@ -59,6 +59,14 @@ const AdminMobileMenu = ({ open, onOpenChange, activeTab, onTabChange }: AdminMo
               Ozon
             </Button>
             <Button
+              variant={activeTab === 'bundles' ? 'default' : 'ghost'}
+              className="justify-start"
+              onClick={() => handleTabClick('bundles')}
+            >
+              <Icon name="Box" size={16} className="mr-2" />
+              Наборы
+            </Button>
+            <Button
               variant={activeTab === 'employees' ? 'default' : 'ghost'}
               className="justify-start"
               onClick={() => handleTabClick('employees')}
