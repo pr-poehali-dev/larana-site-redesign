@@ -1,11 +1,15 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { useState, useMemo } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import QuickFilters from '@/components/QuickFilters';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useProducts } from '@/contexts/ProductContext';
+import { formatPrice } from '@/utils/formatPrice';
 
 const catalogCategoriesBase = [
   {
@@ -52,6 +56,60 @@ const catalogCategoriesBase = [
 
 const Catalog = () => {
   const { availableProducts } = useProducts();
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedStyle, setSelectedStyle] = useState<string>('');
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
+  const [showProducts, setShowProducts] = useState(false);
+
+  const handleFilterChange = (type: 'category' | 'style' | 'price', value: string) => {
+    if (type === 'category') {
+      setSelectedCategory(selectedCategory === value ? '' : value);
+    } else if (type === 'style') {
+      setSelectedStyle(selectedStyle === value ? '' : value);
+    } else if (type === 'price') {
+      setSelectedPriceRange(selectedPriceRange === value ? '' : value);
+    }
+    setShowProducts(true);
+  };
+
+  const filteredProducts = useMemo(() => {
+    let filtered = availableProducts;
+
+    if (selectedCategory) {
+      filtered = filtered.filter(p => p.category === selectedCategory);
+    }
+
+    if (selectedStyle) {
+      filtered = filtered.filter(p => 
+        p.style?.toLowerCase().includes(selectedStyle.toLowerCase())
+      );
+    }
+
+    if (selectedPriceRange) {
+      const [min, max] = selectedPriceRange.split('-').map(Number);
+      filtered = filtered.filter(p => {
+        const price = typeof p.price === 'string' 
+          ? parseFloat(p.price.replace(/[^\d.]/g, '')) 
+          : parseFloat(p.price);
+        return price >= min && price <= max;
+      });
+    }
+
+    return filtered;
+  }, [availableProducts, selectedCategory, selectedStyle, selectedPriceRange]);
+
+  const quickCategories = [
+    { id: 'gostinaya', label: 'Гостиная', icon: 'Sofa', value: 'Гостиная' },
+    { id: 'spalnya', label: 'Спальня', icon: 'Bed', value: 'Спальня' },
+    { id: 'kuhni', label: 'Кухни', icon: 'ChefHat', value: 'Кухня' },
+    { id: 'shkafy', label: 'Шкафы', icon: 'Box', value: 'Шкафы' },
+    { id: 'prihozhaya', label: 'Прихожие', icon: 'DoorOpen', value: 'Прихожая' },
+    { id: 'detskaya', label: 'Детская', icon: 'Baby', value: 'Детская' }
+  ];
+
+  const quickStyles = [
+    { id: 'modern', label: 'Современный', value: 'Современный' }
+  ];
   
   const catalogCategories = catalogCategoriesBase.map(cat => ({
     ...cat,
@@ -117,9 +175,76 @@ const Catalog = () => {
                   Каталог мебели
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  Выберите категорию для просмотра товаров
+                  {availableProducts.length.toLocaleString('ru-RU')} товаров в наличии
                 </p>
               </div>
+
+              <div className="max-w-5xl mx-auto mb-12">
+                <Card>
+                  <CardContent className="p-6">
+                    <QuickFilters
+                      categories={quickCategories}
+                      styles={quickStyles}
+                      onFilterChange={handleFilterChange}
+                      selectedCategory={selectedCategory}
+                      selectedStyle={selectedStyle}
+                      selectedPriceRange={selectedPriceRange}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {showProducts && filteredProducts.length > 0 && (
+                <div className="mb-12">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">
+                      Найдено: {filteredProducts.length} товаров
+                    </h2>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setSelectedCategory('');
+                        setSelectedStyle('');
+                        setSelectedPriceRange('');
+                        setShowProducts(false);
+                      }}
+                    >
+                      Сбросить фильтры
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredProducts.slice(0, 12).map((product) => {
+                      const price = typeof product.price === 'string' 
+                        ? parseFloat(product.price.replace(/[^\d.]/g, '')) 
+                        : parseFloat(product.price);
+                      const imageUrl = Array.isArray(product.images) && product.images.length > 0
+                        ? product.images[0]
+                        : (product.image || '');
+                      
+                      return (
+                        <Link key={product.id} to={`/product/${product.slug}`}>
+                          <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300">
+                            <div className="aspect-square overflow-hidden">
+                              <img 
+                                src={imageUrl} 
+                                alt={product.title}
+                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                              />
+                            </div>
+                            <CardContent className="p-4">
+                              <h3 className="font-semibold mb-2 line-clamp-2">{product.title}</h3>
+                              <p className="text-sm text-muted-foreground mb-2">{product.category}</p>
+                              <p className="text-xl font-bold text-primary">{formatPrice(price)}</p>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <h2 className="text-2xl font-bold mb-6 text-center">Категории</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
                 {catalogCategories.map((category) => (
