@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -8,6 +8,7 @@ import Icon from '@/components/ui/icon';
 const MigrateProducts = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<{ success: number; failed: number } | null>(null);
+  const [autoMigrated, setAutoMigrated] = useState(false);
 
   const handleMigrate = async () => {
     setIsRunning(true);
@@ -22,6 +23,13 @@ const MigrateProducts = () => {
       setIsRunning(false);
     }
   };
+
+  useEffect(() => {
+    if (!autoMigrated) {
+      setAutoMigrated(true);
+      handleMigrate();
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
