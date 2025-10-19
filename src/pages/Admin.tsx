@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import { useProducts } from '@/contexts/ProductContext';
+import { useAdminProducts } from '@/hooks/useAdminProducts';
 import OrdersTab from '@/components/admin/OrdersTab';
 import ProductsTab from '@/components/admin/ProductsTab';
 import EmployeesTab from '@/components/admin/EmployeesTab';
@@ -14,14 +14,12 @@ import AdminLogin from '@/components/admin/AdminLogin';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminMobileMenu from '@/components/admin/AdminMobileMenu';
 import AdminStatsCards from '@/components/admin/AdminStatsCards';
-import { defaultProducts } from '@/data/defaultProducts';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('statistics');
-  const { allFurnitureSets, setAllFurnitureSets } = useProducts();
-  const [products, setProducts] = useState(defaultProducts);
+  const { products, isLoading, handleProductUpdate } = useAdminProducts();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,7 +31,7 @@ const Admin = () => {
 
   useEffect(() => {
     const savedProducts = localStorage.getItem('adminProducts');
-    if (savedProducts) {
+    if (savedProducts && false) {
       try {
         const loadedProducts = JSON.parse(savedProducts);
         
@@ -260,89 +258,7 @@ const Admin = () => {
     });
   };
 
-  const handleProductUpdate = (updatedProducts: any[]) => {
-    // Нормализация категорий к единственному числу
-    const normalizeCategory = (category: string) => {
-      const categoryMap: Record<string, string> = {
-        'Гостиные': 'Гостиная',
-        'Спальни': 'Спальня',
-        'Кухни': 'Кухня',
-        'Прихожие': 'Прихожая'
-      };
-      return categoryMap[category] || category;
-    };
-    
-    // Очищаем ссылки на изображения от символа ₽
-    const cleanImageUrl = (url: string) => {
-      if (!url) return url;
-      const cleaned = url
-        .replace(/\s*[₽₸₴€$£¥Р]\s*.*$/, '')
-        .replace(/\s+₽.*$/, '')
-        .replace(/₽.*$/, '')
-        .split(' ')[0]
-        .trim();
-      return cleaned.startsWith('http') ? cleaned : url;
-    };
-    
-    // Округляем цену до целого числа
-    const roundPrice = (price: string) => {
-      if (!price) return '0 ₽';
-      const numericValue = price.replace(/[^\d.,]/g, '').replace(',', '.');
-      const rounded = Math.round(parseFloat(numericValue) || 0);
-      return `${rounded} ₽`;
-    };
-    
-    // Добавляем обязательные поля для товаров, если их нет
-    const normalizedProducts = updatedProducts.map(product => ({
-      ...product,
-      category: normalizeCategory(product.category || 'Гостиная'),
-      price: roundPrice(product.price || '0 ₽'),
-      image: cleanImageUrl(product.image || ''),
-      images: (product.images || [product.image]).map(cleanImageUrl),
-      items: product.items || [],
-      style: product.style || 'Современный',
-      description: product.description || product.title || '',
-      colors: product.colors || ['Базовый']
-    }));
-    
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('🔄 НАЧАЛО СИНХРОНИЗАЦИИ ТОВАРОВ');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('📊 Количество товаров:', normalizedProducts.length);
-    console.log('📦 Пример товара:', normalizedProducts[0]);
-    
-    console.log('\n1️⃣ Обновление локального состояния админки...');
-    setProducts(normalizedProducts);
-    console.log('   ✅ Состояние админки обновлено');
-    
-    console.log('\n2️⃣ Обновление глобального контекста (ProductContext)...');
-    setAllFurnitureSets(normalizedProducts);
-    console.log('   ✅ Глобальный контекст обновлён - каталог получит новые данные');
-    
-    console.log('\n3️⃣ Сохранение в localStorage...');
-    localStorage.setItem('adminProducts', JSON.stringify(normalizedProducts));
-    console.log('   ✅ adminProducts сохранён');
-    localStorage.setItem('larana-products', JSON.stringify(normalizedProducts));
-    console.log('   ✅ larana-products сохранён (используется каталогом)');
-    
-    console.log('\n4️⃣ Отправка события обновления...');
-    window.dispatchEvent(new CustomEvent('larana-products-updated', {
-      detail: { 
-        count: normalizedProducts.length,
-        timestamp: new Date().toISOString()
-      }
-    }));
-    console.log('   ✅ Event "larana-products-updated" отправлен');
-    
-    console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('✅ СИНХРОНИЗАЦИЯ ЗАВЕРШЕНА');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('💡 Теперь:');
-    console.log('   - Каталог покажет обновлённые данные');
-    console.log('   - Фильтры пересчитаются автоматически');
-    console.log('   - Карточки товаров обновятся');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  };
+
 
   if (!isAuthenticated) {
     return <AdminLogin onLogin={handleLogin} />;
