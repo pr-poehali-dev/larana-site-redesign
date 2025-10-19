@@ -10,6 +10,15 @@ export function useAdminProducts() {
   const loadProducts = async () => {
     setIsLoading(true);
     try {
+      const savedLocal = localStorage.getItem('adminProducts');
+      if (savedLocal) {
+        console.log('📦 Загрузка товаров из localStorage (временно)');
+        const localProducts = JSON.parse(savedLocal);
+        setProducts(localProducts);
+        setIsLoading(false);
+        return;
+      }
+      
       const loadedProducts = await getAllProducts();
       setProducts(loadedProducts);
       localStorage.setItem('adminProducts', JSON.stringify(loadedProducts));
@@ -19,7 +28,7 @@ export function useAdminProducts() {
       console.error('Error loading products:', error);
       toast({
         title: "Ошибка загрузки",
-        description: "Не удалось загрузить товары из базы данных",
+        description: "Не удалось загрузить товары",
         variant: "destructive"
       });
     } finally {
