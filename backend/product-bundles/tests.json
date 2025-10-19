@@ -1,0 +1,37 @@
+{
+  "tests": [
+    {
+      "name": "Get all bundles",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "type"
+    },
+    {
+      "name": "Create bundle",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Спальня Классик",
+        "type": "спальня",
+        "color": "белый",
+        "price": 45000,
+        "description": "Комплект мебели для спальни",
+        "items": [
+          {
+            "supplier_article": "TEST-001",
+            "product_name": "Кровать двуспальная",
+            "quantity": 1
+          }
+        ]
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "id": "number",
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
