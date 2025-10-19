@@ -21,7 +21,7 @@ import ProductReviews from '@/components/product/ProductReviews';
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
-  const { availableProducts, setAllFurnitureSets } = useProductData();
+  const { availableProducts } = useProductData();
   const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { toast } = useToast();
   
@@ -32,25 +32,7 @@ const ProductPage = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   
-  useEffect(() => {
-    const saved = localStorage.getItem('larana-products');
-    if (saved) {
-      try {
-        const products = JSON.parse(saved);
-        const normalized = products.map((p: any) => ({
-          ...p,
-          items: p.items || [],
-          style: p.style || 'Современный',
-          description: p.description || p.title || '',
-          colors: p.colors || ['Базовый'],
-          images: p.images || [p.image]
-        }));
-        setAllFurnitureSets(normalized);
-      } catch (e) {
-        console.error('Ошибка загрузки товаров:', e);
-      }
-    }
-  }, [id, setAllFurnitureSets]);
+
   
   const product = availableProducts.find(p => p.id === parseInt(id || '0'));
   const { variants, hasVariants, allAvailableColors } = useProductVariants(
@@ -66,17 +48,7 @@ const ProductPage = () => {
     }
   }, [product?.id, product?.colors]);
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      window.location.reload();
-    };
-    
-    window.addEventListener('products-updated', handleStorageChange as EventListener);
-    
-    return () => {
-      window.removeEventListener('products-updated', handleStorageChange as EventListener);
-    };
-  }, []);
+
 
   if (!product) {
     return <Navigate to="/404" replace />;

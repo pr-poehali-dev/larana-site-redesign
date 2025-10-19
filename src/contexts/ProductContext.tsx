@@ -169,17 +169,11 @@ const initialProducts: Product[] = [
 ];
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
-  const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
-    console.log('\n🚀 ИНИЦИАЛИЗАЦИЯ КАТАЛОГА');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    
+  const loadProducts = () => {
     const saved = localStorage.getItem('larana-products');
     if (saved) {
       try {
         const products = JSON.parse(saved);
-        console.log('📦 Загружено товаров из localStorage:', products.length);
-        
-        // Нормализуем товары - добавляем обязательные поля если их нет
         const normalized = products.map((p: any) => ({
           ...p,
           items: p.items || [],
@@ -188,22 +182,23 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           colors: p.colors || ['Базовый'],
           images: p.images || [p.image]
         }));
-        
-        console.log('✅ Каталог готов с данными из админки');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
         return normalized;
       } catch (e) {
         console.error('❌ Ошибка загрузки товаров:', e);
-        console.log('⚠️ Использую дефолтные товары');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
         return initialProducts;
       }
     }
-    
-    console.log('ℹ️ localStorage пуст - использую дефолтные товары');
-    console.log('📦 Товаров:', initialProducts.length);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     return initialProducts;
+  };
+
+  const [allFurnitureSets, setAllFurnitureSets] = useState<Product[]>(() => {
+    console.log('\n🚀 ИНИЦИАЛИЗАЦИЯ КАТАЛОГА');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    const products = loadProducts();
+    console.log('📦 Загружено товаров:', products.length);
+    console.log('✅ Каталог готов');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    return products;
   });
   
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
@@ -213,7 +208,27 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem('larana-products', JSON.stringify(allFurnitureSets));
+    localStorage.setItem('larana-products-version', Date.now().toString());
   }, [allFurnitureSets]);
+
+  useEffect(() => {
+    const checkForUpdates = () => {
+      const currentVersion = localStorage.getItem('larana-products-version');
+      const lastChecked = sessionStorage.getItem('last-products-check');
+      
+      if (currentVersion !== lastChecked) {
+        console.log('🔄 Обнаружена новая версия данных, обновляю...');
+        const freshProducts = loadProducts();
+        setAllFurnitureSets(freshProducts);
+        sessionStorage.setItem('last-products-check', currentVersion || '0');
+      }
+    };
+    
+    checkForUpdates();
+    const interval = setInterval(checkForUpdates, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // Слушаем изменения в localStorage (когда админка обновляет товары)
   useEffect(() => {
