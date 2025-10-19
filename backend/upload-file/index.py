@@ -42,6 +42,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         body = event.get('body', '')
         is_base64_encoded = event.get('isBase64Encoded', False)
         
+        print(f'📦 Request received, isBase64Encoded: {is_base64_encoded}')
+        print(f'📏 Body length: {len(body) if body else 0}')
+        
         if is_base64_encoded:
             body_bytes = base64.b64decode(body)
         else:
@@ -49,6 +52,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         headers = event.get('headers', {})
         content_type = headers.get('content-type') or headers.get('Content-Type', '')
+        print(f'📋 Content-Type: {content_type}')
         
         if 'multipart/form-data' not in content_type:
             return {
@@ -75,12 +79,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         # Forward the multipart data to poehali CDN
+        print(f'🚀 Forwarding to CDN, size: {len(body_bytes)} bytes')
         upload_response = requests.post(
             'https://api.poehali.dev/upload',
             data=body_bytes,
             headers={'Content-Type': content_type},
             timeout=30
         )
+        
+        print(f'📥 CDN response: {upload_response.status_code}')
         
         if upload_response.status_code != 200:
             error_text = upload_response.text[:200]
