@@ -59,6 +59,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     clear_before = body_data.get('clearBefore', False)
     if clear_before:
         cursor.execute('DELETE FROM products')
+        cursor.execute('ALTER SEQUENCE products_id_seq RESTART WITH 1')
+        conn.commit()
     
     # Подготавливаем данные для batch insert
     insert_data = []
@@ -94,25 +96,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             False  # is_new
         ))
     
-    # Массовая вставка
+    # Массовая вставка (вставляем без ID, база сама сгенерирует)
+    insert_data_no_id = []
+    for item in insert_data:
+        # Пропускаем ID (первый элемент), остальное оставляем
+        insert_data_no_id.append(item[1:])
+    
     execute_batch(cursor, '''
         INSERT INTO products (
-            id, title, slug, description, price, discount_price,
+            title, slug, description, price, discount_price,
             category, style, colors, images, items, in_stock, is_new
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)
-        ON CONFLICT (id) DO UPDATE SET
-            title = EXCLUDED.title,
-            slug = EXCLUDED.slug,
-            description = EXCLUDED.description,
-            price = EXCLUDED.price,
-            category = EXCLUDED.category,
-            style = EXCLUDED.style,
-            colors = EXCLUDED.colors,
-            images = EXCLUDED.images,
-            items = EXCLUDED.items,
-            in_stock = EXCLUDED.in_stock,
-            updated_at = CURRENT_TIMESTAMP
-    ''', insert_data)
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)
+    ''', insert_data_no_id)
     
     conn.commit()
     imported_count = len(insert_data)
