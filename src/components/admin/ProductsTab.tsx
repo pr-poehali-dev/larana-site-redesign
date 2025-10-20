@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,7 @@ import BulkStockUpdate from './BulkStockUpdate';
 import BulkImageImport from './BulkImageImport';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
+import func2url from '@/../backend/func2url.json';
 
 interface ProductsTabProps {
   products: any[];
@@ -29,7 +30,69 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
   const [stockFilter, setStockFilter] = useState<'all' | 'in' | 'out'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [lastSync, setLastSync] = useState<Date | null>(null);
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadProductsFromDB();
+  }, []);
+
+  const loadProductsFromDB = async () => {
+    setLoadingProducts(true);
+    try {
+      const response = await fetch(func2url['products'], {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const formattedProducts = data.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          description: p.description,
+          price: typeof p.price === 'number' ? `${p.price} ₽` : p.price,
+          discountPrice: p.discount_price ? (typeof p.discount_price === 'number' ? `${p.discount_price} ₽` : p.discount_price) : null,
+          category: p.category,
+          style: p.style,
+          colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === 'string' ? JSON.parse(p.colors) : []),
+          images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : []),
+          image: Array.isArray(p.images) ? p.images[0] : (typeof p.images === 'string' ? JSON.parse(p.images)[0] : p.images),
+          items: Array.isArray(p.items) ? p.items : (typeof p.items === 'string' ? JSON.parse(p.items) : []),
+          inStock: p.in_stock,
+          isNew: p.is_new,
+          supplierArticle: p.supplier_article,
+          stockQuantity: p.stock_quantity,
+          variantGroupId: p.variant_group_id,
+          colorVariant: p.color_variant
+        }));
+        
+        setDbProducts(formattedProducts);
+        onProductUpdate(formattedProducts);
+        setLastSync(new Date());
+        
+        console.log(`✅ Загружено товаров из БД: ${formattedProducts.length}`);
+        
+        toast({
+          title: "Товары загружены",
+          description: `Загружено ${formattedProducts.length} товаров из базы данных`
+        });
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки товаров из БД:', error);
+      toast({
+        title: 'Предупреждение',
+        description: 'Не удалось загрузить товары из БД, используются локальные данные',
+        variant: 'default'
+      });
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
 
   const startEditProduct = (product: any) => {
     setEditingProduct(product);
@@ -50,7 +113,6 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
   const duplicateProduct = (product: any, e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const maxId = Math.max(...products.map(p => p.id), 0);
     const duplicatedProduct = {
       ...product,
       id: null,
@@ -103,7 +165,7 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
   };
 
   const exportProducts = () => {
-    const exportData = products.map(p => ({
+    const exportData = activeProducts.map(p => ({
       'Название': p.title,
       'Категория': p.category,
       'Цена (₽)': p.price.replace(' ₽', ''),
@@ -133,11 +195,13 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
 
     toast({
       title: "Экспорт завершён",
-      description: `Экспортировано товаров: ${products.length}`
+      description: `Экспортировано товаров: ${activeProducts.length}`
     });
   };
 
-  const filteredProducts = products.filter(product => {
+  const activeProducts = dbProducts.length > 0 ? dbProducts : products;
+  
+  const filteredProducts = activeProducts.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase());
     
     if (!matchesSearch) return false;
@@ -157,7 +221,17 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
         <div className="space-y-2 pr-2">
           <div className="space-y-2 mb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <h3 className="font-semibold text-sm md:text-base">Список товаров</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-sm md:text-base">Список товаров</h3>
+                {loadingProducts && (
+                  <span className="text-xs text-muted-foreground">Загрузка из БД...</span>
+                )}
+                {!loadingProducts && dbProducts.length > 0 && (
+                  <Badge variant="outline" className="text-xs">
+                    БД: {dbProducts.length} шт
+                  </Badge>
+                )}
+              </div>
             </div>
             
             <div className="relative">
@@ -180,23 +254,15 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
                 <Icon name="Download" size={16} className="mr-1" />
                 Экспортировать
               </Button>
-              {onReloadCatalog && (
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={async () => {
-                    await onReloadCatalog();
-                    setLastSync(new Date());
-                    toast({
-                      title: "Каталог обновлён",
-                      description: "Товары перезагружены из базы данных"
-                    });
-                  }}
-                >
-                  <Icon name="RefreshCw" size={16} className="mr-1" />
-                  Обновить каталог
-                </Button>
-              )}
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={loadProductsFromDB}
+                disabled={loadingProducts}
+              >
+                <Icon name="RefreshCw" size={16} className={`mr-1 ${loadingProducts ? 'animate-spin' : ''}`} />
+                {loadingProducts ? 'Загрузка...' : 'Обновить из БД'}
+              </Button>
               {lastSync && (
                 <span className="text-xs text-muted-foreground">
                   Обновлено: {lastSync.toLocaleTimeString('ru-RU')}
@@ -207,7 +273,7 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
                 variant="default" 
                 className="bg-green-600 hover:bg-green-700"
                 onClick={async () => {
-                  const confirmed = confirm(`Перенести ${products.length} товаров в базу данных? Все покупатели увидят ваш каталог!`);
+                  const confirmed = confirm(`Перенести ${activeProducts.length} товаров в базу данных? Все покупатели увидят ваш каталог!`);
                   if (!confirmed) return;
                   
                   try {
@@ -217,7 +283,7 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
                         'Content-Type': 'application/json',
                         'X-Admin-Key': 'larana-admin-2024'
                       },
-                      body: JSON.stringify({ products, clearBefore: true })
+                      body: JSON.stringify({ products: activeProducts, clearBefore: true })
                     });
                     
                     const result = await response.json();
@@ -229,6 +295,8 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
                       });
                       
                       window.dispatchEvent(new CustomEvent('larana-products-updated'));
+                      
+                      await loadProductsFromDB();
                     } else {
                       toast({
                         title: "Ошибка",
