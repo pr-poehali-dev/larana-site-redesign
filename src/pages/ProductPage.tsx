@@ -20,7 +20,7 @@ import ProductReviews from '@/components/product/ProductReviews';
 const ProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
   const navigate = useNavigate();
-  const { availableProducts, isLoading, cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
+  const { allFurnitureSets, availableProducts, isLoading, cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useProducts();
   const { toast } = useToast();
   
   const [selectedColor, setSelectedColor] = useState('');
@@ -41,7 +41,7 @@ const ProductPage = () => {
   
   const { variants, hasVariants, allAvailableColors } = useProductVariants(
     product || {} as any,
-    availableProducts
+    allFurnitureSets
   );
   
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
