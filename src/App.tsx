@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { ProductProvider } from "@/contexts/ProductContext";
 import AIAssistant from "@/components/AIAssistant";
+import ShoppingAssistant from "@/components/ShoppingAssistant";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import EmployeePanel from "./pages/EmployeePanel";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <AIAssistant />
+          <ShoppingAssistant />
         </BrowserRouter>
         </TooltipProvider>
       </ProductProvider>
