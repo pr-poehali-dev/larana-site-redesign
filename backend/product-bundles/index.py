@@ -114,8 +114,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps(result, default=str),
-                'isBase64Encoded': False
+                'body': result
             }
         
         elif method == 'POST':
@@ -155,7 +154,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'id': bundle_id, 'message': 'Bundle created successfully'})
+                'body': {'id': bundle_id, 'message': 'Bundle created successfully'}
             }
         
         elif method == 'PUT':
