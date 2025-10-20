@@ -96,10 +96,7 @@ export const loadBundlesFromDB = async (): Promise<any[]> => {
       throw new Error('Failed to fetch bundles');
     }
     
-    const text = await response.text();
-    console.log('📄 Получен ответ:', text.substring(0, 200));
-    
-    const data = JSON.parse(text);
+    const data = await response.json();
     const bundles = Array.isArray(data) ? data : [];
     
     console.log('📦 Загружено наборов из БД:', bundles.length);

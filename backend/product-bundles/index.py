@@ -114,7 +114,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps(result, default=str)
+                'body': json.dumps(result, default=str),
+                'isBase64Encoded': False
             }
         
         elif method == 'POST':
