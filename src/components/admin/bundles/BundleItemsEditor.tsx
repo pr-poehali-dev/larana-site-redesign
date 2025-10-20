@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface BundleItem {
   id?: number;
@@ -28,6 +31,28 @@ const BundleItemsEditor = ({
   onRemoveItem, 
   onAddItem 
 }: BundleItemsEditorProps) => {
+  const [openPopover, setOpenPopover] = useState<number | null>(null);
+  const [searchValues, setSearchValues] = useState<{ [key: number]: string }>({});
+
+  const handleSelectProduct = (index: number, product: any) => {
+    onUpdateItem(index, 'supplier_article', product.supplierArticle);
+    onUpdateItem(index, 'product_name', product.title);
+    setOpenPopover(null);
+    setSearchValues({ ...searchValues, [index]: '' });
+  };
+
+  const filterProducts = (search: string) => {
+    if (!search) return products.slice(0, 50);
+    
+    const searchLower = search.toLowerCase();
+    return products
+      .filter(p => 
+        p.supplierArticle?.toLowerCase().includes(searchLower) ||
+        p.title?.toLowerCase().includes(searchLower)
+      )
+      .slice(0, 50);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -49,21 +74,58 @@ const BundleItemsEditor = ({
           items.map((item, index) => (
             <Card key={index} className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                <div className="md:col-span-4">
+                <div className="md:col-span-4 space-y-2">
                   <Label>Артикул поставщика</Label>
+                  <div className="flex gap-2">
+                    <Popover open={openPopover === index} onOpenChange={(open) => setOpenPopover(open ? index : null)}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className="flex-1 justify-between font-normal"
+                        >
+                          <span className="truncate">{item.supplier_article || "Выбрать из списка..."}</span>
+                          <Icon name="Search" className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[400px] p-0" align="start">
+                        <Command>
+                          <CommandInput 
+                            placeholder="Поиск по артикулу или названию..." 
+                            value={searchValues[index] || ''}
+                            onValueChange={(value) => setSearchValues({ ...searchValues, [index]: value })}
+                          />
+                          <CommandEmpty>Товары не найдены</CommandEmpty>
+                          <CommandGroup className="max-h-[300px] overflow-auto">
+                            {filterProducts(searchValues[index] || '').map((product) => (
+                              <CommandItem
+                                key={product.supplierArticle}
+                                value={`${product.supplierArticle} ${product.title}`}
+                                onSelect={() => handleSelectProduct(index, product)}
+                              >
+                                <div className="flex flex-col">
+                                  <span className="font-medium">{product.supplierArticle}</span>
+                                  <span className="text-xs text-muted-foreground truncate">{product.title}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <Input
                     value={item.supplier_article}
-                    onChange={(e) => onUpdateItem(index, 'supplier_article', e.target.value)}
-                    placeholder="Введите артикул"
-                    list={`articles-${index}`}
+                    onChange={(e) => {
+                      onUpdateItem(index, 'supplier_article', e.target.value);
+                      const product = products.find(p => p.supplierArticle === e.target.value);
+                      if (product) {
+                        onUpdateItem(index, 'product_name', product.title);
+                      }
+                    }}
+                    placeholder="Или введите артикул вручную"
+                    className="text-sm"
                   />
-                  <datalist id={`articles-${index}`}>
-                    {products.map(p => (
-                      <option key={p.supplierArticle} value={p.supplierArticle}>
-                        {p.title}
-                      </option>
-                    ))}
-                  </datalist>
                 </div>
 
                 <div className="md:col-span-4">
