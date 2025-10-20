@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { clearProductCache } from '@/utils/productCache';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
 
@@ -89,6 +90,7 @@ const BulkPriceUpdate = ({ products, onProductsUpdate }: BulkPriceUpdateProps) =
 
       if (updatedCount > 0) {
         onProductsUpdate(updatedProducts);
+        clearProductCache();
         toast({
           title: "Цены обновлены",
           description: `Обновлено цен: ${updatedCount} товаров`

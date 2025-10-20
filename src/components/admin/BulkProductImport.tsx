@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
+import { clearProductCache } from '@/utils/productCache';
 
 interface BulkProductImportProps {
   products: any[];
@@ -199,6 +200,7 @@ const BulkProductImport = ({ products, onProductsUpdate }: BulkProductImportProp
       if (newProducts.length > 0) {
         const updatedProducts = [...products, ...newProducts];
         onProductsUpdate(updatedProducts);
+        clearProductCache();
         
         toast({
           title: "Товары импортированы",

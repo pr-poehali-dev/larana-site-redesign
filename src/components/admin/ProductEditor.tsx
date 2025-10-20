@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { clearProductCache } from '@/utils/productCache';
 import ProductBasicFields from './ProductBasicFields';
 import ProductImageGallery from './ProductImageGallery';
 import ProductAdminFields from './ProductAdminFields';
@@ -119,6 +120,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     );
 
     onProductUpdate(updatedProducts);
+    clearProductCache();
     onClose();
     toast({
       title: "Товар обновлен",
@@ -146,6 +148,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
     };
 
     onProductUpdate([...products, newProduct]);
+    clearProductCache();
     setProductForm({
       title: '',
       category: '',
@@ -171,6 +174,7 @@ const ProductEditor = ({ product, products, onProductUpdate, onClose }: ProductE
   const deleteProduct = (productId: number) => {
     if (confirm('Удалить этот товар?')) {
       onProductUpdate(products.filter(p => p.id !== productId));
+      clearProductCache();
       onClose();
       toast({
         title: "Товар удален",

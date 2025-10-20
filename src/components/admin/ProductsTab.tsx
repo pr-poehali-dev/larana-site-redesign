@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { formatPrice } from '@/utils/formatPrice';
+import { clearProductCache } from '@/utils/productCache';
 import ProductEditor from './ProductEditor';
 import BulkPriceUpdate from './BulkPriceUpdate';
 import BulkProductImport from './BulkProductImport';
@@ -38,7 +39,45 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
     loadProductsFromDB();
   }, []);
 
-  const loadProductsFromDB = async () => {
+  const loadProductsFromDB = async (forceRefresh = false) => {
+    const CACHE_KEY = 'admin_products_cache';
+    const CACHE_TIMESTAMP_KEY = 'admin_products_cache_timestamp';
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 минут
+
+    // Проверяем кэш если не форсируем обновление
+    if (!forceRefresh) {
+      try {
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        const cachedTimestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+        
+        if (cachedData && cachedTimestamp) {
+          const age = Date.now() - parseInt(cachedTimestamp);
+          
+          if (age < CACHE_DURATION) {
+            const formattedProducts = JSON.parse(cachedData);
+            setDbProducts(formattedProducts);
+            onProductUpdate(formattedProducts);
+            setLastSync(new Date(parseInt(cachedTimestamp)));
+            setLoadingProducts(false);
+            
+            console.log(`📦 Загружено из кэша: ${formattedProducts.length} товаров (кэш свежий ${Math.round(age / 1000)}с)`);
+            
+            toast({
+              title: "Товары загружены из кэша",
+              description: `${formattedProducts.length} товаров (обновлено ${Math.round(age / 1000)}с назад)`,
+              duration: 2000
+            });
+            
+            return;
+          } else {
+            console.log('🕐 Кэш устарел, загружаю свежие данные из БД');
+          }
+        }
+      } catch (error) {
+        console.warn('Ошибка чтения кэша:', error);
+      }
+    }
+
     setLoadingProducts(true);
     try {
       const response = await fetch(func2url['products'], {
@@ -71,6 +110,14 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
           colorVariant: p.color_variant
         }));
         
+        // Сохраняем в кэш
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(formattedProducts));
+          localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+        } catch (error) {
+          console.warn('Не удалось сохранить в кэш:', error);
+        }
+        
         setDbProducts(formattedProducts);
         onProductUpdate(formattedProducts);
         setLastSync(new Date());
@@ -78,7 +125,7 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
         console.log(`✅ Загружено товаров из БД: ${formattedProducts.length}`);
         
         toast({
-          title: "Товары загружены",
+          title: forceRefresh ? "Каталог обновлён" : "Товары загружены",
           description: `Загружено ${formattedProducts.length} товаров из базы данных`
         });
       }
@@ -226,9 +273,13 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
                 {loadingProducts && (
                   <span className="text-xs text-muted-foreground">Загрузка из БД...</span>
                 )}
-                {!loadingProducts && dbProducts.length > 0 && (
+                {!loadingProducts && dbProducts.length > 0 && lastSync && (
                   <Badge variant="outline" className="text-xs">
-                    БД: {dbProducts.length} шт
+                    БД: {dbProducts.length} шт | {(() => {
+                      const age = Date.now() - lastSync.getTime();
+                      const minutes = Math.floor(age / 60000);
+                      return minutes < 1 ? 'только что' : `${minutes}м назад`;
+                    })()}
                   </Badge>
                 )}
               </div>
@@ -257,16 +308,34 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
               <Button 
                 size="sm" 
                 variant="outline"
-                onClick={loadProductsFromDB}
+                onClick={() => loadProductsFromDB(true)}
                 disabled={loadingProducts}
               >
                 <Icon name="RefreshCw" size={16} className={`mr-1 ${loadingProducts ? 'animate-spin' : ''}`} />
                 {loadingProducts ? 'Загрузка...' : 'Обновить из БД'}
               </Button>
               {lastSync && (
-                <span className="text-xs text-muted-foreground">
-                  Обновлено: {lastSync.toLocaleTimeString('ru-RU')}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    Обновлено: {lastSync.toLocaleTimeString('ru-RU')}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2 text-xs"
+                    onClick={() => {
+                      clearProductCache();
+                      toast({
+                        title: "Кэш очищен",
+                        description: "При следующей загрузке данные будут обновлены",
+                        duration: 2000
+                      });
+                    }}
+                  >
+                    <Icon name="Trash2" size={12} className="mr-1" />
+                    Очистить кэш
+                  </Button>
+                </div>
               )}
               <Button 
                 size="sm" 
@@ -296,7 +365,7 @@ const ProductsTab = ({ products, onProductUpdate, onReloadCatalog }: ProductsTab
                       
                       window.dispatchEvent(new CustomEvent('larana-products-updated'));
                       
-                      await loadProductsFromDB();
+                      await loadProductsFromDB(true);
                     } else {
                       toast({
                         title: "Ошибка",

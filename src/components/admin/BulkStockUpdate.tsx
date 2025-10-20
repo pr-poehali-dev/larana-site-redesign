@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
+import { clearProductCache } from '@/utils/productCache';
 
 interface BulkStockUpdateProps {
   products: any[];
@@ -94,6 +95,7 @@ const BulkStockUpdate = ({ products, onProductsUpdate }: BulkStockUpdateProps) =
 
       if (updatedCount > 0) {
         onProductsUpdate(updatedProducts);
+        clearProductCache();
         toast({
           title: "Остатки обновлены",
           description: `Обновлено остатков: ${updatedCount} товаров`

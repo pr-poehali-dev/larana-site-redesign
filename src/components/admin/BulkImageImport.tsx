@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
+import { clearProductCache } from '@/utils/productCache';
 
 interface BulkImageImportProps {
   products: any[];
@@ -98,6 +99,7 @@ const BulkImageImport = ({ products, onProductUpdate, onClose }: BulkImageImport
         });
 
         onProductUpdate(updatedProducts);
+        clearProductCache();
 
         toast({
           title: "✅ Картинки импортированы",
