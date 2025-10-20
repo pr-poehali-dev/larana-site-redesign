@@ -86,6 +86,10 @@ export const loadProductsFromDB = async (): Promise<Product[]> => {
 };
 
 export const loadBundlesFromDB = async (): Promise<any[]> => {
+  console.log('\n📦 ЗАГРУЗКА НАБОРОВ - ВРЕМЕННО ОТКЛЮЧЕНО');
+  return [];
+  
+  /* ВРЕМЕННО ЗАКОММЕНТИРОВАНО ДЛЯ ОТЛАДКИ
   console.log('\n📦 ЗАГРУЗКА НАБОРОВ ИЗ БАЗЫ ДАННЫХ v2');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
@@ -143,4 +147,5 @@ export const loadBundlesFromDB = async (): Promise<any[]> => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     return [];
   }
+  */
 };
