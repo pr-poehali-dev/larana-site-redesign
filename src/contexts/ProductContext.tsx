@@ -271,8 +271,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           const standalone: any[] = [];
           
           normalized.forEach((product: any) => {
-            // Если товар имеет variant_group_id и stockQuantity > 0
-            if (product.variantGroupId && product.stockQuantity > 0) {
+            // Если товар имеет variant_group_id - группируем
+            if (product.variantGroupId) {
               if (!grouped.has(product.variantGroupId)) {
                 // Первый товар в группе становится основным
                 grouped.set(product.variantGroupId, {
@@ -294,8 +294,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
                   images: product.images
                 });
               }
-            } else if (!product.variantGroupId || product.stockQuantity > 0) {
-              // Товары без группы или с нулевым остатком показываем отдельно
+            } else {
+              // Товары без группы показываем отдельно
               standalone.push(product);
             }
           });
