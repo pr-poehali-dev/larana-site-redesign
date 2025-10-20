@@ -90,7 +90,9 @@ export const loadBundlesFromDB = async (): Promise<any[]> => {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
   try {
-    const response = await fetch('https://functions.poehali.dev/5045ef1e-c45a-4619-9275-f57ccffb2be1');
+    const response = await fetch('https://functions.poehali.dev/5045ef1e-c45a-4619-9275-f57ccffb2be1', {
+      cache: 'no-cache'
+    });
     
     if (!response.ok) {
       throw new Error('Failed to fetch bundles');
