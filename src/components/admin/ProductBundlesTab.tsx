@@ -32,13 +32,43 @@ const ProductBundlesTab = ({ products }: ProductBundlesTabProps) => {
   const [bundles, setBundles] = useState<ProductBundle[]>([]);
   const [editingBundle, setEditingBundle] = useState<ProductBundle | null>(null);
   const [loading, setLoading] = useState(false);
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const { toast } = useToast();
 
   const bundleTypes = ['Спальня', 'Гостиная', 'Детская', 'Прихожая', 'Кухня'];
 
   useEffect(() => {
     loadBundles();
+    loadProducts();
   }, []);
+
+  const loadProducts = async () => {
+    setLoadingProducts(true);
+    try {
+      const response = await fetch(func2url['products'], {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDbProducts(data);
+        console.log(`✅ Загружено товаров из БД: ${data.length}`);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки товаров:', error);
+      toast({
+        title: 'Предупреждение',
+        description: 'Используются локальные данные товаров',
+        variant: 'default'
+      });
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
 
   const loadBundles = async () => {
     setLoading(true);
@@ -172,16 +202,30 @@ const ProductBundlesTab = ({ products }: ProductBundlesTabProps) => {
   };
 
   if (editingBundle) {
+    const productsToUse = dbProducts.length > 0 ? dbProducts : products;
+    
     return (
-      <BundleEditor
-        bundle={editingBundle}
-        products={products}
-        bundleTypes={bundleTypes}
-        onSave={saveBundle}
-        onCancel={() => setEditingBundle(null)}
-        onUpdate={setEditingBundle}
-        loading={loading}
-      />
+      <div className="space-y-4">
+        {loadingProducts && (
+          <div className="text-sm text-muted-foreground">
+            Загрузка товаров из базы данных...
+          </div>
+        )}
+        {!loadingProducts && dbProducts.length > 0 && (
+          <div className="text-sm text-green-600">
+            ✅ Товаров в базе: {dbProducts.length}
+          </div>
+        )}
+        <BundleEditor
+          bundle={editingBundle}
+          products={productsToUse}
+          bundleTypes={bundleTypes}
+          onSave={saveBundle}
+          onCancel={() => setEditingBundle(null)}
+          onUpdate={setEditingBundle}
+          loading={loading}
+        />
+      </div>
     );
   }
 

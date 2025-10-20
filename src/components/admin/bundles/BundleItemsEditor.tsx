@@ -35,7 +35,8 @@ const BundleItemsEditor = ({
   const [searchValues, setSearchValues] = useState<{ [key: number]: string }>({});
 
   const handleSelectProduct = (index: number, product: any) => {
-    onUpdateItem(index, 'supplier_article', product.supplierArticle);
+    const supplierArticle = product.supplier_article || product.supplierArticle;
+    onUpdateItem(index, 'supplier_article', supplierArticle);
     onUpdateItem(index, 'product_name', product.title);
     setOpenPopover(null);
     setSearchValues({ ...searchValues, [index]: '' });
@@ -46,10 +47,12 @@ const BundleItemsEditor = ({
     
     const searchLower = search.toLowerCase();
     return products
-      .filter(p => 
-        p.supplierArticle?.toLowerCase().includes(searchLower) ||
-        p.title?.toLowerCase().includes(searchLower)
-      )
+      .filter(p => {
+        const article = p.supplier_article || p.supplierArticle || '';
+        const title = p.title || '';
+        return article.toLowerCase().includes(searchLower) ||
+               title.toLowerCase().includes(searchLower);
+      })
       .slice(0, 50);
   };
 
@@ -97,18 +100,21 @@ const BundleItemsEditor = ({
                           />
                           <CommandEmpty>Товары не найдены</CommandEmpty>
                           <CommandGroup className="max-h-[300px] overflow-auto">
-                            {filterProducts(searchValues[index] || '').map((product) => (
-                              <CommandItem
-                                key={product.supplierArticle}
-                                value={`${product.supplierArticle} ${product.title}`}
-                                onSelect={() => handleSelectProduct(index, product)}
-                              >
-                                <div className="flex flex-col">
-                                  <span className="font-medium">{product.supplierArticle}</span>
-                                  <span className="text-xs text-muted-foreground truncate">{product.title}</span>
-                                </div>
-                              </CommandItem>
-                            ))}
+                            {filterProducts(searchValues[index] || '').map((product) => {
+                              const article = product.supplier_article || product.supplierArticle || '';
+                              return (
+                                <CommandItem
+                                  key={article || product.id}
+                                  value={`${article} ${product.title}`}
+                                  onSelect={() => handleSelectProduct(index, product)}
+                                >
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">{article}</span>
+                                    <span className="text-xs text-muted-foreground truncate">{product.title}</span>
+                                  </div>
+                                </CommandItem>
+                              );
+                            })}
                           </CommandGroup>
                         </Command>
                       </PopoverContent>
@@ -118,7 +124,9 @@ const BundleItemsEditor = ({
                     value={item.supplier_article}
                     onChange={(e) => {
                       onUpdateItem(index, 'supplier_article', e.target.value);
-                      const product = products.find(p => p.supplierArticle === e.target.value);
+                      const product = products.find(p => 
+                        (p.supplier_article || p.supplierArticle) === e.target.value
+                      );
                       if (product) {
                         onUpdateItem(index, 'product_name', product.title);
                       }

@@ -51,7 +51,9 @@ const BundleEditor = ({
     newItems[index] = { ...newItems[index], [field]: value };
 
     if (field === 'supplier_article') {
-      const product = products.find(p => p.supplierArticle === value);
+      const product = products.find(p => 
+        p.supplier_article === value || p.supplierArticle === value
+      );
       if (product) {
         newItems[index].product_name = product.title;
       }
