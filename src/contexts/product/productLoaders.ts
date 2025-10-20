@@ -97,6 +97,8 @@ export const loadBundlesFromDB = async (): Promise<any[]> => {
     }
     
     const text = await response.text();
+    console.log('📄 Получен ответ:', text.substring(0, 200));
+    
     const data = JSON.parse(text);
     const bundles = Array.isArray(data) ? data : [];
     
