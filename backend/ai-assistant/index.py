@@ -1,5 +1,5 @@
 '''
-Business: ИИ-консультант для помощи покупателям в выборе мебели
+Business: ИИ-консультант для помощи покупателям в выборе мебели (YandexGPT)
 Args: event - dict с httpMethod, body, queryStringParameters
       context - объект с атрибутами: request_id, function_name
 Returns: HTTP response dict с ответом от ИИ-ассистента
@@ -44,13 +44,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Messages required'})
         }
     
-    api_key = os.environ.get('OPENROUTER_API_KEY') or os.environ.get('OPENAI_API_KEY')
-    if not api_key:
+    api_key = os.environ.get('YANDEX_API_KEY')
+    folder_id = os.environ.get('YANDEX_FOLDER_ID')
+    
+    if not api_key or not folder_id:
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'error': 'API key not configured'})
+            'body': json.dumps({'error': 'YandexGPT API not configured'})
         }
     
     products_info = ""
@@ -106,22 +108,33 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 Отвечай кратко, максимум 4-5 предложений. Используй эмодзи для дружелюбности."""
 
-    full_messages = [{'role': 'system', 'content': system_prompt}] + messages
+    yandex_messages = []
+    for msg in messages:
+        yandex_messages.append({
+            'role': 'user' if msg['role'] == 'user' else 'assistant',
+            'text': msg['content']
+        })
+    
+    request_body = {
+        'modelUri': f'gpt://{folder_id}/yandexgpt-lite',
+        'completionOptions': {
+            'stream': False,
+            'temperature': 0.7,
+            'maxTokens': 500
+        },
+        'messages': [
+            {'role': 'system', 'text': system_prompt}
+        ] + yandex_messages
+    }
     
     response = requests.post(
-        'https://openrouter.ai/api/v1/chat/completions',
+        'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
         headers={
-            'Authorization': f'Bearer {api_key}',
+            'Authorization': f'Api-Key {api_key}',
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://larana-mebel.ru',
-            'X-Title': 'LARANA Assistant'
+            'x-folder-id': folder_id
         },
-        json={
-            'model': 'openai/gpt-4o-mini',
-            'messages': full_messages,
-            'temperature': 0.7,
-            'max_tokens': 300
-        }
+        json=request_body
     )
     
     if response.status_code != 200:
@@ -129,11 +142,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'error': f'AI API error: {response.text}'})
+            'body': json.dumps({'error': f'YandexGPT API error: {response.text}'})
         }
     
     result = response.json()
-    assistant_message = result['choices'][0]['message']['content']
+    assistant_message = result['result']['alternatives'][0]['message']['text']
     
     return {
         'statusCode': 200,
