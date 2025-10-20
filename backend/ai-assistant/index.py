@@ -127,30 +127,41 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         ] + yandex_messages
     }
     
-    response = requests.post(
-        'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
-        headers={
-            'Authorization': f'Api-Key {api_key}',
-            'Content-Type': 'application/json',
-            'x-folder-id': folder_id
-        },
-        json=request_body
-    )
-    
-    if response.status_code != 200:
+    try:
+        response = requests.post(
+            'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
+            headers={
+                'Authorization': f'Api-Key {api_key}',
+                'Content-Type': 'application/json',
+                'x-folder-id': folder_id
+            },
+            json=request_body,
+            timeout=30
+        )
+        
+        if response.status_code != 200:
+            print(f'YandexGPT error: {response.status_code} - {response.text}')
+            return {
+                'statusCode': 500,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': f'YandexGPT API error: {response.text}'})
+            }
+        
+        result = response.json()
+        assistant_message = result['result']['alternatives'][0]['message']['text']
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'message': assistant_message})
+        }
+    except Exception as e:
+        print(f'Exception in handler: {str(e)}')
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'error': f'YandexGPT API error: {response.text}'})
+            'body': json.dumps({'error': f'Internal error: {str(e)}'})
         }
-    
-    result = response.json()
-    assistant_message = result['result']['alternatives'][0]['message']['text']
-    
-    return {
-        'statusCode': 200,
-        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-        'isBase64Encoded': False,
-        'body': json.dumps({'message': assistant_message})
-    }
