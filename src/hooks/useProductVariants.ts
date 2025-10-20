@@ -17,7 +17,7 @@ interface Product {
  */
 export function useProductVariants(product: Product, allProducts: Product[]) {
   const variants = useMemo(() => {
-    if (!product.variantGroupId) {
+    if (!product.variantGroupId || product.variantGroupId.trim() === '') {
       return [product];
     }
 
