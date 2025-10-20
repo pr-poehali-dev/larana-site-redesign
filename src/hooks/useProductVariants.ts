@@ -17,11 +17,16 @@ interface Product {
  */
 export function useProductVariants(product: Product, allProducts: Product[]) {
   const variants = useMemo(() => {
+    // Если у товара есть поле variants (после группировки) - используем его
+    if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
+      return product.variants;
+    }
+    
+    // Иначе ищем по variantGroupId в allProducts
     if (!product.variantGroupId || product.variantGroupId.trim() === '') {
       return [product];
     }
 
-    // Находим все товары с таким же variantGroupId
     return allProducts.filter(p => p.variantGroupId === product.variantGroupId);
   }, [product, allProducts]);
 

@@ -98,7 +98,7 @@ const ProductInfo = ({
             {allAvailableColors.map((color) => {
               const variant = variants.find(v => v.colorVariant === color);
               const isCurrentColor = product.colorVariant === color;
-              const isAvailable = variant?.inStock;
+              const isAvailable = variant?.stockQuantity ? variant.stockQuantity > 0 : variant?.inStock;
               
               return (
                 <Button
