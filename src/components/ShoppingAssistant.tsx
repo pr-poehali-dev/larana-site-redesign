@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import { useProductContext } from '@/contexts/ProductContext';
+import { useProducts } from '@/contexts/ProductContext';
 import func2url from '@/../backend/func2url.json';
 
 interface Message {
@@ -22,7 +22,7 @@ const ShoppingAssistant = () => {
   const [hasGreeted, setHasGreeted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const { products } = useProductContext();
+  const { availableProducts } = useProducts();
 
   useEffect(() => {
     if (isOpen && !hasGreeted && messages.length === 0) {
@@ -68,7 +68,7 @@ const ShoppingAssistant = () => {
         },
         body: JSON.stringify({ 
           messages: apiMessages,
-          products: products.slice(0, 20).map(p => ({
+          products: availableProducts.slice(0, 20).map(p => ({
             title: p.title,
             category: p.category,
             price: p.price,
