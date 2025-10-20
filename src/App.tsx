@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { ProductProvider } from "@/contexts/ProductContext";
-import AIAssistant from "@/components/AIAssistant";
 import ShoppingAssistant from "@/components/ShoppingAssistant";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
@@ -58,7 +57,6 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <AIAssistant />
           <ShoppingAssistant />
         </BrowserRouter>
         </TooltipProvider>
