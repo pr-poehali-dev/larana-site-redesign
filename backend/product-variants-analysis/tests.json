@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Analyze product variants",
+    "request": {
+      "httpMethod": "GET"
+    },
+    "response": {
+      "statusCode": 200,
+      "body": {
+        "total_products": 0,
+        "groups_found": 0,
+        "groups": {}
+      }
+    }
+  }
+]
