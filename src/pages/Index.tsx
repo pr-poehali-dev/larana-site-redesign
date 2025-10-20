@@ -153,7 +153,21 @@ const Index = () => {
         <title>LARANA - мебель в наличии в Екатеринбурге | Доставка за 1-2 дня</title>
         <meta name="description" content="Мебель в наличии в Екатеринбурге: спальни, кухни, гостиные, шкафы-купе. Доставка за 1-2 дня. Гарантия 18 месяцев. Рассрочка 0%." />
         <meta name="keywords" content="мебель екатеринбург, мебель в наличии, купить мебель, мебель с доставкой" />
-        <link rel="canonical" href="https://laranamebel.ru" />
+        <link rel="canonical" href="https://laranamebel.ru/" />
+        
+        <meta property="og:title" content="LARANA - мебель в наличии в Екатеринбурге" />
+        <meta property="og:description" content="Мебель в наличии: спальни, кухни, гостиные, шкафы-купе. Доставка за 1-2 дня. Гарантия 18 месяцев. Рассрочка 0%." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://laranamebel.ru/" />
+        <meta property="og:image" content="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="LARANA — Мебель на заказ в Екатеринбурге" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="LARANA - мебель в наличии в Екатеринбурге" />
+        <meta name="twitter:description" content="Мебель в наличии: спальни, кухни, гостиные, шкафы-купе. Доставка за 1-2 дня." />
+        <meta name="twitter:image" content="https://cdn.poehali.dev/files/8e9a575f-fd1c-4d40-821a-4154a78e1d00.jpg" />
         
         <script type="application/ld+json">
           {JSON.stringify({
