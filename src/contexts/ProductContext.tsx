@@ -405,7 +405,12 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const availableProducts = [...allFurnitureSets, ...bundles]
-    .filter(product => product.inStock !== false)
+    .filter(product => {
+      if (product.stockQuantity !== null && product.stockQuantity !== undefined) {
+        return product.stockQuantity > 0;
+      }
+      return product.inStock !== false;
+    })
     .sort((a, b) => {
       const aHasImage = a.image && a.image.startsWith('http');
       const bHasImage = b.image && b.image.startsWith('http');
