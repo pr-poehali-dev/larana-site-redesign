@@ -47,7 +47,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     api_key = os.environ.get('YANDEX_API_KEY')
     folder_id = os.environ.get('YANDEX_FOLDER_ID')
     
+    print(f'API Key present: {bool(api_key)}, Folder ID present: {bool(folder_id)}')
+    
     if not api_key or not folder_id:
+        print(f'Missing credentials - API Key: {bool(api_key)}, Folder ID: {bool(folder_id)}')
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
