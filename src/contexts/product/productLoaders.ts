@@ -86,19 +86,30 @@ export const loadProductsFromDB = async (): Promise<Product[]> => {
 };
 
 export const loadBundlesFromDB = async (): Promise<any[]> => {
-  console.log('\n📦 ЗАГРУЗКА НАБОРОВ ИЗ БАЗЫ ДАННЫХ');
+  console.log('\n📦 ЗАГРУЗКА НАБОРОВ ИЗ БАЗЫ ДАННЫХ v2');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
   try {
-    const response = await fetch('https://functions.poehali.dev/5045ef1e-c45a-4619-9275-f57ccffb2be1', {
-      cache: 'no-cache'
+    const url = `https://functions.poehali.dev/5045ef1e-c45a-4619-9275-f57ccffb2be1?t=${Date.now()}`;
+    console.log('🔗 Запрос:', url);
+    
+    const response = await fetch(url, {
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
     });
+    
+    console.log('📡 Статус:', response.status, response.statusText);
     
     if (!response.ok) {
       throw new Error('Failed to fetch bundles');
     }
     
     const text = await response.text();
+    console.log('📄 Получено байт:', text.length);
+    console.log('📄 Первые 200 символов:', text.substring(0, 200));
+    
     const data = JSON.parse(text);
     const bundles = Array.isArray(data) ? data : [];
     
