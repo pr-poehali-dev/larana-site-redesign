@@ -452,6 +452,15 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   const availableProducts = [...allFurnitureSets, ...bundles]
     .filter(product => {
+      // Если товар сгруппирован - проверяем остатки по всем вариантам
+      if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
+        const totalStock = product.variants.reduce((sum: number, v: any) => {
+          return sum + (v.stockQuantity || 0);
+        }, 0);
+        return totalStock > 0;
+      }
+      
+      // Обычная проверка для несгруппированных товаров
       if (product.stockQuantity !== null && product.stockQuantity !== undefined) {
         return product.stockQuantity > 0;
       }
