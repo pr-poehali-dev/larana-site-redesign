@@ -84,8 +84,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         result = {'error': 'Bundle not found'}
                 else:
                     cur.execute("""
-                        SELECT pb.id, pb.name, pb.type, pb.color, pb.image_url, 
-                               pb.price, pb.description, pb.created_at,
+                        SELECT pb.id, pb.name as title, pb.type, pb.color, pb.image_url, 
+                               pb.price::text, pb.description, pb.created_at,
+                               array_agg(bi.supplier_article) as product_ids,
                                json_agg(
                                    json_build_object(
                                        'supplier_article', bi.supplier_article,
