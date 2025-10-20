@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Test assistant response",
+      "method": "POST",
+      "body": {
+        "messages": [
+          {"role": "user", "content": "Здравствуйте, хочу купить кухню"}
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test empty messages",
+      "method": "POST",
+      "body": {
+        "messages": []
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "Messages required"
+      }
+    }
+  ]
+}
