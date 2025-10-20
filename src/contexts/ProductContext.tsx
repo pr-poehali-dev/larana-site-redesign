@@ -1,5 +1,12 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
+interface ProductVariant {
+  id: number;
+  colorVariant: string;
+  stockQuantity: number;
+  images: string[];
+}
+
 interface Product {
   id: number;
   title: string;
@@ -16,6 +23,7 @@ interface Product {
   stockQuantity?: number | null;
   variantGroupId?: string;
   colorVariant?: string;
+  variants?: ProductVariant[];
 }
 
 interface CartItem extends Product {
@@ -254,12 +262,50 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
             supplierArticle: p.supplier_article || '',
             stockQuantity: p.stock_quantity || null,
             variantGroupId: p.variant_group_id || '',
-            colorVariant: p.color_variant || ''
+            colorVariant: p.color_variant || '',
+            variants: []
           }));
           
-          setAllFurnitureSets(normalized);
-          console.log('✅ Каталог готов:', normalized.length, 'товаров');
-          console.log('📋 Пример товара с ID=11:', normalized.find((p: any) => p.id === 11));
+          // Группируем товары по variant_group_id
+          const grouped = new Map<string, any>();
+          const standalone: any[] = [];
+          
+          normalized.forEach((product: any) => {
+            // Если товар имеет variant_group_id и stockQuantity > 0
+            if (product.variantGroupId && product.stockQuantity > 0) {
+              if (!grouped.has(product.variantGroupId)) {
+                // Первый товар в группе становится основным
+                grouped.set(product.variantGroupId, {
+                  ...product,
+                  variants: [{
+                    id: product.id,
+                    colorVariant: product.colorVariant,
+                    stockQuantity: product.stockQuantity,
+                    images: product.images
+                  }]
+                });
+              } else {
+                // Добавляем как вариант к существующему товару
+                const mainProduct = grouped.get(product.variantGroupId);
+                mainProduct.variants.push({
+                  id: product.id,
+                  colorVariant: product.colorVariant,
+                  stockQuantity: product.stockQuantity,
+                  images: product.images
+                });
+              }
+            } else if (!product.variantGroupId || product.stockQuantity > 0) {
+              // Товары без группы или с нулевым остатком показываем отдельно
+              standalone.push(product);
+            }
+          });
+          
+          // Объединяем: сначала сгруппированные, потом отдельные
+          const finalProducts = [...Array.from(grouped.values()), ...standalone];
+          
+          setAllFurnitureSets(finalProducts);
+          console.log('✅ Каталог готов:', finalProducts.length, 'товаров (после группировки из', normalized.length, ')');
+          console.log('📊 Сгруппировано:', grouped.size, 'групп,', standalone.length, 'отдельных товаров');
         }
         
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
