@@ -29,6 +29,11 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const loadBundles = async () => {
+    console.log('📦 Загрузка наборов временно отключена');
+    setBundles([]);
+    return;
+    
+    /* ЗАКОММЕНТИРОВАНО ДО УСТРАНЕНИЯ ПРОБЛЕМЫ С КЭШИРОВАНИЕМ
     try {
       const loadedBundles = await loadBundlesFromDB();
       setBundles(loadedBundles);
@@ -36,6 +41,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       console.error('Ошибка загрузки наборов:', error);
       setBundles([]);
     }
+    */
   };
 
   useEffect(() => {
