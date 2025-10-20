@@ -30,10 +30,18 @@ const ProductPage = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   
-  const product = availableProducts.find(p => p.id === parseInt(id || '0'));
+  const requestedId = parseInt(id || '0');
+  
+  let product = availableProducts.find(p => p.id === requestedId);
+  
+  if (!product) {
+    product = availableProducts.find(p => 
+      p.variants && p.variants.some((v: any) => v.id === requestedId)
+    );
+  }
   
   console.log('🔍 ProductPage: Поиск товара', { 
-    requestedId: parseInt(id || '0'), 
+    requestedId, 
     totalProducts: availableProducts.length,
     foundProduct: product ? product.title : 'NOT FOUND',
     isLoading
@@ -44,13 +52,24 @@ const ProductPage = () => {
     allFurnitureSets
   );
   
+  const activeVariant = product?.variants?.find((v: any) => v.id === requestedId);
+  
+  const displayProduct = activeVariant ? {
+    ...product,
+    id: activeVariant.id,
+    colorVariant: activeVariant.colorVariant,
+    stockQuantity: activeVariant.stockQuantity,
+    images: activeVariant.images,
+    image: activeVariant.images?.[0] || product?.image
+  } : product;
+  
   const { handleConfirmOrder: confirmOrder } = useOrderLogic(cartItems, clearCart, user);
 
   useEffect(() => {
-    if (product && product.colors && product.colors.length > 0) {
-      setSelectedColor(product.colors[0]);
+    if (displayProduct && displayProduct.colors && displayProduct.colors.length > 0) {
+      setSelectedColor(displayProduct.colors[0]);
     }
-  }, [product?.id, product?.colors]);
+  }, [displayProduct?.id, displayProduct?.colors]);
 
   if (isLoading) {
     return (
@@ -73,25 +92,25 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     console.log('=== ДОБАВЛЕНИЕ В КОРЗИНУ ===');
-    console.log('Товар:', product);
+    console.log('Товар:', displayProduct);
     console.log('Количество:', quantity);
     console.log('Корзина до:', cartItems);
     
     for (let i = 0; i < quantity; i++) {
-      addToCart(product);
+      addToCart(displayProduct!);
     }
     
     console.log('Корзина после:', cartItems);
     
     toast({
       title: "Товар добавлен в корзину",
-      description: `${product.title} × ${quantity}`,
+      description: `${displayProduct!.title} × ${quantity}`,
     });
   };
 
   const handleBuyNow = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product);
+      addToCart(displayProduct!);
     }
     setCheckoutOpen(true);
   };
@@ -110,17 +129,17 @@ const ProductPage = () => {
   return (
     <>
       <Helmet>
-        <title>{product.title} - купить в Москве | Lara Мебель</title>
-        <meta name="description" content={`${product.title} - ${product.description}. Цена ${product.price}. ${product.inStock ? 'В наличии' : 'Под заказ'}.`} />
+        <title>{displayProduct!.title} - купить в Москве | Lara Мебель</title>
+        <meta name="description" content={`${displayProduct!.title} - ${displayProduct!.description}. Цена ${displayProduct!.price}. ${displayProduct!.inStock ? 'В наличии' : 'Под заказ'}.`} />
         <link rel="canonical" href={`https://laranamebel.ru/catalog/${slug}/${id}`} />
         
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            "name": product.title,
-            "image": product.images || [product.image],
-            "description": product.description,
+            "name": displayProduct!.title,
+            "image": displayProduct!.images || [displayProduct!.image],
+            "description": displayProduct!.description,
             "brand": {
               "@type": "Brand",
               "name": "LARANA"
@@ -129,8 +148,8 @@ const ProductPage = () => {
               "@type": "Offer",
               "url": `https://laranamebel.ru/catalog/${slug}/${id}`,
               "priceCurrency": "RUB",
-              "price": product.price.replace(/\s/g, '').replace('₽', ''),
-              "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
+              "price": displayProduct!.price.replace(/\s/g, '').replace('₽', ''),
+              "availability": displayProduct!.inStock ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
               "seller": {
                 "@type": "Organization",
                 "name": "LARANA"
@@ -141,9 +160,9 @@ const ProductPage = () => {
               "ratingValue": "4.8",
               "reviewCount": "12"
             },
-            "category": product.category,
-            "material": product.style,
-            "color": product.colors?.join(", ")
+            "category": displayProduct!.category,
+            "material": displayProduct!.style,
+            "color": displayProduct!.colors?.join(", ")
           })}
         </script>
 
@@ -197,15 +216,15 @@ const ProductPage = () => {
           <div className="container mx-auto px-4 py-8">
             <ProductBreadcrumb 
               slug={slug || ''}
-              category={product.category}
-              title={product.title}
+              category={displayProduct!.category}
+              title={displayProduct!.title}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
               <ProductGallery 
                 images={(() => {
-                  const allImages = product.images || [];
-                  const mainImg = product.image;
+                  const allImages = displayProduct!.images || [];
+                  const mainImg = displayProduct!.image;
                   
                   // Если главное изображение есть и оно есть в массиве - ставим его первым
                   if (mainImg && allImages.includes(mainImg)) {
@@ -220,11 +239,11 @@ const ProductPage = () => {
                   // Иначе просто возвращаем массив или главное изображение
                   return allImages.length > 0 ? allImages : [mainImg];
                 })()}
-                title={product.title}
+                title={displayProduct!.title}
               />
 
               <ProductInfo 
-                product={product}
+                product={displayProduct!}
                 variants={variants}
                 hasVariants={hasVariants}
                 allAvailableColors={allAvailableColors}
@@ -239,12 +258,12 @@ const ProductPage = () => {
             </div>
 
             <ProductDescription 
-              description={product.description}
-              items={product.items}
-              category={product.category}
-              style={product.style}
-              colors={product.colors}
-              inStock={product.inStock}
+              description={displayProduct!.description}
+              items={displayProduct!.items}
+              category={displayProduct!.category}
+              style={displayProduct!.style}
+              colors={displayProduct!.colors}
+              inStock={displayProduct!.inStock}
             />
 
             <ProductReviews />
